@@ -1,0 +1,20 @@
+body {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+canvas {
+    width: 640px;
+    height: 480px;
+    margin: auto;
+}
+a {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+}
+#legend {
+    background: black;
+    width: 640px;
+}
+#legend > div {
+    padding: 5px;
+}
