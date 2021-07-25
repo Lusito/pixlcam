@@ -12,12 +12,49 @@
             This is a simple demonstration of the <a href="https://lusito.github.io/camera2d/">Camera2D library</a>.
             Check out the <a href="https://github.com/Lusito/camera2d/tree/master/example">example source-code</a>.
         </p>
-        <canvas id="canvas"></canvas>
-        <div id="legend">
-            <div style="color: rgb(255 0 0)">Camera Current</div>
-            <div style="color: rgb(0 255 0)">Camera Desired</div>
-            <div style="color: rgb(0 255 255)">Player Current</div>
-            <div style="color: rgb(128 128 255)">Player Projected</div>
+        <div id="wrapper">
+            <canvas id="canvas"></canvas>
+            <div id="sidebar">
+                <label>
+                    <span>Type:</span>
+                    <select id="cameraType">
+                        <option>Simple Camera</option>
+                        <option>Screen Camera</option>
+                        <option>Smooth Camera</option>
+                        <option>Cue Focus Camera</option>
+                    </select>
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" id="snapToPixel" />
+                    <span>Snap To Pixels</span>
+                </label>
+                <label>
+                    <span>Zoom:</span>
+                    <input type="number" id="zoom" />
+                </label>
+                <label>
+                    <span>Max Speed:</span>
+                    <input type="number" id="maxSpeed" />
+                </label>
+                <label>
+                    <span>Acceleration:</span>
+                    <input type="number" id="acceleration" />
+                </label>
+                <label>
+                    <span>Slow Distance:</span>
+                    <input type="number" id="slowDistance" />
+                </label>
+                <label>
+                    <span>Lock Distance:</span>
+                    <input type="number" id="lockDistance" />
+                </label>
+                <label>
+                    <span>Max Projection Distance:</span>
+                    <input type="number" id="maxProjectionDistance" />
+                </label>
+                <h4>Drawn Elements:</h4>
+                <div id="legend"></div>
+            </div>
         </div>
         <script src="index.ts"></script>
     </body>

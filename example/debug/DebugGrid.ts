@@ -1,24 +1,11 @@
 /* eslint-disable */
+import { DebugBase } from "./DebugBase";
 import { DebugShader } from "./DebugShader";
+import { Color } from "./types";
 
-export class DebugGrid {
-    private readonly gl: WebGLRenderingContext;
-
-    private readonly shader: DebugShader;
-
-    private readonly vertBuffer: WebGLBuffer;
-
-    private readonly data: Float32Array;
-
+export class DebugGrid extends DebugBase {
     public constructor(gl: WebGLRenderingContext, shader: DebugShader, maxLines: number) {
-        this.data = new Float32Array(maxLines * 4);
-        this.gl = gl;
-        this.shader = shader;
-        this.vertBuffer = this.gl.createBuffer() as WebGLBuffer;
-    }
-
-    public destroy() {
-        this.gl.deleteBuffer(this.vertBuffer);
+        super(gl, shader, maxLines * 4);
     }
 
     private getDeltas(width: number, height: number) {
@@ -70,16 +57,12 @@ export class DebugGrid {
         }
         if (index !== this.data.length) throw new Error("bad length");
 
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.data, this.gl.STATIC_DRAW);
+        this.updateBuffer();
+        return this;
     }
 
-    public render(color: [number, number, number, number]) {
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertBuffer);
-        this.shader.position.enable();
-        this.shader.position.set(2, this.gl.FLOAT, false, 0, 0);
-
-        this.shader.color.setV(color);
+    public stroke(color: Color) {
+        this.prepareRender(color);
         this.gl.drawArrays(this.gl.LINES, 0, this.data.length / 2);
     }
 }

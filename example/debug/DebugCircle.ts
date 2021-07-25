@@ -1,45 +1,38 @@
 /* eslint-disable */
+import { DebugBase } from "./DebugBase";
 import { DebugShader } from "./DebugShader";
+import { Color } from "./types";
 
-export class DebugCircle {
-    private readonly gl: WebGLRenderingContext;
-
-    private readonly shader: DebugShader;
-
-    private readonly vertBuffer: WebGLBuffer;
-
-    private readonly data: Float32Array;
-
+export class DebugCircle extends DebugBase {
     public constructor(gl: WebGLRenderingContext, shader: DebugShader, points: number) {
-        this.data = new Float32Array(points * 2);
-        this.gl = gl;
-        this.shader = shader;
-        this.vertBuffer = this.gl.createBuffer() as WebGLBuffer;
-    }
-
-    public destroy() {
-        this.gl.deleteBuffer(this.vertBuffer);
+        super(gl, shader, 4 + points * 2);
     }
 
     public set(x: number, y: number, radius: number) {
-        const delta = (Math.PI * 2) / (this.data.length / 2);
+        this.data[0] = x;
+        this.data[1] = y;
+        const points = this.data.length / 2 - 2;
+        const delta = (Math.PI * 2) / points;
         let angle = 0;
-        for (let i = 0; i < this.data.length; i += 2) {
+        for (let i = 0; i < points; i++) {
+            this.data[i * 2 + 2] = x + radius * Math.cos(angle);
+            this.data[i * 2 + 3] = y + radius * Math.sin(angle);
             angle += delta;
-            this.data[i] = x + radius * Math.cos(angle);
-            this.data[i + 1] = y + radius * Math.sin(angle);
         }
+        this.data[this.data.length - 2] = this.data[2];
+        this.data[this.data.length - 1] = this.data[3];
 
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.data, this.gl.STATIC_DRAW);
+        this.updateBuffer();
+        return this;
     }
 
-    public render(color: [number, number, number, number]) {
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertBuffer);
-        this.shader.position.enable();
-        this.shader.position.set(2, this.gl.FLOAT, false, 0, 0);
+    public fill(color: Color) {
+        this.prepareRender(color);
+        this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, this.data.length / 2);
+    }
 
-        this.shader.color.setV(color);
-        this.gl.drawArrays(this.gl.LINE_LOOP, 0, this.data.length / 2);
+    public stroke(color: Color) {
+        this.prepareRender(color);
+        this.gl.drawArrays(this.gl.LINE_LOOP, 2, this.data.length / 2 - 2);
     }
 }

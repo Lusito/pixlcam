@@ -24,10 +24,10 @@ export interface CameraBounds {
  * A camera that smoothly follows a point and can optionally be restricted to be contained within bounds.
  */
 export class SmoothCamera extends Camera {
-    // The destination is where the camera wants to be, but might not have been moved to yet.
-    protected destinationX = 0;
+    // The desired is where the camera wants to be, but might not have been moved to yet.
+    protected desiredX = 0;
 
-    protected destinationY = 0;
+    protected desiredY = 0;
 
     protected bounds: CameraBounds | null = null;
 
@@ -35,27 +35,28 @@ export class SmoothCamera extends Camera {
 
     public maxSpeed = 900;
 
-    public slowDistance = 200;
+    public acceleration = 20;
+
+    public slowDistance = 100;
 
     public lockDistance = 1;
 
-    public acceleration = 10;
-
-    public getDestinationX() {
-        return this.destinationX;
+    public getDesiredX() {
+        return this.desiredX;
     }
 
-    public getDestinationY() {
-        return this.destinationY;
+    public getDesiredY() {
+        return this.desiredY;
     }
 
     public update(deltaTime: number) {
-        const moveX = this.destinationX - this.x;
-        const moveY = this.destinationY - this.y;
+        const moveX = this.desiredX - this.x;
+        const moveY = this.desiredY - this.y;
 
         const distance = Math.sqrt(moveX ** 2 + moveY ** 2);
         if (distance === 0) return;
 
+        // fixme: this doesn't work as expected
         if (distance < this.slowDistance) {
             const pct = distance / this.slowDistance;
             this.speed = Math.max(0.1, pct) * this.maxSpeed;
@@ -65,7 +66,7 @@ export class SmoothCamera extends Camera {
             const moveDistance = Math.sqrt(dx ** 2 + dy ** 2);
             if (distance - moveDistance <= this.lockDistance) {
                 this.speed = 0;
-                this.moveTo(this.destinationX, this.destinationY);
+                this.moveTo(this.desiredX, this.desiredY);
             } else {
                 this.moveTo(this.x + dx, this.y + dy);
             }
@@ -78,12 +79,12 @@ export class SmoothCamera extends Camera {
     }
 
     public updateForced() {
-        this.moveTo(this.destinationX, this.destinationY);
+        this.moveTo(this.desiredX, this.desiredY);
     }
 
-    public setDestination(x: number, y: number) {
-        this.destinationX = x;
-        this.destinationY = y;
+    public setDesired(x: number, y: number) {
+        this.desiredX = x;
+        this.desiredY = y;
         this.applyBounds();
     }
 
@@ -95,8 +96,8 @@ export class SmoothCamera extends Camera {
     protected applyBounds() {
         if (this.bounds) {
             const { xMin, xMax, yMin, yMax } = this.bounds;
-            this.destinationX = restrictToBounds(this.destinationX, xMin, xMax, this.viewportWidth / this.zoom);
-            this.destinationY = restrictToBounds(this.destinationY, yMin, yMax, this.viewportHeight / this.zoom);
+            this.desiredX = restrictToBounds(this.desiredX, xMin, xMax, this.viewportWidth / this.zoom);
+            this.desiredY = restrictToBounds(this.desiredY, yMin, yMax, this.viewportHeight / this.zoom);
         }
     }
 

@@ -37,9 +37,9 @@ export class CueFocusCamera extends SmoothCamera {
         return this.projectedY;
     }
 
-    protected setCue(cue: CameraCue | null) {
+    public setCue(cue: CameraCue | null) {
         this.cue = cue;
-        this.calculateDestination();
+        this.calculateDesired();
     }
 
     public setPlayer(x: number, y: number, velX: number, velY: number) {
@@ -58,30 +58,30 @@ export class CueFocusCamera extends SmoothCamera {
             this.projectedX = x + velX;
             this.projectedY = y + velY;
         }
-        this.calculateDestination();
+        this.calculateDesired();
     }
 
-    private calculateDestination() {
+    private calculateDesired() {
         if (!this.cue) {
-            this.setDestination(this.projectedX, this.projectedY);
+            this.setDesired(this.projectedX, this.projectedY);
             return;
         }
         const { x, y, innerRadius, outerRadius } = this.cue;
         const dst = Math.sqrt((x - this.playerX) ** 2 + (y - this.playerY) ** 2);
         if (dst <= innerRadius) {
             // In the inner radius, the camera is fixed on the cue
-            this.setDestination(x, y);
+            this.setDesired(x, y);
         } else if (dst < outerRadius) {
             // In the outer radius, the camera is drawn towards the cue
             const length = outerRadius - innerRadius;
             const pos = dst - innerRadius;
             const pct = 1 - pos / length;
-            this.setDestination(
+            this.setDesired(
                 (x - this.projectedX) * pct + this.projectedX,
                 (y - this.projectedY) * pct + this.projectedY
             );
         } else {
-            this.setDestination(this.projectedX, this.projectedY);
+            this.setDesired(this.projectedX, this.projectedY);
         }
     }
 }

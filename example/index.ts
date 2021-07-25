@@ -1,100 +1,61 @@
 /* eslint-disable */
-import { CueFocusCamera } from "../src";
+import { CameraCue, CueFocusCamera } from "../src";
+import { BOUND_SIZE, colors, PLAYER_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
 import { DebugCircle } from "./debug/DebugCircle";
 import { DebugGrid } from "./debug/DebugGrid";
+import { DebugRect } from "./debug/DebugRect";
 import { createDebugShader, DebugShader } from "./debug/DebugShader";
+import { Player } from "./Player";
+import { Sidebar } from "./Sidebar";
 
-const SCREEN_WIDTH = 640;
-const SCREEN_HEIGHT = 480;
-
-const WORLD_WIDTH = 1920;
-const WORLD_HEIGHT = 1080;
-
-const PLAYER_SPEED = 200;
-const PLAYER_SIZE = 32;
-
-const GRID_COLOR: [number, number, number, number] = [1, 1, 1, 1];
-const DESTINATION_COLOR: [number, number, number, number] = [0, 1, 0, 1];
-const PLAYER_COLOR: [number, number, number, number] = [0, 1, 1, 1];
-const PROJECTED_COLOR: [number, number, number, number] = [0.5, 0.5, 1, 1];
-const CAMERA_COLOR: [number, number, number, number] = [1, 0, 0, 1];
-
-type Keys = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
-
-class Player {
-    public x = WORLD_WIDTH / 2;
-    public y = WORLD_HEIGHT / 2;
-    public velX = 0;
-    public velY = 0;
-
-    private readonly keys = {
-        ArrowUp: false,
-        ArrowDown: false,
-        ArrowLeft: false,
-        ArrowRight: false,
+export class Game {
+    private readonly gl: WebGLRenderingContext;
+    private readonly debugShader: DebugShader;
+    public readonly camera = new CueFocusCamera(150);
+    private readonly player = new Player();
+    private readonly circle: DebugCircle;
+    private readonly grid: DebugGrid;
+    private readonly boundRects: DebugRect[] = [];
+    private readonly cueCircle: DebugCircle;
+    private readonly cueInnerCircle: DebugCircle;
+    private readonly cueOuterCircle: DebugCircle;
+    private readonly cue: CameraCue = {
+        x: WORLD_WIDTH / 2 + 250,
+        y: WORLD_HEIGHT / 2 - 250,
+        innerRadius: 150,
+        outerRadius: 400,
     };
-
-    public constructor() {
-        window.addEventListener("keyup", (e) => this.onKeyUp(e));
-        window.addEventListener("keydown", (e) => this.onKeyDown(e));
-    }
-
-    public onKeyDown(e: KeyboardEvent) {
-        if (e.code in this.keys) this.keys[e.code as Keys] = true;
-    }
-
-    public onKeyUp(e: KeyboardEvent) {
-        if (e.code in this.keys) this.keys[e.code as Keys] = false;
-    }
-
-    public update(deltaTime: number) {
-        let moveX = 0;
-        let moveY = 0;
-        if (this.keys.ArrowRight) moveX += 1;
-        if (this.keys.ArrowLeft) moveX -= 1;
-        if (this.keys.ArrowUp) moveY -= 1;
-        if (this.keys.ArrowDown) moveY += 1;
-
-        if (moveX || moveY) {
-            const f = PLAYER_SPEED / Math.sqrt(moveX ** 2 + moveY ** 2);
-            this.velX = moveX * f;
-            this.velY = moveY * f;
-        } else {
-            this.velX = 0;
-            this.velY = 0;
-        }
-
-        this.x = Math.max(PLAYER_SIZE, Math.min(WORLD_WIDTH - PLAYER_SIZE, this.x + this.velX * deltaTime));
-        this.y = Math.max(PLAYER_SIZE, Math.min(WORLD_HEIGHT - PLAYER_SIZE, this.y + this.velY * deltaTime));
-    }
-}
-
-class Game {
-    private gl: WebGLRenderingContext;
-    private debugShader: DebugShader;
-    private camera = new CueFocusCamera(150);
-    private playerCircle: DebugCircle;
-    private player = new Player();
-    private projectedCircle: DebugCircle;
-    private destinationCircle: DebugCircle;
-    private cameraCircle: DebugCircle;
-    private grid: DebugGrid;
-    // Todo: DebugGrid to be able to show movement
-    // Todo: DebugCrosshair for the camera
+    private readonly sidebar: Sidebar;
 
     public constructor() {
         const canvas = document.getElementById("canvas") as HTMLCanvasElement;
         this.gl = canvas.getContext("webgl") as WebGLRenderingContext;
         this.gl.blendFuncSeparate(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA, this.gl.ONE, this.gl.ONE);
         this.gl.enable(this.gl.BLEND);
+        this.camera.setCue(this.cue);
 
         this.debugShader = createDebugShader(this.gl);
-        this.playerCircle = new DebugCircle(this.gl, this.debugShader, 20);
-        this.projectedCircle = new DebugCircle(this.gl, this.debugShader, 20);
-        this.destinationCircle = new DebugCircle(this.gl, this.debugShader, 20);
-        this.cameraCircle = new DebugCircle(this.gl, this.debugShader, 20);
-        this.grid = new DebugGrid(this.gl, this.debugShader, 100);
-        this.grid.set(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+        this.circle = new DebugCircle(this.gl, this.debugShader, 20);
+        this.grid = new DebugGrid(this.gl, this.debugShader, 100).set(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+        this.boundRects.push(new DebugRect(this.gl, this.debugShader).set(0, 0, BOUND_SIZE, WORLD_HEIGHT));
+        this.boundRects.push(new DebugRect(this.gl, this.debugShader).set(0, 0, WORLD_WIDTH, BOUND_SIZE));
+        this.boundRects.push(
+            new DebugRect(this.gl, this.debugShader).set(WORLD_WIDTH - BOUND_SIZE, 0, BOUND_SIZE, WORLD_HEIGHT)
+        );
+        this.boundRects.push(
+            new DebugRect(this.gl, this.debugShader).set(0, WORLD_HEIGHT - BOUND_SIZE, WORLD_WIDTH, BOUND_SIZE)
+        );
+        this.cueCircle = new DebugCircle(this.gl, this.debugShader, 20).set(this.cue.x, this.cue.y, 8);
+        this.cueInnerCircle = new DebugCircle(this.gl, this.debugShader, 20).set(
+            this.cue.x,
+            this.cue.y,
+            this.cue.innerRadius
+        );
+        this.cueOuterCircle = new DebugCircle(this.gl, this.debugShader, 20).set(
+            this.cue.x,
+            this.cue.y,
+            this.cue.outerRadius
+        );
 
         canvas.width = SCREEN_WIDTH;
         canvas.height = SCREEN_HEIGHT;
@@ -109,6 +70,8 @@ class Game {
         const { x, y, velX, velY } = this.player;
         this.camera.setPlayer(x, y, velX, velY);
         this.camera.updateForced();
+
+        this.sidebar = new Sidebar(this);
     }
 
     public update(deltaTime: number) {
@@ -123,15 +86,37 @@ class Game {
         this.debugShader.use();
         this.debugShader.uMVMatrix.set(false, this.camera.modelView);
         this.debugShader.uPMatrix.set(false, this.camera.projection);
-        this.grid.render(GRID_COLOR);
-        this.playerCircle.set(x, y, PLAYER_SIZE);
-        this.playerCircle.render(PLAYER_COLOR);
-        this.projectedCircle.set(this.camera.getProjectedX(), this.camera.getProjectedY(), 30);
-        this.projectedCircle.render(PROJECTED_COLOR);
-        this.destinationCircle.set(this.camera.getDestinationX(), this.camera.getDestinationY(), 8);
-        this.destinationCircle.render(DESTINATION_COLOR);
-        this.cameraCircle.set(this.camera.getX(), this.camera.getY(), 5);
-        this.cameraCircle.render(CAMERA_COLOR);
+        this.grid.stroke(colors.GRID);
+
+        // fixme: dedicated colors
+        this.cueCircle.fill(colors.CAMERA);
+        this.cueInnerCircle.stroke(colors.CAMERA_DESIRED);
+        this.cueOuterCircle.stroke(colors.PLAYER_PROJECTED);
+
+        if (this.sidebar.playerCurrent.checked) {
+            this.circle.set(x, y, PLAYER_SIZE);
+            this.circle.fill(colors.PLAYER);
+        }
+
+        if (this.sidebar.cameraDesired.checked) {
+            this.circle.set(this.camera.getDesiredX(), this.camera.getDesiredY(), 8);
+            this.circle.stroke(colors.CAMERA_DESIRED);
+        }
+        if (this.sidebar.cameraSlowDistance.checked) {
+            this.circle.set(this.camera.getDesiredX(), this.camera.getDesiredY(), this.camera.slowDistance);
+            this.circle.stroke(colors.SLOW_DISTANCE);
+        }
+        if (this.sidebar.playerProjectect.checked) {
+            this.circle.set(this.camera.getProjectedX(), this.camera.getProjectedY(), PLAYER_SIZE);
+            this.circle.stroke(colors.PLAYER_PROJECTED);
+        }
+        if (this.sidebar.cameraCurrent.checked) {
+            this.circle.set(this.camera.getX(), this.camera.getY(), 5);
+            this.circle.fill(colors.CAMERA);
+        }
+        for (const rect of this.boundRects) {
+            rect.fill(colors.BOUND);
+        }
     }
 }
 

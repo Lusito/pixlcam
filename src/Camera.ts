@@ -9,7 +9,7 @@ export type Matrix4 = [
 
 const createMatrix4 = (): Matrix4 => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-function pixelAlign(value: number, viewportSize: number) {
+function snapToPixel(value: number, viewportSize: number) {
     if (viewportSize % 2 === 0) return Math.round(value);
     return Math.round(value + 0.5) - 0.5;
 }
@@ -19,13 +19,13 @@ export class Camera {
 
     protected y = 0;
 
-    public pixelAlignment = true;
+    public snapToPixel = true;
 
     public readonly projection = createMatrix4();
 
     public readonly modelView = createMatrix4();
 
-    protected zoom = 1;
+    public zoom = 1;
 
     protected viewportWidth = 0;
 
@@ -53,9 +53,9 @@ export class Camera {
         this.x = x;
         this.y = y;
 
-        if (this.pixelAlignment) {
-            this.modelView[12] = -pixelAlign(this.x, this.viewportWidth);
-            this.modelView[13] = pixelAlign(this.y, this.viewportHeight);
+        if (this.snapToPixel) {
+            this.modelView[12] = -snapToPixel(this.x, this.viewportWidth);
+            this.modelView[13] = snapToPixel(this.y, this.viewportHeight);
         } else {
             this.modelView[12] = -this.x;
             this.modelView[13] = this.y;
