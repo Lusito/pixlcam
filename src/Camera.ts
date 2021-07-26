@@ -9,9 +9,10 @@ export type Matrix4 = [
 
 const createMatrix4 = (): Matrix4 => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-function snapToPixel(value: number, viewportSize: number) {
-    if (viewportSize % 2 === 0) return Math.round(value);
-    return Math.round(value + 0.5) - 0.5;
+function snapToPixel(value: number, viewportSize: number, zoom: number) {
+    const zoomed = value * zoom;
+    const val = viewportSize % 2 === 0 ? Math.round(zoomed) : Math.round(zoomed + 0.5) - 0.5;
+    return val / zoom;
 }
 
 export class Camera {
@@ -63,9 +64,8 @@ export class Camera {
         this.y = y;
 
         if (this.snapToPixel) {
-            // fixme: adjust for zoom. What if zoom is not a power of 2
-            this.modelView[12] = -snapToPixel(this.x, this.viewportWidth);
-            this.modelView[13] = snapToPixel(this.y, this.viewportHeight);
+            this.modelView[12] = -snapToPixel(this.x, this.viewportWidth, this.zoom);
+            this.modelView[13] = snapToPixel(this.y, this.viewportHeight, this.zoom);
         } else {
             this.modelView[12] = -this.x;
             this.modelView[13] = this.y;
