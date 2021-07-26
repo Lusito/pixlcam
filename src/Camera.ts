@@ -65,7 +65,7 @@ export class Camera {
     public resize(width: number, height: number) {
         this.viewportWidth = width;
         this.viewportHeight = height;
-        this.projection[0] = 2 * this.zoom / width;
-        this.projection[5] = 2 * this.zoom / height;
+        this.projection[0] = (2 * this.zoom) / width;
+        this.projection[5] = (2 * this.zoom) / height;
     }
 }

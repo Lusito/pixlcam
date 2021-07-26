@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { colors } from "./constants";
-import { Color } from "./debug/types";
+import { Color } from "./draw/types";
 import type { Game } from "./Game";
 
 const legend = document.getElementById("legend")!;

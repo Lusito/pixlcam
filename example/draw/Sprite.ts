@@ -1,6 +1,5 @@
+import { DEG_TO_RAD } from "../constants";
 import { DefaultShader } from "../shaders/DefaultShader";
-
-export const DEG_TO_RAD = Math.PI / 180;
 
 export class Sprite {
     protected readonly gl: WebGLRenderingContext;
