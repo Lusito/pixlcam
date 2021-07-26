@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { DebugBase } from "./DebugBase";
-import { DebugShader } from "./DebugShader";
+import { DebugShader } from "../shaders/DebugShader";
 import { Color } from "./types";
 
 export class DebugCircle extends DebugBase {

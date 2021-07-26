@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { DebugBase } from "./DebugBase";
-import { DebugShader } from "./DebugShader";
+import { DebugShader } from "../shaders/DebugShader";
 import { Color } from "./types";
 
 export class DebugRect extends DebugBase {
@@ -30,11 +30,11 @@ export class DebugRect extends DebugBase {
 
     public fill(color: Color) {
         this.prepareRender(color);
-        this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, this.data.length / 2);
+        this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
     }
 
     public stroke(color: Color) {
         this.prepareRender(color);
-        this.gl.drawArrays(this.gl.LINE_LOOP, 0, this.data.length / 2);
+        this.gl.drawArrays(this.gl.LINE_LOOP, 0, 4);
     }
 }

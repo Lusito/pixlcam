@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { DebugShader } from "./DebugShader";
+import { DebugShader } from "../shaders/DebugShader";
 import { Color } from "./types";
 
 export class DebugBase {
@@ -24,7 +24,7 @@ export class DebugBase {
 
     protected updateBuffer() {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.data, this.gl.STATIC_DRAW);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.data, this.gl.STATIC_DRAW); // fixme: does static draw make sense?
     }
 
     protected prepareRender(color: Color) {

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { createShaderProgram, glsl } from "typed-glsl";
 
 const vertexShaderSource = glsl`

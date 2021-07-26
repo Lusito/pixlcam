@@ -4,8 +4,8 @@ import { Color } from "./debug/types";
 export const SCREEN_WIDTH = 640;
 export const SCREEN_HEIGHT = 480;
 
-export const WORLD_WIDTH = 3000;
-export const WORLD_HEIGHT = 2000;
+export const WORLD_WIDTH = 6500 / 2;
+export const WORLD_HEIGHT = Math.round(2889 / 2);
 
 export const PLAYER_SPEED = 400;
 export const PLAYER_SIZE = 32;

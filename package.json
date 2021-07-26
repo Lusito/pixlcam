@@ -62,6 +62,8 @@
     "vuepress-plugin-typedoc": "^0.8.0"
   },
   "staticFiles": {
-    "staticPath": []
+    "staticPath": [
+      "example/assets"
+    ]
   }
 }

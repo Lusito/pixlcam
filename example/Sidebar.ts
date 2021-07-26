@@ -1,7 +1,7 @@
 /* eslint-disable */
-import { colors, PLAYER_SIZE } from "./constants";
+import { colors } from "./constants";
 import { Color } from "./debug/types";
-import type { Game } from ".";
+import type { Game } from "./Game";
 
 const legend = document.getElementById("legend")!;
 
@@ -19,7 +19,6 @@ export class Sidebar {
     public readonly cameraCurrent: HTMLInputElement;
     public readonly cameraDesired: HTMLInputElement;
     public readonly cameraSlowDistance: HTMLInputElement;
-    public readonly playerCurrent: HTMLInputElement;
     public readonly playerProjectect: HTMLInputElement;
 
     public constructor(game: Game) {
@@ -31,7 +30,6 @@ export class Sidebar {
         this.cameraCurrent = this.addToLegend("Camera Current", colors.CAMERA);
         this.cameraDesired = this.addToLegend("Camera Desired", colors.CAMERA_DESIRED);
         this.cameraSlowDistance = this.addToLegend("Camera Slow Distance", colors.SLOW_DISTANCE);
-        this.playerCurrent = this.addToLegend("Player Current", colors.PLAYER, true);
         this.playerProjectect = this.addToLegend("Player Projected", colors.PLAYER_PROJECTED);
     }
 
