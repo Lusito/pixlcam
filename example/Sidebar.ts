@@ -38,7 +38,7 @@ export class Sidebar {
     private setupUI() {
         const { camera } = this.game;
         this.snapToPixel.checked = camera.snapToPixel;
-        this.zoom.value = camera.zoom.toFixed(2);
+        this.zoom.value = camera.getZoom().toFixed(2);
         this.maxSpeed.value = camera.maxSpeed.toFixed(2);
         this.acceleration.value = camera.acceleration.toFixed(2);
         this.slowDistance.value = camera.slowDistance.toFixed(2);

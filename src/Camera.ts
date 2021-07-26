@@ -25,7 +25,7 @@ export class Camera {
 
     public readonly modelView = createMatrix4();
 
-    public zoom = 1;
+    protected zoom = 1;
 
     protected viewportWidth = 0;
 
@@ -49,6 +49,15 @@ export class Camera {
         return this.y;
     }
 
+    public getZoom() {
+        return this.zoom;
+    }
+
+    public setZoom(zoom: number) {
+        this.zoom = zoom;
+        this.updateProjection();
+    }
+
     public moveTo(x: number, y: number) {
         this.x = x;
         this.y = y;
@@ -66,7 +75,11 @@ export class Camera {
     public resize(width: number, height: number) {
         this.viewportWidth = width;
         this.viewportHeight = height;
-        this.projection[0] = (2 * this.zoom) / width;
-        this.projection[5] = (2 * this.zoom) / height;
+        this.updateProjection();
+    }
+
+    protected updateProjection() {
+        this.projection[0] = (2 * this.zoom) / this.viewportWidth;
+        this.projection[5] = (2 * this.zoom) / this.viewportHeight;
     }
 }

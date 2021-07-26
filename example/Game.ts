@@ -82,7 +82,6 @@ export class Game {
         canvas.width = SCREEN_WIDTH;
         canvas.height = SCREEN_HEIGHT;
         gl.viewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        this.camera.zoom = 0.5; // fixme: setZoom, since resize depends on it
         this.camera.acceleration = 40;
         this.camera.slowDistance = 200;
         this.camera.resize(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -92,6 +91,7 @@ export class Game {
             xMax: WORLD_WIDTH,
             yMax: WORLD_HEIGHT,
         });
+        this.camera.setZoom(0.5);
         const { x, y, velX, velY } = this.player;
         this.camera.setPlayer(x, y, velX, velY);
         this.camera.updateForced();
