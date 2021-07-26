@@ -20,7 +20,7 @@ export class CueFocusCamera extends SmoothCamera {
 
     protected playerY = 0;
 
-    protected cue: CameraCue | null = null;
+    protected readonly cues: CameraCue[] = [];
 
     public maxProjectionDistance: number;
 
@@ -37,9 +37,14 @@ export class CueFocusCamera extends SmoothCamera {
         return this.projectedY;
     }
 
-    public setCue(cue: CameraCue | null) {
-        this.cue = cue;
+    public addCue(cue: CameraCue) {
+        this.cues.push(cue);
         this.calculateDesired();
+    }
+
+    public removeCue(cue: CameraCue) {
+        const index = this.cues.indexOf(cue);
+        if (index >= 0) this.cues.splice(index, 1);
     }
 
     public setPlayer(x: number, y: number, velX: number, velY: number) {
@@ -61,12 +66,29 @@ export class CueFocusCamera extends SmoothCamera {
         this.calculateDesired();
     }
 
+    private getClosestCue() {
+        if (!this.cues.length) return null;
+
+        let closestCue: CameraCue | null = null;
+        let closestCueDistance = Number.POSITIVE_INFINITY;
+        for (const cue of this.cues) {
+            const { x, y } = cue;
+            const dst = Math.sqrt((x - this.playerX) ** 2 + (y - this.playerY) ** 2);
+            if (dst < closestCueDistance) {
+                closestCue = cue;
+                closestCueDistance = dst;
+            }
+        }
+        return closestCue;
+    }
+
     private calculateDesired() {
-        if (!this.cue) {
+        const cue = this.getClosestCue();
+        if (!cue) {
             this.setDesired(this.projectedX, this.projectedY);
             return;
         }
-        const { x, y, innerRadius, outerRadius } = this.cue;
+        const { x, y, innerRadius, outerRadius } = cue;
         const dst = Math.sqrt((x - this.playerX) ** 2 + (y - this.playerY) ** 2);
         if (dst <= innerRadius) {
             // In the inner radius, the camera is fixed on the cue
