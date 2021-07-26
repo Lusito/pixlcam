@@ -24,7 +24,7 @@ export class DebugBase {
 
     protected updateBuffer() {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.data, this.gl.STATIC_DRAW); // fixme: does static draw make sense?
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.data, this.gl.DYNAMIC_DRAW);
     }
 
     protected prepareRender(color: Color) {
