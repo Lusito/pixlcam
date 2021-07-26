@@ -19,18 +19,20 @@ export class Sidebar {
     public readonly cameraCurrent: HTMLInputElement;
     public readonly cameraDesired: HTMLInputElement;
     public readonly cameraSlowDistance: HTMLInputElement;
-    public readonly playerProjectect: HTMLInputElement;
+    public readonly playerProjected: HTMLInputElement;
+    public readonly cueInner: HTMLInputElement;
+    public readonly cueOuter: HTMLInputElement;
 
     public constructor(game: Game) {
         this.game = game;
         this.setupUI();
 
-        // fixme: add checkboxes and connect them to visibility of the circles
-        // fixme: cue colors
-        this.cameraCurrent = this.addToLegend("Camera Current", colors.CAMERA);
-        this.cameraDesired = this.addToLegend("Camera Desired", colors.CAMERA_DESIRED);
-        this.cameraSlowDistance = this.addToLegend("Camera Slow Distance", colors.SLOW_DISTANCE);
-        this.playerProjectect = this.addToLegend("Player Projected", colors.PLAYER_PROJECTED);
+        this.cameraCurrent = this.addToLegend("＋ Camera Current", colors.CAMERA);
+        this.cameraDesired = this.addToLegend("⨉ Camera Desired", colors.CAMERA_DESIRED);
+        this.cameraSlowDistance = this.addToLegend("◯ Camera Slow Distance", colors.SLOW_DISTANCE);
+        this.playerProjected = this.addToLegend("☐ Player Projected", colors.PLAYER_PROJECTED);
+        this.cueInner = this.addToLegend("◯ Cue Inner Radius", colors.CUE_INNER);
+        this.cueOuter = this.addToLegend("◯ Cue Outer Radius", colors.CUE_OUTER);
     }
 
     private setupUI() {

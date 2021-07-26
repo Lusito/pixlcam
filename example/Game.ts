@@ -120,11 +120,12 @@ export class Game {
         this.debugShader.uMVMatrix.set(false, this.camera.modelView);
         this.debugShader.uPMatrix.set(false, this.camera.projection);
 
-        // fixme: dedicated colors
-        this.cueInnerCircle.stroke(colors.CAMERA_DESIRED);
-        this.cueOuterCircle.stroke(colors.PLAYER_PROJECTED);
-
-        this.debugShader.use();
+        if (this.sidebar.cueInner.checked) {
+            this.cueInnerCircle.stroke(colors.CUE_INNER);
+        }
+        if (this.sidebar.cueOuter.checked) {
+            this.cueOuterCircle.stroke(colors.CUE_OUTER);
+        }
         if (this.sidebar.cameraDesired.checked) {
             this.crosshair.set(this.camera.getDesiredX(), this.camera.getDesiredY(), 16, 45);
             this.crosshair.stroke(colors.CAMERA_DESIRED);
@@ -133,7 +134,7 @@ export class Game {
             this.circle.set(this.camera.getDesiredX(), this.camera.getDesiredY(), this.camera.slowDistance);
             this.circle.stroke(colors.SLOW_DISTANCE);
         }
-        if (this.sidebar.playerProjectect.checked) {
+        if (this.sidebar.playerProjected.checked) {
             this.rect.set(
                 this.camera.getProjectedX() - PLAYER_SIZE,
                 this.camera.getProjectedY() - PLAYER_SIZE,

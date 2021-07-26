@@ -14,14 +14,20 @@ export const PLAYER_SIZE = 64;
 export const BOUND_SIZE = 32;
 export const BOUND_DISTANCE = BOUND_SIZE + PLAYER_SIZE;
 
-function createColor(r: number, g: number, b: number): Color {
+function createColor(hex: string): Color {
+    const r = parseInt(hex.substr(0, 2), 16) / 255;
+    const g = parseInt(hex.substr(2, 2), 16) / 255;
+    const b = parseInt(hex.substr(4, 2), 16) / 255;
     return [r, g, b, 1];
 }
 
 export const colors = {
-    BOUND: createColor(0.03, 0.4, 0.24),
-    CAMERA_DESIRED: createColor(0, 1, 0),
-    SLOW_DISTANCE: createColor(0.5, 1, 0.8),
-    PLAYER_PROJECTED: createColor(0.95, 0.69, 0.77),
-    CAMERA: createColor(1, 0, 0),
+    BOUND: createColor("4444dd"),
+    CAMERA: createColor("bb2222"),
+    CAMERA_DESIRED: createColor("009900"),
+    SLOW_DISTANCE: createColor("44dddd"),
+    PLAYER_PROJECTED: createColor("ffffff"),
+
+    CUE_INNER: createColor("ff66ff"),
+    CUE_OUTER: createColor("bbbb22"),
 };

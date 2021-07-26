@@ -54,6 +54,7 @@ export class Camera {
         this.y = y;
 
         if (this.snapToPixel) {
+            // fixme: adjust for zoom. What if zoom is not a power of 2
             this.modelView[12] = -snapToPixel(this.x, this.viewportWidth);
             this.modelView[13] = snapToPixel(this.y, this.viewportHeight);
         } else {

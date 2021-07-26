@@ -56,7 +56,7 @@ export class SmoothCamera extends Camera {
         const distance = Math.sqrt(moveX ** 2 + moveY ** 2);
         if (distance === 0) return;
 
-        // fixme: this doesn't work as expected
+        // fixme: this doesn't work as expected, but still feels good
         if (distance < this.slowDistance) {
             const pct = distance / this.slowDistance;
             this.speed = Math.max(0.1, pct) * this.maxSpeed;
