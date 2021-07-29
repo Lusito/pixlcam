@@ -27,6 +27,13 @@ export class Sidebar {
         this.game = game;
         this.setupUI();
 
+        const sidebar = document.getElementById("sidebar");
+        if (sidebar) {
+            sidebar.addEventListener("keydown", (e) => e.stopImmediatePropagation());
+            sidebar.addEventListener("keyup", (e) => e.stopImmediatePropagation());
+            sidebar.addEventListener("keypress", (e) => e.stopImmediatePropagation());
+        }
+
         this.cameraCurrent = this.addToLegend("＋ Camera Current", colors.CAMERA);
         this.cameraDesired = this.addToLegend("⨉ Camera Desired", colors.CAMERA_DESIRED);
         this.cameraSlowDistance = this.addToLegend("◯ Camera Slow Distance", colors.SLOW_DISTANCE);
@@ -44,6 +51,29 @@ export class Sidebar {
         this.slowDistance.value = camera.slowDistance.toFixed(2);
         this.lockDistance.value = camera.lockDistance.toFixed(2);
         this.maxProjectionDistance.value = camera.maxProjectionDistance.toFixed(2);
+
+        this.snapToPixel.addEventListener("change", () => {
+            this.game.camera.snapToPixel = this.snapToPixel.checked;
+        });
+        this.zoom.addEventListener("change", () => {
+            // fixme: zoom should not be input, but rather +/- buttons to avoid zoom=0
+            this.game.camera.setZoom(parseFloat(this.zoom.value));
+        });
+        this.maxSpeed.addEventListener("change", () => {
+            this.game.camera.maxSpeed = parseFloat(this.maxSpeed.value);
+        });
+        this.acceleration.addEventListener("change", () => {
+            this.game.camera.acceleration = parseFloat(this.acceleration.value);
+        });
+        this.slowDistance.addEventListener("change", () => {
+            this.game.camera.slowDistance = parseFloat(this.slowDistance.value);
+        });
+        this.lockDistance.addEventListener("change", () => {
+            this.game.camera.lockDistance = parseFloat(this.lockDistance.value);
+        });
+        this.maxProjectionDistance.addEventListener("change", () => {
+            this.game.camera.maxProjectionDistance = parseFloat(this.maxProjectionDistance.value);
+        });
     }
 
     private addToLegend(label: string, color: Color, disabled?: boolean) {
