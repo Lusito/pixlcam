@@ -20,6 +20,20 @@ export class Player {
     public constructor() {
         window.addEventListener("keyup", (e) => this.onKeyUp(e));
         window.addEventListener("keydown", (e) => this.onKeyDown(e));
+        window.addEventListener("keypress", (e) => {
+            if (e.code === "KeyT") {
+                for (let i = 0; i < 10; i++) {
+                    const x = BOUND_DISTANCE + Math.random() * (WORLD_WIDTH - BOUND_DISTANCE * 2);
+                    const y = BOUND_DISTANCE + Math.random() * (WORLD_HEIGHT - BOUND_DISTANCE * 2);
+                    if (Math.sqrt((x - this.x) ** 2 + (y - this.y) ** 2) > 500) {
+                        this.x = x;
+                        this.y = y;
+                        return;
+                    }
+                }
+                console.log("Could not find a new spot far away enough");
+            }
+        });
     }
 
     public onKeyDown(e: KeyboardEvent) {
