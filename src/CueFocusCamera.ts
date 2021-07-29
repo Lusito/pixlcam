@@ -39,7 +39,7 @@ export class CueFocusCamera extends SmoothCamera {
 
     public override setZoom(zoom: number) {
         this.savedZoom = zoom;
-        this.updateProjection();
+        super.setZoom(zoom);
     }
 
     public getProjectedX() {
