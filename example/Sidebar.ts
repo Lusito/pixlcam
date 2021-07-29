@@ -52,27 +52,32 @@ export class Sidebar {
         this.lockDistance.value = camera.lockDistance.toFixed(2);
         this.maxProjectionDistance.value = camera.maxProjectionDistance.toFixed(2);
 
-        this.snapToPixel.addEventListener("change", () => {
+        this.snapToPixel.addEventListener("input", () => {
             this.game.camera.snapToPixel = this.snapToPixel.checked;
         });
-        this.zoom.addEventListener("change", () => {
-            // fixme: zoom should not be input, but rather +/- buttons to avoid zoom=0
-            this.game.camera.setZoom(parseFloat(this.zoom.value));
+        this.zoom.addEventListener("input", () => {
+            const value = parseFloat(this.zoom.value);
+            if (value > 0) this.game.camera.setZoom(value);
         });
-        this.maxSpeed.addEventListener("change", () => {
-            this.game.camera.maxSpeed = parseFloat(this.maxSpeed.value);
+        this.maxSpeed.addEventListener("input", () => {
+            const value = parseFloat(this.maxSpeed.value);
+            if (value > 0) this.game.camera.maxSpeed = value;
         });
-        this.acceleration.addEventListener("change", () => {
-            this.game.camera.acceleration = parseFloat(this.acceleration.value);
+        this.acceleration.addEventListener("input", () => {
+            const value = parseFloat(this.acceleration.value);
+            if (value > 0) this.game.camera.acceleration = value;
         });
-        this.slowDistance.addEventListener("change", () => {
-            this.game.camera.slowDistance = parseFloat(this.slowDistance.value);
+        this.slowDistance.addEventListener("input", () => {
+            const value = parseFloat(this.slowDistance.value);
+            if (value >= 0) this.game.camera.slowDistance = value;
         });
-        this.lockDistance.addEventListener("change", () => {
-            this.game.camera.lockDistance = parseFloat(this.lockDistance.value);
+        this.lockDistance.addEventListener("input", () => {
+            const value = parseFloat(this.lockDistance.value);
+            if (value >= 0) this.game.camera.lockDistance = value;
         });
-        this.maxProjectionDistance.addEventListener("change", () => {
-            this.game.camera.maxProjectionDistance = parseFloat(this.maxProjectionDistance.value);
+        this.maxProjectionDistance.addEventListener("input", () => {
+            const value = parseFloat(this.maxProjectionDistance.value);
+            if (value >= 0) this.game.camera.maxProjectionDistance = value;
         });
     }
 
