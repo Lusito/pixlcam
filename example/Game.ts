@@ -134,5 +134,6 @@ export class Game {
         for (const rect of this.boundRects) {
             rect.fill(colors.BOUND);
         }
+        this.sidebar.speed.value = this.camera.getSpeed().toFixed(0.3);
     }
 }

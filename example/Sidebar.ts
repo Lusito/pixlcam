@@ -22,6 +22,7 @@ export class Sidebar {
     public readonly playerProjected: HTMLInputElement;
     public readonly cueInner: HTMLInputElement;
     public readonly cueOuter: HTMLInputElement;
+    public readonly speed = document.getElementById("speed") as HTMLInputElement;
 
     public constructor(game: Game) {
         this.game = game;

@@ -54,3 +54,7 @@ h4 {
     display: block;
     padding: 5px 0;
 }
+#speed {
+    background: white;
+    text-align: right;
+}

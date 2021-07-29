@@ -49,6 +49,10 @@ export class SmoothCamera extends Camera {
         return this.desiredY;
     }
 
+    public getSpeed() {
+        return this.speed;
+    }
+
     public update(deltaTime: number) {
         const moveX = this.desiredX - this.x;
         const moveY = this.desiredY - this.y;
