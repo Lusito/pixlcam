@@ -54,8 +54,8 @@ export class Game {
             new DebugRect(gl, this.debugShader).set(0, WORLD_HEIGHT - BOUND_SIZE, WORLD_WIDTH, BOUND_SIZE)
         );
 
-        this.cue1 = new GameCue(this, burstTexture, WORLD_WIDTH / 2 + 500, WORLD_HEIGHT / 2 - 500, 300, 800);
-        this.cue2 = new GameCue(this, burstTexture, WORLD_WIDTH / 3, WORLD_HEIGHT - 450, 200, 600);
+        this.cue1 = new GameCue(this, burstTexture, WORLD_WIDTH / 2 + 500, WORLD_HEIGHT / 2 - 500, 300, 800, 0.65);
+        this.cue2 = new GameCue(this, burstTexture, WORLD_WIDTH / 3, WORLD_HEIGHT - 450, 200, 600, 1.6);
         this.camera.addCue(this.cue1);
         this.camera.addCue(this.cue2);
 
@@ -134,6 +134,7 @@ export class Game {
         for (const rect of this.boundRects) {
             rect.fill(colors.BOUND);
         }
-        this.sidebar.speed.value = this.camera.getSpeed().toFixed(0.3);
+        this.sidebar.speed.value = this.camera.getSpeed().toFixed(0);
+        this.sidebar.currentZoom.value = this.camera.getZoom().toFixed(3);
     }
 }

@@ -6,11 +6,13 @@ export interface CameraCue {
     y: number;
     innerRadius: number;
     outerRadius: number;
+    zoom: number;
 }
 
 /**
  * A camera moving ahead of the player but gets attracted to a point of interest
  */
+// fixme: don't use smoothcamera, as it moves independent of the player and can be slower than the player.
 export class CueFocusCamera extends SmoothCamera {
     protected projectedX = 0;
 
@@ -20,6 +22,10 @@ export class CueFocusCamera extends SmoothCamera {
 
     protected playerY = 0;
 
+    protected savedZoom: number;
+
+    protected destinationZoom: number;
+
     protected readonly cues: CameraCue[] = [];
 
     public maxProjectionDistance: number;
@@ -27,6 +33,13 @@ export class CueFocusCamera extends SmoothCamera {
     public constructor(maxProjectionDistance: number) {
         super();
         this.maxProjectionDistance = maxProjectionDistance;
+        this.savedZoom = this.zoom;
+        this.destinationZoom = this.zoom;
+    }
+
+    public override setZoom(zoom: number) {
+        this.savedZoom = zoom;
+        this.updateProjection();
     }
 
     public getProjectedX() {
@@ -84,26 +97,45 @@ export class CueFocusCamera extends SmoothCamera {
 
     private calculateDesired() {
         const cue = this.getClosestCue();
-        if (!cue) {
-            this.setDesired(this.projectedX, this.projectedY);
-            return;
+        if (cue) {
+            const { x, y, innerRadius, outerRadius, zoom } = cue;
+            const dst = Math.sqrt((x - this.playerX) ** 2 + (y - this.playerY) ** 2);
+            if (dst <= innerRadius) {
+                // In the inner radius, the camera is fixed on the cue
+                this.setDesired(x, y);
+                this.destinationZoom = this.savedZoom * zoom;
+                return;
+            }
+            if (dst < outerRadius) {
+                // In the outer radius, the camera is drawn towards the cue
+                const length = outerRadius - innerRadius;
+                const pos = dst - innerRadius;
+                const pct = 1 - pos / length;
+                this.setDesired(
+                    (x - this.projectedX) * pct + this.projectedX,
+                    (y - this.projectedY) * pct + this.projectedY
+                );
+                const maxZoom = this.savedZoom * zoom;
+                this.destinationZoom = this.savedZoom + (maxZoom - this.savedZoom) * pct;
+                return;
+            }
         }
-        const { x, y, innerRadius, outerRadius } = cue;
-        const dst = Math.sqrt((x - this.playerX) ** 2 + (y - this.playerY) ** 2);
-        if (dst <= innerRadius) {
-            // In the inner radius, the camera is fixed on the cue
-            this.setDesired(x, y);
-        } else if (dst < outerRadius) {
-            // In the outer radius, the camera is drawn towards the cue
-            const length = outerRadius - innerRadius;
-            const pos = dst - innerRadius;
-            const pct = 1 - pos / length;
-            this.setDesired(
-                (x - this.projectedX) * pct + this.projectedX,
-                (y - this.projectedY) * pct + this.projectedY
-            );
+        this.destinationZoom = this.savedZoom;
+        this.setDesired(this.projectedX, this.projectedY);
+    }
+
+    public override update(deltaTime: number) {
+        super.update(deltaTime);
+
+        const distance = this.destinationZoom - this.zoom;
+        if (distance === 0) return;
+
+        if (distance < 0.1) {
+            this.zoom = this.destinationZoom;
         } else {
-            this.setDesired(this.projectedX, this.projectedY);
+            // fixme: don't lerp, but rather ease in/out, since we know the start/end
+            this.zoom += deltaTime * distance * 0.1;
         }
+        this.updateProjection();
     }
 }

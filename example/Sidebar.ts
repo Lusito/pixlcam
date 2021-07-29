@@ -23,6 +23,7 @@ export class Sidebar {
     public readonly cueInner: HTMLInputElement;
     public readonly cueOuter: HTMLInputElement;
     public readonly speed = document.getElementById("speed") as HTMLInputElement;
+    public readonly currentZoom = document.getElementById("currentZoom") as HTMLInputElement;
 
     public constructor(game: Game) {
         this.game = game;

@@ -54,7 +54,8 @@ h4 {
     display: block;
     padding: 5px 0;
 }
-#speed {
+#speed,
+#currentZoom {
     background: white;
     text-align: right;
 }

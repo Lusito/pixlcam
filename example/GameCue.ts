@@ -11,6 +11,7 @@ export class GameCue implements CameraCue {
     public y: number;
     public innerRadius: number;
     public outerRadius: number;
+    public zoom: number;
     private readonly innerCircle: DebugCircle;
     private readonly outerCircle: DebugCircle;
     private readonly burstSprite: Sprite;
@@ -21,13 +22,15 @@ export class GameCue implements CameraCue {
         x: number,
         y: number,
         innerRadius: number,
-        outerRadius: number
+        outerRadius: number,
+        zoom: number,
     ) {
         const { gl, debugShader, defaultShader } = game;
         this.x = x;
         this.y = y;
         this.innerRadius = innerRadius;
         this.outerRadius = outerRadius;
+        this.zoom = zoom;
 
         this.innerCircle = new DebugCircle(gl, debugShader, 20).set(x, y, innerRadius);
         this.outerCircle = new DebugCircle(gl, debugShader, 20).set(x, y, outerRadius);
