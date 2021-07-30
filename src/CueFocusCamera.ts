@@ -9,6 +9,8 @@ export interface CameraCue {
     zoom: number;
 }
 
+const ease = (x: number) => -(Math.cos(Math.PI * x) - 1) / 2;
+
 /**
  * A camera moving ahead of the player but gets attracted to a point of interest
  */
@@ -24,8 +26,6 @@ export class CueFocusCamera extends SmoothCamera {
 
     protected savedZoom: number;
 
-    protected destinationZoom: number;
-
     protected readonly cues: CameraCue[] = [];
 
     public maxProjectionDistance: number;
@@ -34,7 +34,6 @@ export class CueFocusCamera extends SmoothCamera {
         super();
         this.maxProjectionDistance = maxProjectionDistance;
         this.savedZoom = this.zoom;
-        this.destinationZoom = this.zoom;
     }
 
     public override setZoom(zoom: number) {
@@ -103,7 +102,8 @@ export class CueFocusCamera extends SmoothCamera {
             if (dst <= innerRadius) {
                 // In the inner radius, the camera is fixed on the cue
                 this.setDesired(x, y);
-                this.destinationZoom = this.savedZoom * zoom;
+                this.zoom = this.savedZoom * zoom;
+                this.updateProjection();
                 return;
             }
             if (dst < outerRadius) {
@@ -116,26 +116,13 @@ export class CueFocusCamera extends SmoothCamera {
                     (y - this.projectedY) * pct + this.projectedY
                 );
                 const maxZoom = this.savedZoom * zoom;
-                this.destinationZoom = this.savedZoom + (maxZoom - this.savedZoom) * pct;
+                this.zoom = this.savedZoom + (maxZoom - this.savedZoom) * ease(pct);
+                this.updateProjection();
                 return;
             }
         }
-        this.destinationZoom = this.savedZoom;
-        this.setDesired(this.projectedX, this.projectedY);
-    }
-
-    public override update(deltaTime: number) {
-        super.update(deltaTime);
-
-        const distance = this.destinationZoom - this.zoom;
-        if (distance === 0) return;
-
-        if (distance < 0.1) {
-            this.zoom = this.destinationZoom;
-        } else {
-            // fixme: don't lerp, but rather ease in/out, since we know the start/end
-            this.zoom += deltaTime * distance * 0.1;
-        }
+        this.zoom = this.savedZoom;
         this.updateProjection();
+        this.setDesired(this.projectedX, this.projectedY);
     }
 }
