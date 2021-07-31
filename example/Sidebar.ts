@@ -2,19 +2,18 @@
 import { colors } from "./constants";
 import { Color } from "./draw/types";
 import type { Game } from "./Game";
+import { ModeKey } from "./modes/AbstractMode";
 
 const legend = document.getElementById("legend")!;
 
 export class Sidebar {
-    private readonly game: Game;
-    private readonly cameraType = document.getElementById("cameraType") as HTMLSelectElement;
-    private readonly snapToPixel = document.getElementById("snapToPixel") as HTMLInputElement;
-    private readonly zoom = document.getElementById("zoom") as HTMLInputElement;
-    private readonly maxSpeed = document.getElementById("maxSpeed") as HTMLInputElement;
-    private readonly acceleration = document.getElementById("acceleration") as HTMLInputElement;
-    private readonly slowDistance = document.getElementById("slowDistance") as HTMLInputElement;
-    private readonly lockDistance = document.getElementById("lockDistance") as HTMLInputElement;
-    private readonly maxProjectionDistance = document.getElementById("maxProjectionDistance") as HTMLInputElement;
+    public readonly mode = document.getElementById("mode") as HTMLSelectElement;
+    public readonly snapToPixel = document.getElementById("snapToPixel") as HTMLInputElement;
+    public readonly zoom = document.getElementById("zoom") as HTMLInputElement;
+    public readonly maxSpeed = document.getElementById("maxSpeed") as HTMLInputElement;
+    public readonly acceleration = document.getElementById("acceleration") as HTMLInputElement;
+    public readonly slowDistance = document.getElementById("slowDistance") as HTMLInputElement;
+    public readonly lockDistance = document.getElementById("lockDistance") as HTMLInputElement;
 
     public readonly cameraCurrent: HTMLInputElement;
     public readonly cameraDesired: HTMLInputElement;
@@ -25,10 +24,7 @@ export class Sidebar {
     public readonly speed = document.getElementById("speed") as HTMLInputElement;
     public readonly currentZoom = document.getElementById("currentZoom") as HTMLInputElement;
 
-    public constructor(game: Game) {
-        this.game = game;
-        this.setupUI();
-
+    public constructor() {
         const sidebar = document.getElementById("sidebar");
         if (sidebar) {
             sidebar.addEventListener("keydown", (e) => e.stopImmediatePropagation());
@@ -44,42 +40,22 @@ export class Sidebar {
         this.cueOuter = this.addToLegend("◯ Cue Outer Radius", colors.CUE_OUTER);
     }
 
-    private setupUI() {
-        const { camera } = this.game;
+    public setupUI(game: Game) {
+        game.mode.onEnable();
+        const { camera } = game.mode;
         this.snapToPixel.checked = camera.snapToPixel;
         this.zoom.value = camera.getZoom().toFixed(2);
-        this.maxSpeed.value = camera.maxSpeed.toFixed(2);
-        this.acceleration.value = camera.acceleration.toFixed(2);
-        this.slowDistance.value = camera.slowDistance.toFixed(2);
-        this.lockDistance.value = camera.lockDistance.toFixed(2);
-        this.maxProjectionDistance.value = camera.maxProjectionDistance.toFixed(2);
 
         this.snapToPixel.addEventListener("input", () => {
-            this.game.camera.snapToPixel = this.snapToPixel.checked;
+            const { camera } = game.mode;
+            camera.snapToPixel = this.snapToPixel.checked;
         });
         this.zoom.addEventListener("input", () => {
             const value = parseFloat(this.zoom.value);
-            if (value > 0) this.game.camera.setZoom(value);
+            if (value > 0) game.mode.camera.setZoom(value);
         });
-        this.maxSpeed.addEventListener("input", () => {
-            const value = parseFloat(this.maxSpeed.value);
-            if (value > 0) this.game.camera.maxSpeed = value;
-        });
-        this.acceleration.addEventListener("input", () => {
-            const value = parseFloat(this.acceleration.value);
-            if (value > 0) this.game.camera.acceleration = value;
-        });
-        this.slowDistance.addEventListener("input", () => {
-            const value = parseFloat(this.slowDistance.value);
-            if (value >= 0) this.game.camera.slowDistance = value;
-        });
-        this.lockDistance.addEventListener("input", () => {
-            const value = parseFloat(this.lockDistance.value);
-            if (value >= 0) this.game.camera.lockDistance = value;
-        });
-        this.maxProjectionDistance.addEventListener("input", () => {
-            const value = parseFloat(this.maxProjectionDistance.value);
-            if (value >= 0) this.game.camera.maxProjectionDistance = value;
+        this.mode.addEventListener("change", () => {
+            game.setMode(this.mode.value as ModeKey);
         });
     }
 

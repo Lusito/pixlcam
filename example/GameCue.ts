@@ -1,12 +1,12 @@
 /* eslint-disable */
 import { TextureInfo } from ".";
-import { CameraCue } from "../src";
+import { CueInfluence } from "../src";
 import { colors } from "./constants";
 import { DebugCircle } from "./draw/DebugCircle";
 import { Sprite } from "./draw/Sprite";
 import { Game } from "./Game";
 
-export class GameCue implements CameraCue {
+export class GameCue implements CueInfluence {
     public x: number;
     public y: number;
     public innerRadius: number;

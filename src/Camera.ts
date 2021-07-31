@@ -1,19 +1,6 @@
 /* eslint-disable prefer-destructuring */
-// prettier-ignore
-export type Matrix4 = [
-    number, number, number, number,
-    number, number, number, number,
-    number, number, number, number,
-    number, number, number, number
-];
 
-const createMatrix4 = (): Matrix4 => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-function snapToPixel(value: number, viewportSize: number, zoom: number) {
-    const zoomed = value * zoom;
-    const val = viewportSize % 2 === 0 ? Math.round(zoomed) : Math.round(zoomed + 0.5) - 0.5;
-    return val / zoom;
-}
+import { createMatrix4, snapToPixel } from "./utils";
 
 export class Camera {
     protected x = 0;
@@ -64,11 +51,11 @@ export class Camera {
         this.y = y;
 
         if (this.snapToPixel) {
-            this.modelView[12] = -snapToPixel(this.x, this.viewportWidth, this.zoom);
-            this.modelView[13] = snapToPixel(this.y, this.viewportHeight, this.zoom);
+            this.modelView[12] = -snapToPixel(x, this.viewportWidth, this.zoom);
+            this.modelView[13] = snapToPixel(y, this.viewportHeight, this.zoom);
         } else {
-            this.modelView[12] = -this.x;
-            this.modelView[13] = this.y;
+            this.modelView[12] = -x;
+            this.modelView[13] = y;
         }
     }
 

@@ -1,14 +1,20 @@
 /* eslint-disable */
 
+import { TargetInfluence, AimInfluence, Vector2 } from "../src";
+import { lerp } from "../src/utils";
 import { BOUND_DISTANCE, PLAYER_SPEED, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
 
 type Keys = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
 
-export class Player {
+const SPAWN_TIME = 0.3;
+
+export class Player implements TargetInfluence {
     public x = WORLD_WIDTH / 2;
     public y = WORLD_HEIGHT / 2;
-    public velX = 0;
-    public velY = 0;
+    public velocity: Vector2 = { x: 0, y: 0 };
+    public velocityAim = new AimInfluence(300, 0.2);
+    public aims: AimInfluence[] = [];
+    public spawnTime = SPAWN_TIME;
 
     private readonly keys = {
         ArrowUp: false,
@@ -18,6 +24,7 @@ export class Player {
     };
 
     public constructor() {
+        this.aims.push(this.velocityAim);
         window.addEventListener("keyup", (e) => this.onKeyUp(e));
         window.addEventListener("keydown", (e) => this.onKeyDown(e));
         window.addEventListener("keypress", (e) => {
@@ -28,6 +35,7 @@ export class Player {
                     if (Math.sqrt((x - this.x) ** 2 + (y - this.y) ** 2) > 500) {
                         this.x = x;
                         this.y = y;
+                        this.spawnTime = SPAWN_TIME;
                         return;
                     }
                 }
@@ -45,6 +53,7 @@ export class Player {
     }
 
     public update(deltaTime: number) {
+        // this.velocityAim.pushAverage();
         let moveX = 0;
         let moveY = 0;
         if (this.keys.ArrowRight) moveX += 1;
@@ -52,16 +61,27 @@ export class Player {
         if (this.keys.ArrowUp) moveY -= 1;
         if (this.keys.ArrowDown) moveY += 1;
 
+        let velX = 0;
+        let velY = 0;
         if (moveX || moveY) {
             const f = PLAYER_SPEED / Math.sqrt(moveX ** 2 + moveY ** 2);
-            this.velX = moveX * f;
-            this.velY = moveY * f;
-        } else {
-            this.velX = 0;
-            this.velY = 0;
+            velX = moveX * f;
+            velY = moveY * f;
         }
 
-        this.x = Math.max(BOUND_DISTANCE, Math.min(WORLD_WIDTH - BOUND_DISTANCE, this.x + this.velX * deltaTime));
-        this.y = Math.max(BOUND_DISTANCE, Math.min(WORLD_HEIGHT - BOUND_DISTANCE, this.y + this.velY * deltaTime));
+        lerp(this.velocity, velX, velY);
+        this.velocityAim.set(this.velocity.x, this.velocity.y);
+
+        this.x = Math.max(BOUND_DISTANCE, Math.min(WORLD_WIDTH - BOUND_DISTANCE, this.x + this.velocity.x * deltaTime));
+        this.y = Math.max(
+            BOUND_DISTANCE,
+            Math.min(WORLD_HEIGHT - BOUND_DISTANCE, this.y + this.velocity.y * deltaTime)
+        );
+
+        if (this.spawnTime > 0) this.spawnTime = Math.max(0, this.spawnTime - deltaTime);
+    }
+
+    public getSpawnPct() {
+        return 1 - this.spawnTime / SPAWN_TIME;
     }
 }

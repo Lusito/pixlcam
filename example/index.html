@@ -16,12 +16,12 @@
             <canvas id="canvas"></canvas>
             <div id="sidebar">
                 <label>
-                    <span>Type:</span>
-                    <select id="cameraType">
-                        <option>Simple Camera</option>
-                        <option>Screen Camera</option>
-                        <option>Smooth Camera</option>
-                        <option>Cue Focus Camera</option>
+                    <span>Camera Type:</span>
+                    <select id="mode">
+                        <option value="simple">Simple Camera</option>
+                        <option value="screen">Screen Camera</option>
+                        <option value="following">Following Camera</option>
+                        <option value="influenced" selected>Influenced Camera</option>
                     </select>
                 </label>
                 <label class="checkbox">
@@ -47,10 +47,6 @@
                 <label>
                     <span>Lock Distance:</span>
                     <input type="number" id="lockDistance" min="0" />
-                </label>
-                <label>
-                    <span>Max Projection Distance:</span>
-                    <input type="number" id="maxProjectionDistance" min="0" />
                 </label>
                 <label>
                     <span>Current Speed:</span>
