@@ -4,6 +4,7 @@ import { colors, WORLD_HEIGHT, WORLD_WIDTH } from "../constants";
 import { Player } from "../Player";
 import type { Game } from "../Game";
 import { AbstractMode } from "./AbstractMode";
+import { showElement } from "../Sidebar";
 
 export class FollowingMode extends AbstractMode<FollowingCamera> {
     public constructor(game: Game, player: Player) {
@@ -38,7 +39,6 @@ export class FollowingMode extends AbstractMode<FollowingCamera> {
     }
 
     public onEnable() {
-        // fixme: show/hide elements in sidebar? or via css class definitions?
         const { camera, sidebar } = this;
         camera.moveTo(this.player.x, this.player.y);
         camera.moveInstantly();
@@ -46,6 +46,13 @@ export class FollowingMode extends AbstractMode<FollowingCamera> {
         sidebar.acceleration.value = camera.acceleration.toFixed(2);
         sidebar.slowDistance.value = camera.slowDistance.toFixed(2);
         sidebar.lockDistance.value = camera.lockDistance.toFixed(2);
+        showElement(sidebar.maxSpeed);
+        showElement(sidebar.acceleration);
+        showElement(sidebar.slowDistance);
+        showElement(sidebar.lockDistance);
+        showElement(sidebar.cameraDesired);
+        showElement(sidebar.cameraSlowDistance);
+        showElement(sidebar.speed);
     }
 
     public update(deltaTime: number) {

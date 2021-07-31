@@ -6,6 +6,7 @@ import type { TextureInfo } from "..";
 import { GameCue } from "../GameCue";
 import type { Game } from "../Game";
 import { AbstractMode } from "./AbstractMode";
+import { showElement } from "../Sidebar";
 
 export class InfluencedMode extends AbstractMode<InfluencedCamera> {
     private readonly cue1: GameCue;
@@ -29,7 +30,12 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
     }
 
     public onEnable() {
-        // fixme: update sidebar
+        const { sidebar } = this;
+        showElement(sidebar.cameraCurrent);
+        showElement(sidebar.cameraDesired);
+        showElement(sidebar.targetProjected);
+        showElement(sidebar.cueInner);
+        showElement(sidebar.cueOuter);
     }
 
     public update() {
@@ -50,7 +56,7 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
             this.crosshair.set(this.camera.getX() + x, this.camera.getY() + y, 16, 45);
             this.crosshair.stroke(colors.CAMERA_DESIRED);
         }
-        if (this.sidebar.playerProjected.checked) {
+        if (this.sidebar.targetProjected.checked) {
             const { x, y } = this.player.velocityAim.getFocus();
             this.rect.set(
                 this.camera.getX() + x - PLAYER_SIZE,
@@ -58,7 +64,7 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
                 PLAYER_SIZE * 2,
                 PLAYER_SIZE * 2
             );
-            this.rect.stroke(colors.PLAYER_PROJECTED);
+            this.rect.stroke(colors.TARGET_PROJECTED);
         }
 
         // fixme: controlAim (right stick input)

@@ -9,9 +9,7 @@ export class ScreenMode extends AbstractMode<ScreenCamera> {
         super(game, player, new ScreenCamera());
     }
 
-    public onEnable() {
-        // fixme: show/hide elements in sidebar? or via css class definitions?
-    }
+    public onEnable() {}
 
     public update() {}
 

@@ -26,7 +26,7 @@ export const colors = {
     CAMERA: createColor("bb2222"),
     CAMERA_DESIRED: createColor("009900"),
     SLOW_DISTANCE: createColor("44dddd"),
-    PLAYER_PROJECTED: createColor("ffffff"),
+    TARGET_PROJECTED: createColor("ffffff"),
 
     CUE_INNER: createColor("ff66ff"),
     CUE_OUTER: createColor("bbbb22"),

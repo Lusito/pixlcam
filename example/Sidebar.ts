@@ -6,6 +6,16 @@ import { ModeKey } from "./modes/AbstractMode";
 
 const legend = document.getElementById("legend")!;
 
+export function hideElement(element: HTMLElement) {
+    element = element.closest("label") || element;
+    element.style.display = "none";
+}
+
+export function showElement(element: HTMLElement) {
+    element = element.closest("label") || element;
+    element.style.display = "";
+}
+
 export class Sidebar {
     public readonly mode = document.getElementById("mode") as HTMLSelectElement;
     public readonly snapToPixel = document.getElementById("snapToPixel") as HTMLInputElement;
@@ -18,7 +28,7 @@ export class Sidebar {
     public readonly cameraCurrent: HTMLInputElement;
     public readonly cameraDesired: HTMLInputElement;
     public readonly cameraSlowDistance: HTMLInputElement;
-    public readonly playerProjected: HTMLInputElement;
+    public readonly targetProjected: HTMLInputElement;
     public readonly cueInner: HTMLInputElement;
     public readonly cueOuter: HTMLInputElement;
     public readonly speed = document.getElementById("speed") as HTMLInputElement;
@@ -35,12 +45,26 @@ export class Sidebar {
         this.cameraCurrent = this.addToLegend("＋ Camera Current", colors.CAMERA);
         this.cameraDesired = this.addToLegend("⨉ Camera Desired", colors.CAMERA_DESIRED);
         this.cameraSlowDistance = this.addToLegend("◯ Camera Slow Distance", colors.SLOW_DISTANCE);
-        this.playerProjected = this.addToLegend("☐ Player Projected", colors.PLAYER_PROJECTED);
+        this.targetProjected = this.addToLegend("☐ Target Projected", colors.TARGET_PROJECTED);
         this.cueInner = this.addToLegend("◯ Cue Inner Radius", colors.CUE_INNER);
         this.cueOuter = this.addToLegend("◯ Cue Outer Radius", colors.CUE_OUTER);
     }
 
+    private hideAll() {
+        hideElement(this.maxSpeed);
+        hideElement(this.acceleration);
+        hideElement(this.slowDistance);
+        hideElement(this.lockDistance);
+        hideElement(this.cameraDesired);
+        hideElement(this.cameraSlowDistance);
+        hideElement(this.targetProjected);
+        hideElement(this.cueInner);
+        hideElement(this.cueOuter);
+        hideElement(this.speed);
+    }
+
     public setupUI(game: Game) {
+        this.hideAll();
         game.mode.onEnable();
         const { camera } = game.mode;
         this.snapToPixel.checked = camera.snapToPixel;
@@ -55,6 +79,7 @@ export class Sidebar {
             if (value > 0) game.mode.camera.setZoom(value);
         });
         this.mode.addEventListener("change", () => {
+            this.hideAll();
             game.setMode(this.mode.value as ModeKey);
         });
     }

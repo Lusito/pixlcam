@@ -10,7 +10,6 @@ export class SimpleMode extends AbstractMode<Camera> {
     }
 
     public onEnable() {
-        // fixme: show/hide elements in sidebar? or via css class definitions?
         this.camera.moveTo(this.player.x, this.player.y);
     }
 
