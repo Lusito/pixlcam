@@ -1,15 +1,20 @@
-import { AimInfluence } from "./AimInfluence";
+import { AimInfluence, AimInfluenceOptions } from "./AimInfluence";
 import { Vector2 } from "./types";
+
+export interface AveragedAimInfluenceOptions extends AimInfluenceOptions {
+    historySize: number;
+}
 
 export class AveragedAimInfluence extends AimInfluence {
     protected index = 0;
     protected readonly average: Vector2;
     protected readonly history: Vector2[];
 
-    // fixme: params as options object for better readability
-    public constructor(historySize: number, maxLength: number, factor = 1, x = 0, y = 0) {
-        super(maxLength, factor, x, y);
-        this.average = { x: this.current.x, y: this.current.y };
+    public constructor(options: AveragedAimInfluenceOptions) {
+        super(options);
+        const { x, y } = this.current;
+        this.average = { x, y };
+        const { historySize } = options;
         this.history = Array.from({ length: historySize }, () => ({ x, y }));
     }
 

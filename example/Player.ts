@@ -30,10 +30,11 @@ export class Player implements TargetInfluence {
     public y = WORLD_HEIGHT / 2;
     public velocity: Vector2 = { x: 0, y: 0 };
     public velocityControl: Vector2 = { x: 0, y: 0 };
-    public velocityInfluence = new AimInfluence(300, 0.2);
+    // fixme: make the params configurable via ui
+    public velocityInfluence = new AimInfluence({ maxLength: 300, factor: 0.2 });
     public aimControl: Vector2 = { x: 0, y: 0 };
     // fixme: unsure if averaging is the way to go.. try easing/lerping position instead
-    public aimInfluence = new AveragedAimInfluence(50, 300, 1); // fixme: make the params configurable via ui
+    public aimInfluence = new AveragedAimInfluence({ historySize: 50, maxLength: 300, factor: 1 });
     public aims: AimInfluence[] = [];
     public spawnTime = SPAWN_TIME;
 

@@ -1,11 +1,18 @@
 import { Vector2 } from "./types";
 
+export interface AimInfluenceOptions {
+    maxLength: number;
+    factor?: number;
+    x?: number;
+    y?: number;
+}
+
 export class AimInfluence {
     protected readonly current: Vector2 = { x: 0, y: 0 };
     public maxLength: number;
     public factor: number;
 
-    public constructor(maxLength: number, factor = 1, x = 0, y = 0) {
+    public constructor({ maxLength, factor = 1, x = 0, y = 0 }: AimInfluenceOptions) {
         this.maxLength = maxLength;
         this.factor = factor;
         this.set(x, y);
