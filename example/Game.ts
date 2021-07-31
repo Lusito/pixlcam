@@ -27,7 +27,7 @@ export class Game {
     private readonly playerSprite: Sprite;
     private readonly playerTexture: { width: number; height: number; texture: WebGLTexture };
     private readonly bgSprite: Sprite;
-    private readonly modes: {
+    public readonly modes: {
         screen: ScreenMode;
         simple: SimpleMode;
         influenced: InfluencedMode;

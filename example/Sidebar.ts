@@ -3,6 +3,7 @@ import { colors } from "./constants";
 import { Color } from "./draw/types";
 import type { Game } from "./Game";
 import { ModeKey } from "./modes/AbstractMode";
+import { positiveNumListener } from "./utils";
 
 const legend = document.getElementById("legend")!;
 
@@ -24,6 +25,11 @@ export class Sidebar {
     public readonly acceleration = document.getElementById("acceleration") as HTMLInputElement;
     public readonly slowDistance = document.getElementById("slowDistance") as HTMLInputElement;
     public readonly lockDistance = document.getElementById("lockDistance") as HTMLInputElement;
+    public readonly maxVelocityInfluence = document.getElementById("maxVelocityInfluence") as HTMLInputElement;
+    public readonly velocityInfluenceFactor = document.getElementById("velocityInfluenceFactor") as HTMLInputElement;
+    public readonly maxAimInfluence = document.getElementById("maxAimInfluence") as HTMLInputElement;
+    public readonly aimInfluenceFactor = document.getElementById("aimInfluenceFactor") as HTMLInputElement;
+    public readonly aimInfluenceLerp = document.getElementById("aimInfluenceLerp") as HTMLInputElement;
 
     public readonly cameraCurrent: HTMLInputElement;
     public readonly cameraDesired: HTMLInputElement;
@@ -64,6 +70,11 @@ export class Sidebar {
         hideElement(this.cueInner);
         hideElement(this.cueOuter);
         hideElement(this.speed);
+        hideElement(this.maxVelocityInfluence);
+        hideElement(this.velocityInfluenceFactor);
+        hideElement(this.maxAimInfluence);
+        hideElement(this.aimInfluenceFactor);
+        hideElement(this.aimInfluenceLerp);
     }
 
     public setupUI(game: Game) {
@@ -74,12 +85,16 @@ export class Sidebar {
         this.zoom.value = camera.getZoom().toFixed(2);
 
         this.snapToPixel.addEventListener("input", () => {
-            const { camera } = game.mode;
-            camera.snapToPixel = this.snapToPixel.checked;
+            for (const key in game.modes) {
+                const mode = game.modes[key as ModeKey];
+                mode.camera.snapToPixel = this.snapToPixel.checked;
+            }
         });
-        this.zoom.addEventListener("input", () => {
-            const value = parseFloat(this.zoom.value);
-            if (value > 0) game.mode.camera.setZoom(value);
+        positiveNumListener(this.zoom, (value) => {
+            for (const key in game.modes) {
+                const mode = game.modes[key as ModeKey];
+                mode.camera.setZoom(value);
+            }
         });
         this.mode.addEventListener("change", () => {
             this.hideAll();

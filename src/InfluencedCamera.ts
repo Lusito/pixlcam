@@ -87,6 +87,7 @@ export class InfluencedCamera extends Camera {
                 // In the inner radius, the camera is fixed on the cue
                 this.updateZoom(this.savedZoom * cue.zoom);
                 this.moveTo(cue.x, cue.y);
+                lerp(this.offset, 0, 0);
                 return;
             }
             if (dst < cue.outerRadius) {

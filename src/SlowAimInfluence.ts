@@ -7,8 +7,8 @@ export interface SlowAimInfluenceOptions extends AimInfluenceOptions {
 }
 
 export class SlowAimInfluence extends AimInfluence {
-    protected lerp: number;
     protected readonly slowOffset: Vector2;
+    public lerp: number;
 
     public constructor(options: SlowAimInfluenceOptions) {
         super(options);

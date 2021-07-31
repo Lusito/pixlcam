@@ -7,6 +7,7 @@ import { GameCue } from "../GameCue";
 import type { Game } from "../Game";
 import { AbstractMode } from "./AbstractMode";
 import { showElement } from "../Sidebar";
+import { positiveNumListener } from "../utils";
 
 export class InfluencedMode extends AbstractMode<InfluencedCamera> {
     private readonly cue1: GameCue;
@@ -27,6 +28,28 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
             yMax: WORLD_HEIGHT,
         });
         this.camera.setTarget(player);
+
+        const { sidebar } = this;
+        sidebar.maxVelocityInfluence.value = player.velocityInfluence.maxLength.toFixed(2);
+        sidebar.velocityInfluenceFactor.value = player.velocityInfluence.factor.toFixed(2);
+        sidebar.maxAimInfluence.value = player.aimInfluence.maxLength.toFixed(2);
+        sidebar.aimInfluenceFactor.value = player.aimInfluence.factor.toFixed(2);
+        sidebar.aimInfluenceLerp.value = player.aimInfluence.lerp.toFixed(2);
+        positiveNumListener(sidebar.maxVelocityInfluence, (value) => {
+            player.velocityInfluence.maxLength = value;
+        });
+        positiveNumListener(sidebar.velocityInfluenceFactor, (value) => {
+            player.velocityInfluence.factor = value;
+        });
+        positiveNumListener(sidebar.maxAimInfluence, (value) => {
+            player.aimInfluence.maxLength = value;
+        });
+        positiveNumListener(sidebar.aimInfluenceFactor, (value) => {
+            player.aimInfluence.factor = value;
+        });
+        positiveNumListener(sidebar.aimInfluenceLerp, (value) => {
+            player.aimInfluence.lerp = value;
+        });
     }
 
     public onEnable() {
@@ -37,6 +60,11 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
         showElement(sidebar.targetAim);
         showElement(sidebar.cueInner);
         showElement(sidebar.cueOuter);
+        showElement(sidebar.maxVelocityInfluence);
+        showElement(sidebar.velocityInfluenceFactor);
+        showElement(sidebar.maxAimInfluence);
+        showElement(sidebar.aimInfluenceFactor);
+        showElement(sidebar.aimInfluenceLerp);
     }
 
     public update() {

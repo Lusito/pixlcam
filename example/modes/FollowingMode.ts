@@ -5,6 +5,7 @@ import { Player } from "../Player";
 import type { Game } from "../Game";
 import { AbstractMode } from "./AbstractMode";
 import { showElement } from "../Sidebar";
+import { positiveNumListener } from "../utils";
 
 export class FollowingMode extends AbstractMode<FollowingCamera> {
     public constructor(game: Game, player: Player) {
@@ -20,21 +21,21 @@ export class FollowingMode extends AbstractMode<FollowingCamera> {
         });
 
         const { camera, sidebar } = this;
-        sidebar.maxSpeed.addEventListener("input", () => {
-            const value = parseFloat(sidebar.maxSpeed.value);
-            if (value > 0) camera.maxSpeed = value;
+        sidebar.maxSpeed.value = camera.maxSpeed.toFixed(2);
+        sidebar.acceleration.value = camera.acceleration.toFixed(2);
+        sidebar.slowDistance.value = camera.slowDistance.toFixed(2);
+        sidebar.lockDistance.value = camera.lockDistance.toFixed(2);
+        positiveNumListener(sidebar.maxSpeed, (value) => {
+            camera.maxSpeed = value;
         });
-        sidebar.acceleration.addEventListener("input", () => {
-            const value = parseFloat(sidebar.acceleration.value);
-            if (value > 0) camera.acceleration = value;
+        positiveNumListener(sidebar.acceleration, (value) => {
+            camera.acceleration = value;
         });
-        sidebar.slowDistance.addEventListener("input", () => {
-            const value = parseFloat(sidebar.slowDistance.value);
-            if (value >= 0) camera.slowDistance = value;
+        positiveNumListener(sidebar.slowDistance, (value) => {
+            camera.slowDistance = value;
         });
-        sidebar.lockDistance.addEventListener("input", () => {
-            const value = parseFloat(sidebar.lockDistance.value);
-            if (value >= 0) camera.lockDistance = value;
+        positiveNumListener(sidebar.lockDistance, (value) => {
+            camera.lockDistance = value;
         });
     }
 
@@ -42,10 +43,6 @@ export class FollowingMode extends AbstractMode<FollowingCamera> {
         const { camera, sidebar } = this;
         camera.moveTo(this.player.x, this.player.y);
         camera.moveInstantly();
-        sidebar.maxSpeed.value = camera.maxSpeed.toFixed(2);
-        sidebar.acceleration.value = camera.acceleration.toFixed(2);
-        sidebar.slowDistance.value = camera.slowDistance.toFixed(2);
-        sidebar.lockDistance.value = camera.lockDistance.toFixed(2);
         showElement(sidebar.maxSpeed);
         showElement(sidebar.acceleration);
         showElement(sidebar.slowDistance);
