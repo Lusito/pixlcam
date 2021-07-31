@@ -115,14 +115,16 @@ export class Game {
         this.debugShader.uMVMatrix.set(false, modelView);
         this.debugShader.uPMatrix.set(false, projection);
 
-        this.mode.drawDebug();
+        if (this.sidebar.debug.checked) {
+            this.mode.drawDebug();
 
-        if (this.sidebar.cameraCurrent.checked) {
-            this.crosshair.set(camera.getX(), camera.getY(), 16, 0);
-            this.crosshair.stroke(colors.CAMERA);
-        }
-        for (const rect of this.boundRects) {
-            rect.fill(colors.BOUND);
+            if (this.sidebar.cameraCurrent.checked) {
+                this.crosshair.set(camera.getX(), camera.getY(), 16, 0);
+                this.crosshair.stroke(colors.CAMERA);
+            }
+            for (const rect of this.boundRects) {
+                rect.fill(colors.BOUND);
+            }
         }
         this.sidebar.currentZoom.value = camera.getZoom().toFixed(3);
     }

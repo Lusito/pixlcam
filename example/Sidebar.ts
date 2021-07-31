@@ -30,6 +30,7 @@ export class Sidebar {
     public readonly maxAimInfluence = document.getElementById("maxAimInfluence") as HTMLInputElement;
     public readonly aimInfluenceFactor = document.getElementById("aimInfluenceFactor") as HTMLInputElement;
     public readonly aimInfluenceLerp = document.getElementById("aimInfluenceLerp") as HTMLInputElement;
+    public readonly debug = document.getElementById("debug") as HTMLInputElement;
 
     public readonly cameraCurrent: HTMLInputElement;
     public readonly cameraDesired: HTMLInputElement;

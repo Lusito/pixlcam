@@ -16,8 +16,8 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
     public constructor(game: Game, player: Player, burstTexture: TextureInfo) {
         super(game, player, new InfluencedCamera());
 
-        this.cue1 = new GameCue(game, burstTexture, WORLD_WIDTH / 2 + 500, WORLD_HEIGHT / 2 - 500, 200, 800, 0.65);
-        this.cue2 = new GameCue(game, burstTexture, WORLD_WIDTH / 3, WORLD_HEIGHT - 450, 200, 600, 1.6);
+        this.cue1 = new GameCue(game, burstTexture, WORLD_WIDTH / 2 + 500, WORLD_HEIGHT / 2 - 500, 200, 800, 0.80);
+        this.cue2 = new GameCue(game, burstTexture, WORLD_WIDTH / 3, WORLD_HEIGHT - 450, 200, 600, 1.4);
         this.camera.addCue(this.cue1);
         this.camera.addCue(this.cue2);
 
