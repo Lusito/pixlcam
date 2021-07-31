@@ -6,6 +6,7 @@ export class AveragedAimInfluence extends AimInfluence {
     protected readonly average: Vector2;
     protected readonly history: Vector2[];
 
+    // fixme: params as options object for better readability
     public constructor(historySize: number, maxLength: number, factor = 1, x = 0, y = 0) {
         super(maxLength, factor, x, y);
         this.average = { x: this.current.x, y: this.current.y };

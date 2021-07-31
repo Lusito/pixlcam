@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { InfluencedCamera } from "../../src";
-import { colors, PLAYER_SIZE, WORLD_HEIGHT, WORLD_WIDTH } from "../constants";
+import { AIM_SIZE, colors, PLAYER_SIZE, WORLD_HEIGHT, WORLD_WIDTH } from "../constants";
 import { Player } from "../Player";
 import type { TextureInfo } from "..";
 import { GameCue } from "../GameCue";
@@ -57,7 +57,7 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
             this.crosshair.stroke(colors.CAMERA_DESIRED);
         }
         if (this.sidebar.targetProjected.checked) {
-            const { x, y } = this.player.velocityAim.getFocus();
+            const { x, y } = this.player.velocityInfluence.getFocus();
             this.rect.set(
                 this.camera.getX() + x - PLAYER_SIZE,
                 this.camera.getY() + y - PLAYER_SIZE,
@@ -66,7 +66,15 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
             );
             this.rect.stroke(colors.TARGET_PROJECTED);
         }
-
-        // fixme: controlAim (right stick input)
+        if (this.sidebar.targetProjected.checked) {
+            const { x, y } = this.player.aimInfluence.getFocus();
+            this.rect.set(
+                this.camera.getX() + x - AIM_SIZE,
+                this.camera.getY() + y - AIM_SIZE,
+                AIM_SIZE * 2,
+                AIM_SIZE * 2
+            );
+            this.rect.stroke(colors.TARGET_AIM);
+        }
     }
 }

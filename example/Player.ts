@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { TargetInfluence, AimInfluence, Vector2 } from "../src";
+import { TargetInfluence, AimInfluence, Vector2, AveragedAimInfluence } from "../src";
 import { lerp } from "../src/utils";
 import { BOUND_DISTANCE, PLAYER_SPEED, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
 
@@ -8,11 +8,32 @@ type Keys = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
 
 const SPAWN_TIME = 0.3;
 
+function getDirection(out: Vector2, up: boolean, right: boolean, down: boolean, left: boolean, length: number) {
+    let dx = 0;
+    let dy = 0;
+    if (right) dx += 1;
+    if (left) dx -= 1;
+    if (up) dy -= 1;
+    if (down) dy += 1;
+    if (dx || dy) {
+        const f = length / Math.sqrt(dx ** 2 + dy ** 2);
+        out.x = dx * f;
+        out.y = dy * f;
+    } else {
+        out.x = 0;
+        out.y = 0;
+    }
+}
+
 export class Player implements TargetInfluence {
     public x = WORLD_WIDTH / 2;
     public y = WORLD_HEIGHT / 2;
     public velocity: Vector2 = { x: 0, y: 0 };
-    public velocityAim = new AimInfluence(300, 0.2); // fixme: make the params configurable via ui
+    public velocityControl: Vector2 = { x: 0, y: 0 };
+    public velocityInfluence = new AimInfluence(300, 0.2);
+    public aimControl: Vector2 = { x: 0, y: 0 };
+    // fixme: unsure if averaging is the way to go.. try easing/lerping position instead
+    public aimInfluence = new AveragedAimInfluence(50, 300, 1); // fixme: make the params configurable via ui
     public aims: AimInfluence[] = [];
     public spawnTime = SPAWN_TIME;
 
@@ -21,10 +42,15 @@ export class Player implements TargetInfluence {
         ArrowDown: false,
         ArrowLeft: false,
         ArrowRight: false,
+        KeyW: false,
+        KeyA: false,
+        KeyS: false,
+        KeyD: false,
     };
 
     public constructor() {
-        this.aims.push(this.velocityAim);
+        this.aims.push(this.velocityInfluence);
+        this.aims.push(this.aimInfluence); // fixme: when combining aim and velocity, it seems to go further than just using velocity..
         window.addEventListener("keyup", (e) => this.onKeyUp(e));
         window.addEventListener("keydown", (e) => this.onKeyDown(e));
         window.addEventListener("keypress", (e) => {
@@ -53,24 +79,21 @@ export class Player implements TargetInfluence {
     }
 
     public update(deltaTime: number) {
-        // this.velocityAim.pushAverage();
-        let moveX = 0;
-        let moveY = 0;
-        if (this.keys.ArrowRight) moveX += 1;
-        if (this.keys.ArrowLeft) moveX -= 1;
-        if (this.keys.ArrowUp) moveY -= 1;
-        if (this.keys.ArrowDown) moveY += 1;
+        getDirection(
+            this.velocityControl,
+            this.keys.ArrowUp,
+            this.keys.ArrowRight,
+            this.keys.ArrowDown,
+            this.keys.ArrowLeft,
+            PLAYER_SPEED
+        );
 
-        let velX = 0;
-        let velY = 0;
-        if (moveX || moveY) {
-            const f = PLAYER_SPEED / Math.sqrt(moveX ** 2 + moveY ** 2);
-            velX = moveX * f;
-            velY = moveY * f;
-        }
+        lerp(this.velocity, this.velocityControl.x, this.velocityControl.y);
+        this.velocityInfluence.set(this.velocity.x, this.velocity.y);
 
-        lerp(this.velocity, velX, velY);
-        this.velocityAim.set(this.velocity.x, this.velocity.y);
+        getDirection(this.aimControl, this.keys.KeyW, this.keys.KeyD, this.keys.KeyS, this.keys.KeyA, 200);
+        this.aimInfluence.set(this.aimControl.x, this.aimControl.y);
+        this.aimInfluence.updateAverage();
 
         this.x = Math.max(BOUND_DISTANCE, Math.min(WORLD_WIDTH - BOUND_DISTANCE, this.x + this.velocity.x * deltaTime));
         this.y = Math.max(

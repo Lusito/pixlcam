@@ -11,6 +11,7 @@ export const WORLD_HEIGHT = 2889;
 
 export const PLAYER_SPEED = 800;
 export const PLAYER_SIZE = 64;
+export const AIM_SIZE = 32;
 export const BOUND_SIZE = 32;
 export const BOUND_DISTANCE = BOUND_SIZE + PLAYER_SIZE;
 
@@ -27,6 +28,7 @@ export const colors = {
     CAMERA_DESIRED: createColor("009900"),
     SLOW_DISTANCE: createColor("44dddd"),
     TARGET_PROJECTED: createColor("ffffff"),
+    TARGET_AIM: createColor("44dddd"),
 
     CUE_INNER: createColor("ff66ff"),
     CUE_OUTER: createColor("bbbb22"),
