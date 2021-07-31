@@ -3,5 +3,6 @@ export * from "./ScreenCamera";
 export * from "./FollowingCamera";
 export * from "./InfluencedCamera";
 export * from "./AimInfluence";
-export * from "./AveragedAimInfluence";
+export * from "./SlowAimInfluence";
 export * from "./types";
+export * from "./utils";

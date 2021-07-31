@@ -29,6 +29,7 @@ export class Sidebar {
     public readonly cameraDesired: HTMLInputElement;
     public readonly cameraSlowDistance: HTMLInputElement;
     public readonly targetProjected: HTMLInputElement;
+    public readonly targetAim: HTMLInputElement;
     public readonly cueInner: HTMLInputElement;
     public readonly cueOuter: HTMLInputElement;
     public readonly speed = document.getElementById("speed") as HTMLInputElement;
@@ -46,6 +47,7 @@ export class Sidebar {
         this.cameraDesired = this.addToLegend("⨉ Camera Desired", colors.CAMERA_DESIRED);
         this.cameraSlowDistance = this.addToLegend("◯ Camera Slow Distance", colors.SLOW_DISTANCE);
         this.targetProjected = this.addToLegend("☐ Target Projected", colors.TARGET_PROJECTED);
+        this.targetAim = this.addToLegend("☐ Target Aim", colors.TARGET_AIM);
         this.cueInner = this.addToLegend("◯ Cue Inner Radius", colors.CUE_INNER);
         this.cueOuter = this.addToLegend("◯ Cue Outer Radius", colors.CUE_OUTER);
     }
@@ -58,6 +60,7 @@ export class Sidebar {
         hideElement(this.cameraDesired);
         hideElement(this.cameraSlowDistance);
         hideElement(this.targetProjected);
+        hideElement(this.targetAim);
         hideElement(this.cueInner);
         hideElement(this.cueOuter);
         hideElement(this.speed);

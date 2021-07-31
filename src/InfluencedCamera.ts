@@ -105,7 +105,7 @@ export class InfluencedCamera extends Camera {
         let aimOffsetX = 0;
         let aimOffsetY = 0;
         for (const aim of this.target.aims) {
-            const aimFocus = aim.getFocus();
+            const aimFocus = aim.get();
             aimOffsetX += aimFocus.x;
             aimOffsetY += aimFocus.y;
         }

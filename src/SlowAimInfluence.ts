@@ -1,0 +1,27 @@
+import { AimInfluence, AimInfluenceOptions } from "./AimInfluence";
+import { Vector2 } from "./types";
+import { lerp } from "./utils";
+
+export interface SlowAimInfluenceOptions extends AimInfluenceOptions {
+    lerp: number;
+}
+
+export class SlowAimInfluence extends AimInfluence {
+    protected lerp: number;
+    protected readonly slowOffset: Vector2;
+
+    public constructor(options: SlowAimInfluenceOptions) {
+        super(options);
+        const { x, y } = this.offset;
+        this.slowOffset = { x, y };
+        this.lerp = options.lerp;
+    }
+
+    public override get(): Readonly<Vector2> {
+        return this.slowOffset;
+    }
+
+    public update() {
+        lerp(this.slowOffset, this.offset.x, this.offset.y, this.lerp);
+    }
+}

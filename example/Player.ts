@@ -1,7 +1,6 @@
 /* eslint-disable */
 
-import { TargetInfluence, AimInfluence, Vector2, AveragedAimInfluence } from "../src";
-import { lerp } from "../src/utils";
+import { TargetInfluence, AimInfluence, SlowAimInfluence, Vector2, lerp } from "../src";
 import { BOUND_DISTANCE, PLAYER_SPEED, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
 
 type Keys = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
@@ -29,12 +28,11 @@ export class Player implements TargetInfluence {
     public x = WORLD_WIDTH / 2;
     public y = WORLD_HEIGHT / 2;
     public velocity: Vector2 = { x: 0, y: 0 };
-    public velocityControl: Vector2 = { x: 0, y: 0 };
+    public velocityGoal: Vector2 = { x: 0, y: 0 };
     // fixme: make the params configurable via ui
     public velocityInfluence = new AimInfluence({ maxLength: 300, factor: 0.2 });
-    public aimControl: Vector2 = { x: 0, y: 0 };
-    // fixme: unsure if averaging is the way to go.. try easing/lerping position instead
-    public aimInfluence = new AveragedAimInfluence({ historySize: 50, maxLength: 300, factor: 1 });
+    public aimGoal: Vector2 = { x: 0, y: 0 };
+    public aimInfluence = new SlowAimInfluence({ maxLength: 300, factor: 0.2, lerp: 0.1 });
     public aims: AimInfluence[] = [];
     public spawnTime = SPAWN_TIME;
 
@@ -51,7 +49,7 @@ export class Player implements TargetInfluence {
 
     public constructor() {
         this.aims.push(this.velocityInfluence);
-        this.aims.push(this.aimInfluence); // fixme: when combining aim and velocity, it seems to go further than just using velocity..
+        this.aims.push(this.aimInfluence);
         window.addEventListener("keyup", (e) => this.onKeyUp(e));
         window.addEventListener("keydown", (e) => this.onKeyDown(e));
         window.addEventListener("keypress", (e) => {
@@ -81,7 +79,7 @@ export class Player implements TargetInfluence {
 
     public update(deltaTime: number) {
         getDirection(
-            this.velocityControl,
+            this.velocityGoal,
             this.keys.ArrowUp,
             this.keys.ArrowRight,
             this.keys.ArrowDown,
@@ -89,12 +87,12 @@ export class Player implements TargetInfluence {
             PLAYER_SPEED
         );
 
-        lerp(this.velocity, this.velocityControl.x, this.velocityControl.y);
+        lerp(this.velocity, this.velocityGoal.x, this.velocityGoal.y);
         this.velocityInfluence.set(this.velocity.x, this.velocity.y);
 
-        getDirection(this.aimControl, this.keys.KeyW, this.keys.KeyD, this.keys.KeyS, this.keys.KeyA, 200);
-        this.aimInfluence.set(this.aimControl.x, this.aimControl.y);
-        this.aimInfluence.updateAverage();
+        getDirection(this.aimGoal, this.keys.KeyW, this.keys.KeyD, this.keys.KeyS, this.keys.KeyA, PLAYER_SPEED);
+        this.aimInfluence.set(this.aimGoal.x, this.aimGoal.y);
+        this.aimInfluence.update();
 
         this.x = Math.max(BOUND_DISTANCE, Math.min(WORLD_WIDTH - BOUND_DISTANCE, this.x + this.velocity.x * deltaTime));
         this.y = Math.max(

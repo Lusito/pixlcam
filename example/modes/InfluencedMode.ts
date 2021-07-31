@@ -34,12 +34,15 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
         showElement(sidebar.cameraCurrent);
         showElement(sidebar.cameraDesired);
         showElement(sidebar.targetProjected);
+        showElement(sidebar.targetAim);
         showElement(sidebar.cueInner);
         showElement(sidebar.cueOuter);
     }
 
     public update() {
         this.camera.update();
+        const { x, y } = this.camera.getOffset();
+        this.sidebar.currentZoom.value = `${x.toFixed(0)},${y.toFixed(0)}`;
     }
 
     public draw() {
@@ -57,23 +60,18 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
             this.crosshair.stroke(colors.CAMERA_DESIRED);
         }
         if (this.sidebar.targetProjected.checked) {
-            const { x, y } = this.player.velocityInfluence.getFocus();
+            const { x, y } = this.player.velocityInfluence.get();
             this.rect.set(
-                this.camera.getX() + x - PLAYER_SIZE,
-                this.camera.getY() + y - PLAYER_SIZE,
+                this.player.x + x - PLAYER_SIZE,
+                this.player.y + y - PLAYER_SIZE,
                 PLAYER_SIZE * 2,
                 PLAYER_SIZE * 2
             );
             this.rect.stroke(colors.TARGET_PROJECTED);
         }
-        if (this.sidebar.targetProjected.checked) {
-            const { x, y } = this.player.aimInfluence.getFocus();
-            this.rect.set(
-                this.camera.getX() + x - AIM_SIZE,
-                this.camera.getY() + y - AIM_SIZE,
-                AIM_SIZE * 2,
-                AIM_SIZE * 2
-            );
+        if (this.sidebar.targetAim.checked) {
+            const { x, y } = this.player.aimInfluence.get();
+            this.rect.set(this.player.x + x - AIM_SIZE, this.player.y + y - AIM_SIZE, AIM_SIZE * 2, AIM_SIZE * 2);
             this.rect.stroke(colors.TARGET_AIM);
         }
     }
