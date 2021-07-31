@@ -12,7 +12,7 @@ export class Player implements TargetInfluence {
     public x = WORLD_WIDTH / 2;
     public y = WORLD_HEIGHT / 2;
     public velocity: Vector2 = { x: 0, y: 0 };
-    public velocityAim = new AimInfluence(300, 0.2);
+    public velocityAim = new AimInfluence(300, 0.2); // fixme: make the params configurable via ui
     public aims: AimInfluence[] = [];
     public spawnTime = SPAWN_TIME;
 
