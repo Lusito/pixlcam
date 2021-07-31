@@ -29,7 +29,6 @@ export class Player implements TargetInfluence {
     public y = WORLD_HEIGHT / 2;
     public velocity: Vector2 = { x: 0, y: 0 };
     public velocityGoal: Vector2 = { x: 0, y: 0 };
-    // fixme: make the params configurable via ui
     public velocityInfluence = new AimInfluence({ maxLength: 300, factor: 0.2 });
     public aimGoal: Vector2 = { x: 0, y: 0 };
     public aimInfluence = new SlowAimInfluence({ maxLength: 300, factor: 0.2, lerp: 0.2 });
