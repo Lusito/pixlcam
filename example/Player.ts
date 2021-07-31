@@ -31,7 +31,7 @@ export class Player implements TargetInfluence {
     public velocityGoal: Vector2 = { x: 0, y: 0 };
     public velocityInfluence = new AimInfluence({ maxLength: 300, factor: 0.2 });
     public aimGoal: Vector2 = { x: 0, y: 0 };
-    public aimInfluence = new SlowAimInfluence({ maxLength: 300, factor: 0.2, lerp: 0.2 });
+    public aimInfluence = new SlowAimInfluence({ maxLength: 300, factor: 0.3, lerp: 0.1 });
     public aims: AimInfluence[] = [];
     public spawnTime = SPAWN_TIME;
 
