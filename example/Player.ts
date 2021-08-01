@@ -15,7 +15,7 @@ import { DebugRect } from "./draw/DebugRect";
 import { Sprite } from "./draw/Sprite";
 import { Game } from "./Game";
 import { InputController } from "./InputController";
-import { colors } from "./modes/InfluencedMode";
+import { colors, InfluencedMode } from "./modes/InfluencedMode";
 import { Rocket } from "./Rocket";
 import { xyToAngle } from "./utils";
 
@@ -112,7 +112,10 @@ export class Player implements TargetInfluence {
         this.sprite.draw();
         if (this.rocket) {
             this.rocket.draw();
-        } else if (this.input.aimDirection.x || this.input.aimDirection.y) {
+        } else if (
+            this.game.mode instanceof InfluencedMode &&
+            (this.input.aimDirection.x || this.input.aimDirection.y)
+        ) {
             let { x, y } = this.aimInfluence.get();
             const invLength = 1 / Math.sqrt(x ** 2 + y ** 2);
             x *= invLength;
