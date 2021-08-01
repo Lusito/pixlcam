@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { TextureInfo } from ".";
 import { CueInfluence } from "../src";
-import { colors } from "./constants";
+import { colors } from "./modes/InfluencedMode";
 import { DebugCircle } from "./draw/DebugCircle";
 import { Sprite } from "./draw/Sprite";
 import { Game } from "./Game";
@@ -39,7 +39,7 @@ export class GameCue implements CueInfluence {
         this.burstSprite.set(x, y, burstTexture.width, burstTexture.height, 0);
     }
 
-    public drawBurst() {
+    public draw() {
         this.burstSprite.draw();
     }
 

@@ -9,7 +9,7 @@ import { AbstractMode } from "./AbstractMode";
 import { DebugCheckbox } from "../ui/DebugCheckbox";
 import { NumberOption } from "../ui/NumberOption";
 
-const colors = {
+export const colors = {
     TARGET_PROJECTED: namedColors.WHITE,
     TARGET_AIM: namedColors.CYAN,
     COMBINED_AIM: namedColors.GREEN,
@@ -84,8 +84,8 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
     }
 
     public override draw() {
-        this.cue1.drawBurst();
-        this.cue2.drawBurst();
+        this.cue1.draw();
+        this.cue2.draw();
     }
 
     public override drawDebug() {
