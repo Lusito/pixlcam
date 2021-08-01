@@ -29,7 +29,7 @@ a {
 h4 {
     margin: 10px 0 5px 0;
 }
-#sidebar > label {
+#options > label {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -42,7 +42,7 @@ h4 {
 #sidebar input[type=checkbox] {
     margin-left: 0;
 }
-#sidebar > label:not(.checkbox) > * {
+#options > label:not(.checkbox) > * {
     width: 50%;
     flex-grow: 1;
     box-sizing: border-box;
@@ -54,8 +54,7 @@ h4 {
     display: block;
     padding: 5px 0;
 }
-#speed,
-#currentZoom {
+input:disabled {
     background: white;
     text-align: right;
 }

@@ -15,67 +15,21 @@
         <div id="wrapper">
             <canvas id="canvas"></canvas>
             <div id="sidebar">
-                <label>
-                    <span>Camera Type:</span>
-                    <select id="mode">
-                        <option value="simple">Simple Camera</option>
-                        <option value="screen">Screen Camera</option>
-                        <option value="following">Following Camera</option>
-                        <option value="influenced" selected>Influenced Camera</option>
-                    </select>
-                </label>
-                <label class="checkbox">
-                    <input type="checkbox" id="snapToPixel" />
-                    <span>Snap To Pixels</span>
-                </label>
-                <label>
-                    <span>Zoom:</span>
-                    <input type="number" id="zoom" min="0.125" max="8" value="0.5" step="0.125" />
-                </label>
-                <label>
-                    <span>Max Speed:</span>
-                    <input type="number" id="maxSpeed" min="0.01" />
-                </label>
-                <label>
-                    <span>Acceleration:</span>
-                    <input type="number" id="acceleration" min="0.01" />
-                </label>
-                <label>
-                    <span>Slow Distance:</span>
-                    <input type="number" id="slowDistance" min="0" />
-                </label>
-                <label>
-                    <span>Lock Distance:</span>
-                    <input type="number" id="lockDistance" min="0" />
-                </label>
-                <label>
-                    <span>Max Velocity Influence:</span>
-                    <input type="number" id="maxVelocityInfluence" min="0" />
-                </label>
-                <label>
-                    <span>Velocity Influence Factor:</span>
-                    <input type="number" id="velocityInfluenceFactor" min="0" step="0.1" />
-                </label>
-                <label>
-                    <span>Max Aim Influence:</span>
-                    <input type="number" id="maxAimInfluence" min="0" />
-                </label>
-                <label>
-                    <span>Aim Influence Factor:</span>
-                    <input type="number" id="aimInfluenceFactor" min="0" step="0.1" />
-                </label>
-                <label>
-                    <span>Aim Influence Lerp:</span>
-                    <input type="number" id="aimInfluenceLerp" min="0" max="1" step="0.1" />
-                </label>
-                <label>
-                    <span>Current Speed:</span>
-                    <input id="speed" disabled />
-                </label>
-                <label>
-                    <span>Current Zoom:</span>
-                    <input id="currentZoom" disabled />
-                </label>
+                <div id="options">
+                    <label>
+                        <span>Camera Type:</span>
+                        <select id="mode">
+                            <option value="simple">Simple Camera</option>
+                            <option value="screen">Screen Camera</option>
+                            <option value="following">Following Camera</option>
+                            <option value="influenced" selected>Influenced Camera</option>
+                        </select>
+                    </label>
+                    <label class="checkbox">
+                        <input type="checkbox" id="snapToPixel" />
+                        <span>Snap To Pixels</span>
+                    </label>
+                </div>
                 <h4>
                     <label><input type="checkbox" id="debug" checked /> <span>Debug Drawings:</span></label>
                 </h4>

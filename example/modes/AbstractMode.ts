@@ -4,14 +4,12 @@ import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants";
 import { DebugCircle } from "../draw/DebugCircle";
 import { DebugRect } from "../draw/DebugRect";
 import { Player } from "../Player";
-import { Sidebar } from "../Sidebar";
 import { DebugCrosshair } from "../draw/DebugCrosshair";
 import type { Game } from "../Game";
 
 export type ModeKey = "simple" | "following" | "influenced" | "screen";
 
 export abstract class AbstractMode<T extends Camera> {
-    public readonly sidebar: Sidebar;
     public readonly camera: T;
     protected readonly circle: DebugCircle;
     protected readonly rect: DebugRect;
@@ -19,7 +17,6 @@ export abstract class AbstractMode<T extends Camera> {
     protected readonly player: Player;
 
     public constructor(game: Game, player: Player, camera: T) {
-        this.sidebar = game.sidebar;
         this.player = player;
         this.camera = camera;
         this.circle = new DebugCircle(game.gl, game.debugShader, 20);
@@ -30,11 +27,13 @@ export abstract class AbstractMode<T extends Camera> {
         this.camera.setZoom(0.5);
     }
 
-    public abstract onEnable(): void;
+    public onDisable() {}
 
-    public abstract update(deltaTime: number): void;
+    public onEnable() {}
 
-    public abstract draw(): void;
+    public update(deltaTime: number) {}
 
-    public abstract drawDebug(): void;
+    public draw() {}
+
+    public drawDebug() {}
 }

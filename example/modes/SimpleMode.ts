@@ -9,15 +9,11 @@ export class SimpleMode extends AbstractMode<Camera> {
         super(game, player, new Camera());
     }
 
-    public onEnable() {
+    public override onEnable() {
         this.camera.moveTo(this.player.x, this.player.y);
     }
 
-    public update() {
+    public override update() {
         this.camera.moveTo(this.player.x, this.player.y);
     }
-
-    public draw() {}
-
-    public drawDebug() {}
 }

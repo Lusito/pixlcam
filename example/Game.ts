@@ -4,7 +4,6 @@ import { BOUND_SIZE, colors, PLAYER_SPEED, SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_HE
 import { DebugRect } from "./draw/DebugRect";
 import { createDebugShader, DebugShader } from "./shaders/DebugShader";
 import { Player } from "./Player";
-import { Sidebar } from "./Sidebar";
 import type { TextureInfo } from ".";
 import { Sprite } from "./draw/Sprite";
 import { createDefaultShader, DefaultShader } from "./shaders/DefaultShader";
@@ -14,6 +13,8 @@ import { InfluencedMode } from "./modes/InfluencedMode";
 import { FollowingMode } from "./modes/FollowingMode";
 import { SimpleMode } from "./modes/SimpleMode";
 import { ScreenMode } from "./modes/ScreenMode";
+import { DebugCheckbox } from "./ui/DebugCheckbox";
+import { NumberOption } from "./ui/NumberOption";
 
 export class Game {
     public readonly gl: WebGLRenderingContext;
@@ -23,7 +24,6 @@ export class Game {
     private readonly player = new Player();
     private readonly crosshair: DebugCrosshair;
     private readonly boundRects: DebugRect[] = [];
-    public readonly sidebar: Sidebar;
     private readonly playerSprite: Sprite;
     private readonly playerTexture: { width: number; height: number; texture: WebGLTexture };
     private readonly bgSprite: Sprite;
@@ -32,6 +32,12 @@ export class Game {
         simple: SimpleMode;
         influenced: InfluencedMode;
         following: FollowingMode;
+    };
+
+    private ui = {
+        cameraCurrent: new DebugCheckbox("＋ Camera Current", colors.CAMERA).show(),
+        zoom: new NumberOption("Zoom", { min: "0.125", max: "8", value: "0.5", step: "0.125" }).show(),
+        debug: document.getElementById("debug") as HTMLInputElement,
     };
 
     public constructor(
@@ -67,20 +73,50 @@ export class Game {
         canvas.height = SCREEN_HEIGHT;
         gl.viewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-        this.sidebar = new Sidebar();
         this.modes = {
             screen: new ScreenMode(this, this.player),
             simple: new SimpleMode(this, this.player),
             influenced: new InfluencedMode(this, this.player, burstTexture),
             following: new FollowingMode(this, this.player),
         };
-        this.setMode(this.sidebar.mode.value as ModeKey);
-        this.sidebar.setupUI(this);
+
+        // Connect to mode dropdown
+        const mode = document.getElementById("mode") as HTMLSelectElement;
+        mode.addEventListener("change", () => {
+            this.setMode(mode.value as ModeKey);
+        });
+        this.setMode(mode.value as ModeKey);
+
+        // Connect to snapToPixel option
+        const snapToPixel = document.getElementById("snapToPixel") as HTMLInputElement;
+        snapToPixel.checked = this.mode.camera.snapToPixel;
+        snapToPixel.addEventListener("input", () => {
+            for (const key in this.modes) {
+                const mode = this.modes[key as ModeKey];
+                mode.camera.snapToPixel = snapToPixel.checked;
+            }
+        });
+
+        // Connect to zoom option
+        this.ui.zoom.value = this.mode.camera.getZoom();
+        this.ui.zoom.addListener((value) => {
+            for (const key in this.modes) {
+                const mode = this.modes[key as ModeKey];
+                mode.camera.setZoom(value);
+            }
+        });
+
+        // Prevent key presses from reaching player input when user is in the sidebar
+        const sidebar = document.getElementById("sidebar")!;
+        sidebar.addEventListener("keydown", (e) => e.stopImmediatePropagation());
+        sidebar.addEventListener("keyup", (e) => e.stopImmediatePropagation());
+        sidebar.addEventListener("keypress", (e) => e.stopImmediatePropagation());
     }
 
     public setMode(modeKey: ModeKey) {
         const mode = this.modes[modeKey];
         if (mode) {
+            this.mode?.onDisable();
             this.mode = mode;
             mode.onEnable();
         }
@@ -115,10 +151,10 @@ export class Game {
         this.debugShader.uMVMatrix.set(false, modelView);
         this.debugShader.uPMatrix.set(false, projection);
 
-        if (this.sidebar.debug.checked) {
+        if (this.ui.debug.checked) {
             this.mode.drawDebug();
 
-            if (this.sidebar.cameraCurrent.checked) {
+            if (this.ui.cameraCurrent.checked) {
                 this.crosshair.set(camera.getX(), camera.getY(), 16, 0);
                 this.crosshair.stroke(colors.CAMERA);
             }
@@ -126,6 +162,5 @@ export class Game {
                 rect.fill(colors.BOUND);
             }
         }
-        this.sidebar.currentZoom.value = camera.getZoom().toFixed(3);
     }
 }
