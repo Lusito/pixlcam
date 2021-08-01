@@ -70,6 +70,7 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
         for (const key in this.ui) {
             this.ui[key as UiKey].hide();
         }
+        this.player.removeRocket();
     }
 
     public override onEnable() {
@@ -97,20 +98,7 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
             this.crosshair.set(this.player.x + x, this.player.y + y, 16, 45);
             this.crosshair.stroke(colors.COMBINED_AIM);
         }
-        if (this.ui.targetProjected.checked) {
-            const { x, y } = this.player.velocityInfluence.get();
-            this.rect.set(
-                this.player.x + x - PLAYER_SIZE,
-                this.player.y + y - PLAYER_SIZE,
-                PLAYER_SIZE * 2,
-                PLAYER_SIZE * 2
-            );
-            this.rect.stroke(colors.TARGET_PROJECTED);
-        }
-        if (this.ui.targetAim.checked) {
-            const { x, y } = this.player.aimInfluence.get();
-            this.rect.set(this.player.x + x - AIM_SIZE, this.player.y + y - AIM_SIZE, AIM_SIZE * 2, AIM_SIZE * 2);
-            this.rect.stroke(colors.TARGET_AIM);
-        }
+        if (this.ui.targetProjected.checked) this.player.drawDebugProjected(this.rect);
+        if (this.ui.targetAim.checked) this.player.drawDebugAim(this.rect);
     }
 }

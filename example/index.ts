@@ -29,15 +29,24 @@ async function loadTexture(path: string, gl: WebGLRenderingContext) {
 
 export type TextureInfo = ReturnType<typeof loadTexture> extends Promise<infer T> ? T : never;
 
+async function loadTextures(gl: WebGLRenderingContext) {
+    return {
+        bg: await loadTexture("/background.jpg", gl),
+        player: await loadTexture("/shipPink_manned.png", gl),
+        heart: await loadTexture("/heart.png", gl),
+        burst: await loadTexture("/laserGreen_burst.png", gl),
+        rocket: await loadTexture("/rocket.png", gl),
+    };
+}
+
+export type Textures = ReturnType<typeof loadTextures> extends Promise<infer T> ? T : never;
+
 async function init() {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const gl = canvas.getContext("webgl") as WebGLRenderingContext;
-    const playerTexture = await loadTexture("/shipPink_manned.png", gl);
-    const heartTexture = await loadTexture("/heart.png", gl);
-    const burstTexture = await loadTexture("/laserGreen_burst.png", gl);
-    const bgTexture = await loadTexture("/background.jpg", gl);
+    const textures = await loadTextures(gl);
 
-    const game = new Game(canvas, gl, playerTexture, heartTexture, burstTexture, bgTexture);
+    const game = new Game(canvas, gl, textures);
 
     let lastTime = 0;
     function render(time: number) {

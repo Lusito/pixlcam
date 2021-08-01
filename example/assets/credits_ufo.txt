@@ -1,6 +1,7 @@
 Ufo / Effect taken from: https://opengameart.org/content/alien-ufo-pack
 Background: by upklyak: https://www.freepik.com/free-vector/mars-landscape-alien-planet-martian-background_7743415.htm#page=1&query=alien%20game&position=4
 Heart: https://opengameart.org/content/heart-pixel-art
+Rocket: https://opengameart.org/content/space-rocket-2d
 
 ###############################################################################
 

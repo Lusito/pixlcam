@@ -1,9 +1,9 @@
 /* eslint-disable */
 import { Camera, ScreenCamera } from "../src";
-import { namedColors, PLAYER_SPEED, SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
+import { namedColors, SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
 import { createDebugShader, DebugShader } from "./shaders/DebugShader";
 import { Player } from "./Player";
-import type { TextureInfo } from ".";
+import type { Textures } from ".";
 import { Sprite } from "./draw/Sprite";
 import { createDefaultShader, DefaultShader } from "./shaders/DefaultShader";
 import { DebugCrosshair } from "./draw/DebugCrosshair";
@@ -29,12 +29,10 @@ export class Game {
     public readonly debugShader: DebugShader;
     public readonly defaultShader: DefaultShader;
     public mode!: AbstractMode<Camera>;
-    private readonly player = new Player();
+    public readonly player: Player;
     private readonly crosshair: DebugCrosshair;
+    public readonly textures: Textures;
     private readonly heartSprite: Sprite;
-    private readonly heartTexture: TextureInfo;
-    private readonly playerSprite: Sprite;
-    private readonly playerTexture: TextureInfo;
     private readonly bgSprite: Sprite;
     public readonly modes: {
         simple: SimpleMode;
@@ -49,14 +47,8 @@ export class Game {
         debug: document.getElementById("debug") as HTMLInputElement,
     };
 
-    public constructor(
-        canvas: HTMLCanvasElement,
-        gl: WebGLRenderingContext,
-        playerTexture: TextureInfo,
-        heartTexture: TextureInfo,
-        burstTexture: TextureInfo,
-        bgTexture: TextureInfo
-    ) {
+    public constructor(canvas: HTMLCanvasElement, gl: WebGLRenderingContext, textures: Textures) {
+        this.textures = textures;
         this.gl = gl;
         gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
         gl.enable(gl.BLEND);
@@ -65,22 +57,18 @@ export class Game {
         this.defaultShader = createDefaultShader(gl);
         this.crosshair = new DebugCrosshair(gl, this.debugShader);
 
-        this.playerTexture = playerTexture;
-        this.playerSprite = new Sprite(gl, this.defaultShader, playerTexture.texture);
-
-        this.heartTexture = heartTexture;
-        this.heartSprite = new Sprite(gl, this.defaultShader, heartTexture.texture);
-
-        this.bgSprite = new Sprite(gl, this.defaultShader, bgTexture.texture);
+        this.heartSprite = new Sprite(gl, this.defaultShader, textures.heart.texture);
+        this.bgSprite = new Sprite(gl, this.defaultShader, textures.bg.texture);
         this.bgSprite.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, WORLD_WIDTH, WORLD_HEIGHT, 0);
 
         canvas.width = SCREEN_WIDTH;
         canvas.height = SCREEN_HEIGHT;
         gl.viewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
+        this.player = new Player(this);
         this.modes = {
             simple: new SimpleMode(this, this.player),
-            influenced: new InfluencedMode(this, this.player, burstTexture),
+            influenced: new InfluencedMode(this, this.player, textures.burst),
             following: new FollowingMode(this, this.player),
         };
         this.screenCamera = new ScreenCamera();
@@ -140,15 +128,7 @@ export class Game {
         applyCamera(this.mode.camera, this.defaultShader);
         this.bgSprite.draw();
         this.mode.draw();
-        const scale = this.player.getSpawnPct();
-        this.playerSprite.set(
-            this.player.x,
-            this.player.y,
-            this.playerTexture.width * scale,
-            this.playerTexture.height * scale,
-            (this.player.velocity.x / PLAYER_SPEED) * 25
-        );
-        this.playerSprite.draw();
+        this.player.draw();
 
         // Draw debug
         if (this.ui.debug.checked) {
@@ -163,8 +143,8 @@ export class Game {
 
         // Draw HUD
         applyCamera(this.screenCamera, this.defaultShader);
-        const heartWidth = this.heartTexture.width;
-        const heartHeight = this.heartTexture.height;
+        const heartWidth = this.textures.heart.width;
+        const heartHeight = this.textures.heart.height;
         for (let i = 0; i < 3; i++) {
             this.heartSprite.set(
                 5 + heartWidth / 2 + (5 + heartWidth) * i,

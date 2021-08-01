@@ -1,96 +1,86 @@
 /* eslint-disable */
 
-import { TargetInfluence, AimInfluence, SlowAimInfluence, Vector2, lerp } from "../src";
-import { BOUND_DISTANCE, PLAYER_SPEED, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
-
-type Keys = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
+import { TargetInfluence, AimInfluence, SlowAimInfluence, Vector2, lerp, InfluencedCamera } from "../src";
+import { AIM_SIZE, BOUND_DISTANCE, PLAYER_SIZE, PLAYER_SPEED, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
+import { DebugRect } from "./draw/DebugRect";
+import { Sprite } from "./draw/Sprite";
+import { Game } from "./Game";
+import { InputController } from "./InputController";
+import { colors } from "./modes/InfluencedMode";
+import { Rocket } from "./Rocket";
 
 const SPAWN_TIME = 0.3;
-
-function getDirection(out: Vector2, up: boolean, right: boolean, down: boolean, left: boolean, length: number) {
-    let dx = 0;
-    let dy = 0;
-    if (right) dx += 1;
-    if (left) dx -= 1;
-    if (up) dy -= 1;
-    if (down) dy += 1;
-    if (dx || dy) {
-        const f = length / Math.sqrt(dx ** 2 + dy ** 2);
-        out.x = dx * f;
-        out.y = dy * f;
-    } else {
-        out.x = 0;
-        out.y = 0;
-    }
-}
 
 export class Player implements TargetInfluence {
     public x = WORLD_WIDTH / 2;
     public y = WORLD_HEIGHT / 2;
     public velocity: Vector2 = { x: 0, y: 0 };
-    public velocityGoal: Vector2 = { x: 0, y: 0 };
     public velocityInfluence = new AimInfluence({ maxLength: 300, factor: 0.2 });
-    public aimGoal: Vector2 = { x: 0, y: 0 };
     public aimInfluence = new SlowAimInfluence({ maxLength: 300, factor: 0.3, lerp: 0.1 });
     public aims: AimInfluence[] = [];
     public spawnTime = SPAWN_TIME;
+    private readonly sprite: Sprite;
+    public readonly game: Game;
+    public input: InputController;
+    private rocket: Rocket | null = null;
 
-    private readonly keys = {
-        ArrowUp: false,
-        ArrowDown: false,
-        ArrowLeft: false,
-        ArrowRight: false,
-        KeyW: false,
-        KeyA: false,
-        KeyS: false,
-        KeyD: false,
-    };
-
-    public constructor() {
+    public constructor(game: Game) {
+        this.input = new InputController(this);
+        this.game = game;
+        this.sprite = new Sprite(game.gl, game.defaultShader, game.textures.player.texture);
         this.aims.push(this.velocityInfluence);
         this.aims.push(this.aimInfluence);
-        window.addEventListener("keyup", (e) => this.onKeyUp(e));
-        window.addEventListener("keydown", (e) => this.onKeyDown(e));
-        window.addEventListener("keypress", (e) => {
-            if (e.code === "KeyT") {
-                for (let i = 0; i < 10; i++) {
-                    const x = BOUND_DISTANCE + Math.random() * (WORLD_WIDTH - BOUND_DISTANCE * 2);
-                    const y = BOUND_DISTANCE + Math.random() * (WORLD_HEIGHT - BOUND_DISTANCE * 2);
-                    if (Math.sqrt((x - this.x) ** 2 + (y - this.y) ** 2) > 500) {
-                        this.x = x;
-                        this.y = y;
-                        this.spawnTime = SPAWN_TIME;
-                        return;
-                    }
-                }
-                console.log("Could not find a new spot far away enough");
+    }
+
+    public teleport() {
+        if (this.rocket) return;
+
+        for (let i = 0; i < 10; i++) {
+            const x = BOUND_DISTANCE + Math.random() * (WORLD_WIDTH - BOUND_DISTANCE * 2);
+            const y = BOUND_DISTANCE + Math.random() * (WORLD_HEIGHT - BOUND_DISTANCE * 2);
+            if (Math.sqrt((x - this.x) ** 2 + (y - this.y) ** 2) > 500) {
+                this.x = x;
+                this.y = y;
+                this.spawnTime = SPAWN_TIME;
+                return;
             }
-        });
+        }
+        console.log("Could not find a new spot far away enough");
     }
 
-    public onKeyDown(e: KeyboardEvent) {
-        if (e.code in this.keys) this.keys[e.code as Keys] = true;
+    public shootRocket() {
+        // If already has rocket, remove it, go back to player as target.
+        if (this.rocket) {
+            this.removeRocket();
+        } else {
+            const { camera } = this.game.mode;
+            if (camera instanceof InfluencedCamera) {
+                this.rocket = new Rocket(this.game, this, this.input.aimDirection);
+                camera.setTarget(this.rocket);
+            }
+        }
     }
 
-    public onKeyUp(e: KeyboardEvent) {
-        if (e.code in this.keys) this.keys[e.code as Keys] = false;
+    public removeRocket() {
+        this.rocket = null;
+        const { camera } = this.game.mode;
+        if (camera instanceof InfluencedCamera) camera.setTarget(this);
     }
 
     public update(deltaTime: number) {
-        getDirection(
-            this.velocityGoal,
-            this.keys.ArrowUp,
-            this.keys.ArrowRight,
-            this.keys.ArrowDown,
-            this.keys.ArrowLeft,
-            PLAYER_SPEED
-        );
+        this.input.update();
 
-        lerp(this.velocity, this.velocityGoal.x, this.velocityGoal.y);
+        let speed = PLAYER_SPEED;
+        if (this.rocket) {
+            speed = 0;
+            lerp(this.velocity, 0, 0);
+            this.aimInfluence.set(0, 0);
+            this.rocket.update(deltaTime, this.input.moveDirection);
+        }
+
+        lerp(this.velocity, this.input.moveDirection.x * speed, this.input.moveDirection.y * speed);
+        this.aimInfluence.set(this.input.aimDirection.x * speed, this.input.aimDirection.y * speed);
         this.velocityInfluence.set(this.velocity.x, this.velocity.y);
-
-        getDirection(this.aimGoal, this.keys.KeyW, this.keys.KeyD, this.keys.KeyS, this.keys.KeyA, PLAYER_SPEED);
-        this.aimInfluence.set(this.aimGoal.x, this.aimGoal.y);
         this.aimInfluence.update();
 
         this.x = Math.max(BOUND_DISTANCE, Math.min(WORLD_WIDTH - BOUND_DISTANCE, this.x + this.velocity.x * deltaTime));
@@ -100,6 +90,32 @@ export class Player implements TargetInfluence {
         );
 
         if (this.spawnTime > 0) this.spawnTime = Math.max(0, this.spawnTime - deltaTime);
+    }
+
+    public draw() {
+        const scale = this.getSpawnPct();
+        const { width, height } = this.game.textures.player;
+        this.sprite.set(this.x, this.y, width * scale, height * scale, (this.velocity.x / PLAYER_SPEED) * 25);
+        this.sprite.draw();
+        this.rocket?.draw();
+    }
+
+    public drawDebugProjected(rect: DebugRect) {
+        if (this.rocket) {
+            this.rocket.drawDebugProjected(rect);
+        } else {
+            const { x, y } = this.velocityInfluence.get();
+            rect.set(this.x + x - PLAYER_SIZE, this.y + y - PLAYER_SIZE, PLAYER_SIZE * 2, PLAYER_SIZE * 2);
+            rect.stroke(colors.TARGET_PROJECTED);
+        }
+    }
+
+    public drawDebugAim(rect: DebugRect) {
+        if (!this.rocket) {
+            const { x, y } = this.aimInfluence.get();
+            rect.set(this.x + x - AIM_SIZE, this.y + y - AIM_SIZE, AIM_SIZE * 2, AIM_SIZE * 2);
+            rect.stroke(colors.TARGET_AIM);
+        }
     }
 
     public getSpawnPct() {
