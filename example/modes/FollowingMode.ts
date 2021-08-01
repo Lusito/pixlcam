@@ -1,11 +1,16 @@
 /* eslint-disable */
 import { FollowingCamera } from "../../src";
-import { colors, WORLD_HEIGHT, WORLD_WIDTH } from "../constants";
+import { namedColors, WORLD_HEIGHT, WORLD_WIDTH } from "../constants";
 import { Player } from "../Player";
 import type { Game } from "../Game";
 import { AbstractMode } from "./AbstractMode";
 import { DebugCheckbox } from "../ui/DebugCheckbox";
 import { NumberOption } from "../ui/NumberOption";
+
+const colors = {
+    CAMERA_DESIRED: namedColors.GREEN,
+    SLOW_DISTANCE: namedColors.CYAN,
+};
 
 type UiKey = keyof FollowingMode["ui"];
 

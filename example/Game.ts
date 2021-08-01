@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { Camera } from "../src";
-import { colors, PLAYER_SPEED, SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
+import { namedColors, PLAYER_SPEED, SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
 import { createDebugShader, DebugShader } from "./shaders/DebugShader";
 import { Player } from "./Player";
 import type { TextureInfo } from ".";
@@ -14,6 +14,10 @@ import { SimpleMode } from "./modes/SimpleMode";
 import { ScreenMode } from "./modes/ScreenMode";
 import { DebugCheckbox } from "./ui/DebugCheckbox";
 import { NumberOption } from "./ui/NumberOption";
+
+const colors = {
+    CAMERA: namedColors.RED,
+};
 
 export class Game {
     public readonly gl: WebGLRenderingContext;

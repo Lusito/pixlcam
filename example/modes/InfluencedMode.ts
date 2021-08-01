@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { InfluencedCamera } from "../../src";
-import { AIM_SIZE, colors, PLAYER_SIZE, WORLD_HEIGHT, WORLD_WIDTH } from "../constants";
+import { AIM_SIZE, namedColors, PLAYER_SIZE, WORLD_HEIGHT, WORLD_WIDTH } from "../constants";
 import { Player } from "../Player";
 import type { TextureInfo } from "..";
 import { GameCue } from "../GameCue";
@@ -8,6 +8,14 @@ import type { Game } from "../Game";
 import { AbstractMode } from "./AbstractMode";
 import { DebugCheckbox } from "../ui/DebugCheckbox";
 import { NumberOption } from "../ui/NumberOption";
+
+const colors = {
+    TARGET_PROJECTED: namedColors.WHITE,
+    TARGET_AIM: namedColors.CYAN,
+    COMBINED_AIM: namedColors.GREEN,
+    CUE_INNER: namedColors.PINK,
+    CUE_OUTER: namedColors.OLIVE,
+};
 
 type UiKey = keyof InfluencedMode["ui"];
 

@@ -29,14 +29,3 @@ export const namedColors = {
     PINK: createColor("ff66ff"),
     OLIVE: createColor("bbbb22"),
 };
-
-export const colors = {
-    CAMERA: namedColors.RED,
-    CAMERA_DESIRED: namedColors.GREEN,
-    SLOW_DISTANCE: namedColors.CYAN,
-    TARGET_PROJECTED: namedColors.WHITE,
-    TARGET_AIM: namedColors.CYAN,
-    COMBINED_AIM: namedColors.GREEN,
-    CUE_INNER: namedColors.PINK,
-    CUE_OUTER: namedColors.OLIVE,
-};
