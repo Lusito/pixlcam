@@ -12,6 +12,9 @@ export const WORLD_HEIGHT = 2889;
 
 export const ROCKET_SPEED = 1400;
 export const ROCKET_SIZE = 32;
+export const ROCKET_PREVIEW_OFFSET = 100;
+export const ROCKET_PREVIEW_SCALE = 0.4;
+
 export const PLAYER_SPEED = 800;
 export const PLAYER_SIZE = 64;
 export const AIM_SIZE = 32;

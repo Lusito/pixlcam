@@ -1,7 +1,14 @@
 /* eslint-disable */
 
 import { TargetInfluence, AimInfluence, Vector2, lerpVector } from "../src";
-import { ROCKET_SIZE, ROCKET_SPEED, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
+import {
+    ROCKET_PREVIEW_OFFSET,
+    ROCKET_PREVIEW_SCALE,
+    ROCKET_SIZE,
+    ROCKET_SPEED,
+    WORLD_HEIGHT,
+    WORLD_WIDTH,
+} from "./constants";
 import { DebugRect } from "./draw/DebugRect";
 import { Sprite } from "./draw/Sprite";
 import { Game } from "./Game";
@@ -9,7 +16,6 @@ import { colors } from "./modes/InfluencedMode";
 import { vectorToAngle } from "./utils";
 
 const SPAWN_TIME = 0.3;
-const START_DISTANCE = 100;
 
 export class Rocket implements TargetInfluence {
     public x: number;
@@ -24,12 +30,11 @@ export class Rocket implements TargetInfluence {
     public readonly game: Game;
 
     public constructor(game: Game, start: Vector2, direction: Vector2) {
-        if (direction.x === 0 && direction.y === 0) this.lastValidDirection.x = 1;
-        else this.lastValidDirection.x = direction.x;
+        this.lastValidDirection.x = direction.x;
         this.lastValidDirection.y = direction.y;
 
-        this.x = start.x + this.lastValidDirection.x * START_DISTANCE;
-        this.y = start.y + this.lastValidDirection.y * START_DISTANCE;
+        this.x = start.x + this.lastValidDirection.x * ROCKET_PREVIEW_OFFSET;
+        this.y = start.y + this.lastValidDirection.y * ROCKET_PREVIEW_OFFSET;
 
         this.game = game;
         this.sprite = new Sprite(game.gl, game.defaultShader, game.textures.rocket.texture);
@@ -72,6 +77,6 @@ export class Rocket implements TargetInfluence {
     }
 
     public getSpawnPct() {
-        return 1 - this.spawnTime / SPAWN_TIME;
+        return ROCKET_PREVIEW_SCALE + (1 - this.spawnTime / SPAWN_TIME) * (1 - ROCKET_PREVIEW_SCALE);
     }
 }

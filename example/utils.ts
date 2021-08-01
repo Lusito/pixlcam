@@ -9,8 +9,12 @@ export function positiveNumListener(input: HTMLInputElement, callback: (value: n
 }
 
 export function vectorToAngle(dir: Vector2) {
-    if (dir.x === 0 && dir.y === 0) return 0;
-    let angle = Math.atan2(dir.x, -dir.y) * RAD_TO_DEG;
+    return xyToAngle(dir.x, dir.y);
+}
+
+export function xyToAngle(x: number, y: number) {
+    if (x === 0 && y === 0) return 0;
+    let angle = Math.atan2(x, -y) * RAD_TO_DEG;
     if (angle < 0.0) angle += 360.0;
     return angle;
 }

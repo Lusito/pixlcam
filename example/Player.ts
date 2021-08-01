@@ -1,13 +1,23 @@
 /* eslint-disable */
 
 import { TargetInfluence, AimInfluence, SlowAimInfluence, Vector2, lerpVector, InfluencedCamera } from "../src";
-import { AIM_SIZE, BOUND_DISTANCE, PLAYER_SIZE, PLAYER_SPEED, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
+import {
+    AIM_SIZE,
+    BOUND_DISTANCE,
+    PLAYER_SIZE,
+    PLAYER_SPEED,
+    ROCKET_PREVIEW_OFFSET,
+    ROCKET_PREVIEW_SCALE,
+    WORLD_HEIGHT,
+    WORLD_WIDTH,
+} from "./constants";
 import { DebugRect } from "./draw/DebugRect";
 import { Sprite } from "./draw/Sprite";
 import { Game } from "./Game";
 import { InputController } from "./InputController";
 import { colors } from "./modes/InfluencedMode";
 import { Rocket } from "./Rocket";
+import { xyToAngle } from "./utils";
 
 const SPAWN_TIME = 0.3;
 
@@ -21,6 +31,7 @@ export class Player implements TargetInfluence {
     public zoom = 1;
     public spawnTime = SPAWN_TIME;
     private readonly sprite: Sprite;
+    private readonly rocketSprite: Sprite;
     public readonly game: Game;
     public input: InputController;
     private rocket: Rocket | null = null;
@@ -29,6 +40,7 @@ export class Player implements TargetInfluence {
         this.input = new InputController(this);
         this.game = game;
         this.sprite = new Sprite(game.gl, game.defaultShader, game.textures.player.texture);
+        this.rocketSprite = new Sprite(game.gl, game.defaultShader, game.textures.rocket.texture);
         this.aims.push(this.velocityInfluence);
         this.aims.push(this.aimInfluence);
     }
@@ -53,7 +65,7 @@ export class Player implements TargetInfluence {
         // If already has rocket, remove it, go back to player as target.
         if (this.rocket) {
             this.removeRocket();
-        } else {
+        } else if (this.input.aimDirection.x || this.input.aimDirection.y) {
             const { camera } = this.game.mode;
             if (camera instanceof InfluencedCamera) {
                 this.rocket = new Rocket(this.game, this, this.input.aimDirection);
@@ -98,7 +110,24 @@ export class Player implements TargetInfluence {
         const { width, height } = this.game.textures.player;
         this.sprite.set(this.x, this.y, width * scale, height * scale, (this.velocity.x / PLAYER_SPEED) * 25);
         this.sprite.draw();
-        this.rocket?.draw();
+        if (this.rocket) {
+            this.rocket.draw();
+        } else if (this.input.aimDirection.x || this.input.aimDirection.y) {
+            let { x, y } = this.aimInfluence.get();
+            const f = 1 / Math.sqrt(x ** 2 + y ** 2);
+            x *= f;
+            y *= f;
+            let { width, height } = this.game.textures.rocket;
+            const angle = xyToAngle(x, y);
+            this.rocketSprite.set(
+                this.x + x * ROCKET_PREVIEW_OFFSET,
+                this.y + y * ROCKET_PREVIEW_OFFSET,
+                width * ROCKET_PREVIEW_SCALE,
+                height * ROCKET_PREVIEW_SCALE,
+                angle
+            );
+            this.rocketSprite.draw();
+        }
     }
 
     public drawDebugProjected(rect: DebugRect) {
