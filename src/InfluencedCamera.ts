@@ -54,7 +54,6 @@ export class InfluencedCamera extends Camera {
 
     public setTarget(target: TargetInfluence | null) {
         // Adjust offset, so we can smoothen the transition between the current and next target
-        // fixme: add something to the demo to try this.
         if (target && this.target) {
             this.offset.x += this.target.x - target.x;
             this.offset.y += this.target.y - target.y;
