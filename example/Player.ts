@@ -88,7 +88,7 @@ export class Player implements TargetInfluence {
             speed = 0;
             lerpVector(this.velocity, 0, 0);
             this.aimInfluence.set(0, 0);
-            this.rocket.update(deltaTime, this.input.moveDirection);
+            this.rocket.update(deltaTime, this.input.aimDirection);
         }
 
         lerpVector(this.velocity, this.input.moveDirection.x * speed, this.input.moveDirection.y * speed);
@@ -106,7 +106,7 @@ export class Player implements TargetInfluence {
     }
 
     public draw() {
-        const scale = this.getSpawnPct();
+        const scale = this.getScale();
         const { width, height } = this.game.textures.player;
         this.sprite.set(this.x, this.y, width * scale, height * scale, (this.velocity.x / PLAYER_SPEED) * 25);
         this.sprite.draw();
@@ -114,10 +114,10 @@ export class Player implements TargetInfluence {
             this.rocket.draw();
         } else if (this.input.aimDirection.x || this.input.aimDirection.y) {
             let { x, y } = this.aimInfluence.get();
-            const f = 1 / Math.sqrt(x ** 2 + y ** 2);
-            x *= f;
-            y *= f;
-            let { width, height } = this.game.textures.rocket;
+            const invLength = 1 / Math.sqrt(x ** 2 + y ** 2);
+            x *= invLength;
+            y *= invLength;
+            const { width, height } = this.game.textures.rocket;
             const angle = xyToAngle(x, y);
             this.rocketSprite.set(
                 this.x + x * ROCKET_PREVIEW_OFFSET,
@@ -148,7 +148,7 @@ export class Player implements TargetInfluence {
         }
     }
 
-    public getSpawnPct() {
+    public getScale() {
         return 1 - this.spawnTime / SPAWN_TIME;
     }
 }

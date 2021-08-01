@@ -4,6 +4,7 @@ import { TargetInfluence, AimInfluence, Vector2, lerpVector } from "../src";
 import {
     ROCKET_PREVIEW_OFFSET,
     ROCKET_PREVIEW_SCALE,
+    ROCKET_SCALE,
     ROCKET_SIZE,
     ROCKET_SPEED,
     WORLD_HEIGHT,
@@ -63,7 +64,7 @@ export class Rocket implements TargetInfluence {
     }
 
     public draw() {
-        const scale = this.getSpawnPct() * 0.5;
+        const scale = this.getScale();
         let { width, height } = this.game.textures.rocket;
         const angle = vectorToAngle(this.velocity);
         this.sprite.set(this.x, this.y, width * scale, height * scale, angle);
@@ -76,7 +77,8 @@ export class Rocket implements TargetInfluence {
         rect.stroke(colors.TARGET_PROJECTED);
     }
 
-    public getSpawnPct() {
-        return ROCKET_PREVIEW_SCALE + (1 - this.spawnTime / SPAWN_TIME) * (1 - ROCKET_PREVIEW_SCALE);
+    public getScale() {
+        const pct = 1 - this.spawnTime / SPAWN_TIME;
+        return ROCKET_PREVIEW_SCALE + pct * (ROCKET_SCALE - ROCKET_PREVIEW_SCALE);
     }
 }

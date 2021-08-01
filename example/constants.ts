@@ -4,7 +4,7 @@ import { Color } from "./draw/types";
 export const DEG_TO_RAD = Math.PI / 180;
 export const RAD_TO_DEG = 180 / Math.PI;
 
-export const SCREEN_WIDTH = 640;
+export const SCREEN_WIDTH = 854;
 export const SCREEN_HEIGHT = 480;
 
 export const WORLD_WIDTH = 6500;
@@ -14,6 +14,7 @@ export const ROCKET_SPEED = 1400;
 export const ROCKET_SIZE = 32;
 export const ROCKET_PREVIEW_OFFSET = 100;
 export const ROCKET_PREVIEW_SCALE = 0.4;
+export const ROCKET_SCALE = 0.5;
 
 export const PLAYER_SPEED = 800;
 export const PLAYER_SIZE = 64;
