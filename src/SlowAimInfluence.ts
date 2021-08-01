@@ -1,6 +1,6 @@
 import { AimInfluence, AimInfluenceOptions } from "./AimInfluence";
 import { Vector2 } from "./types";
-import { lerp } from "./utils";
+import { lerpVector } from "./utils";
 
 export interface SlowAimInfluenceOptions extends AimInfluenceOptions {
     lerp: number;
@@ -22,6 +22,6 @@ export class SlowAimInfluence extends AimInfluence {
     }
 
     public update() {
-        lerp(this.slowOffset, this.offset.x, this.offset.y, this.lerp);
+        lerpVector(this.slowOffset, this.offset.x, this.offset.y, this.lerp);
     }
 }

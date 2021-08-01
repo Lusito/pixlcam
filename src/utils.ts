@@ -4,7 +4,13 @@ export const createMatrix4 = (): Matrix4 => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
 export const ease = (x: number) => -(Math.cos(Math.PI * x) - 1) / 2;
 
-export function lerp(p: Vector2, x: number, y: number, lerpFactor = 0.1, lock = 0.001) {
+export function lerpScalar(from: number, to: number, lerpFactor = 0.1, lock = 0.001) {
+    const len = to - from;
+    if (len < lock) return to;
+    return from + len * lerpFactor;
+}
+
+export function lerpVector(p: Vector2, x: number, y: number, lerpFactor = 0.1, lock = 0.001) {
     const dx = x - p.x;
     const dy = y - p.y;
     const len = Math.sqrt(dx ** 2 + dy ** 2);

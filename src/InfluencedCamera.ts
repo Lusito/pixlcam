@@ -1,7 +1,7 @@
 import { Camera } from "./Camera";
 import { AimInfluence } from "./AimInfluence";
 import { CameraBounds, Vector2 } from "./types";
-import { ease, lerp, restrictToBounds } from "./utils";
+import { ease, lerpVector, lerpScalar, restrictToBounds } from "./utils";
 
 export interface CueInfluence extends Vector2 {
     innerRadius: number;
@@ -11,8 +11,7 @@ export interface CueInfluence extends Vector2 {
 
 export interface TargetInfluence extends Vector2 {
     aims: AimInfluence[];
-    // fixme: zoom (instead of having zoom on the camera itself)
-    // when implementing this, add lerping for zoom, so a transition from one target to the next goes smoothly.
+    zoom: number;
 }
 
 /**
@@ -41,7 +40,6 @@ export class InfluencedCamera extends Camera {
 
     public override setZoom(zoom: number) {
         this.savedZoom = zoom;
-        super.setZoom(zoom);
     }
 
     public addCue(cue: CueInfluence) {
@@ -86,13 +84,14 @@ export class InfluencedCamera extends Camera {
 
         const cue = this.getClosestCue();
         let { x, y } = this.target;
-        let zoom = this.savedZoom;
+        let zoom = this.savedZoom * this.target.zoom;
         let aimInfluence = 1;
         if (cue) {
+            const maxZoom = zoom * cue.zoom;
             const dst = Math.sqrt((cue.x - x) ** 2 + (cue.y - y) ** 2);
             if (dst <= cue.innerRadius) {
                 // In the inner radius, the camera is fixed on the cue
-                this.updateZoom(this.savedZoom * cue.zoom);
+                this.updateZoom(maxZoom);
                 this.moveTo(cue.x, cue.y);
                 return;
             }
@@ -104,8 +103,7 @@ export class InfluencedCamera extends Camera {
                 const cueInfluence = 1 - aimInfluence;
                 x += (cue.x - x) * cueInfluence;
                 y += (cue.y - y) * cueInfluence;
-                const maxZoom = this.savedZoom * cue.zoom;
-                zoom = this.savedZoom + (maxZoom - this.savedZoom) * ease(cueInfluence);
+                zoom += (maxZoom - zoom) * ease(cueInfluence);
             }
         }
 
@@ -120,12 +118,13 @@ export class InfluencedCamera extends Camera {
             }
             aimFactor = 1 / this.target.aims.length;
         }
-        lerp(this.offset, aimOffsetX * aimFactor, aimOffsetY * aimFactor);
+        lerpVector(this.offset, aimOffsetX * aimFactor, aimOffsetY * aimFactor);
         this.updateZoom(zoom);
         this.moveTo(x + this.offset.x * aimInfluence, y + this.offset.y * aimInfluence);
     }
 
     private updateZoom(zoom: number) {
+        zoom = lerpScalar(this.zoom, zoom);
         if (this.zoom !== zoom) super.setZoom(zoom);
     }
 

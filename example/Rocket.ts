@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { TargetInfluence, AimInfluence, Vector2, lerp } from "../src";
+import { TargetInfluence, AimInfluence, Vector2, lerpVector } from "../src";
 import { ROCKET_SIZE, ROCKET_SPEED, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
 import { DebugRect } from "./draw/DebugRect";
 import { Sprite } from "./draw/Sprite";
@@ -18,6 +18,7 @@ export class Rocket implements TargetInfluence {
     public velocity: Vector2 = { x: 0, y: 0 };
     public velocityInfluence = new AimInfluence({ maxLength: 200, factor: 0.2 });
     public aims: AimInfluence[] = [];
+    public zoom = 1.5;
     public spawnTime = SPAWN_TIME;
     private readonly sprite: Sprite;
     public readonly game: Game;
@@ -45,7 +46,7 @@ export class Rocket implements TargetInfluence {
             this.lastValidDirection.x = dirX;
             this.lastValidDirection.y = dirY;
         }
-        lerp(this.velocity, dirX * ROCKET_SPEED, dirY * ROCKET_SPEED, 0.03);
+        lerpVector(this.velocity, dirX * ROCKET_SPEED, dirY * ROCKET_SPEED, 0.03);
         this.velocityInfluence.set(this.velocity.x, this.velocity.y);
 
         this.x += this.velocity.x * deltaTime;

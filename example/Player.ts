@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { TargetInfluence, AimInfluence, SlowAimInfluence, Vector2, lerp, InfluencedCamera } from "../src";
+import { TargetInfluence, AimInfluence, SlowAimInfluence, Vector2, lerpVector, InfluencedCamera } from "../src";
 import { AIM_SIZE, BOUND_DISTANCE, PLAYER_SIZE, PLAYER_SPEED, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
 import { DebugRect } from "./draw/DebugRect";
 import { Sprite } from "./draw/Sprite";
@@ -18,6 +18,7 @@ export class Player implements TargetInfluence {
     public velocityInfluence = new AimInfluence({ maxLength: 300, factor: 0.2 });
     public aimInfluence = new SlowAimInfluence({ maxLength: 300, factor: 0.3, lerp: 0.1 });
     public aims: AimInfluence[] = [];
+    public zoom = 1;
     public spawnTime = SPAWN_TIME;
     private readonly sprite: Sprite;
     public readonly game: Game;
@@ -73,12 +74,12 @@ export class Player implements TargetInfluence {
         let speed = PLAYER_SPEED;
         if (this.rocket) {
             speed = 0;
-            lerp(this.velocity, 0, 0);
+            lerpVector(this.velocity, 0, 0);
             this.aimInfluence.set(0, 0);
             this.rocket.update(deltaTime, this.input.moveDirection);
         }
 
-        lerp(this.velocity, this.input.moveDirection.x * speed, this.input.moveDirection.y * speed);
+        lerpVector(this.velocity, this.input.moveDirection.x * speed, this.input.moveDirection.y * speed);
         this.aimInfluence.set(this.input.aimDirection.x * speed, this.input.aimDirection.y * speed);
         this.velocityInfluence.set(this.velocity.x, this.velocity.y);
         this.aimInfluence.update();
