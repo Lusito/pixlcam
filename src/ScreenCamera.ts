@@ -11,6 +11,6 @@ export class ScreenCamera extends Camera {
     }
 
     public override setZoom() {
-        // fixme: zoom does not work for screencamera yet
+        throw new Error("Zoom is not meant to be used on the screen camera (yet?).");
     }
 }

@@ -7,7 +7,7 @@ import { Player } from "../Player";
 import { DebugCrosshair } from "../draw/DebugCrosshair";
 import type { Game } from "../Game";
 
-export type ModeKey = "simple" | "following" | "influenced" | "screen";
+export type ModeKey = "simple" | "following" | "influenced";
 
 export abstract class AbstractMode<T extends Camera> {
     public readonly camera: T;

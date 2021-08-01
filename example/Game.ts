@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { Camera } from "../src";
+import { Camera, ScreenCamera } from "../src";
 import { namedColors, PLAYER_SPEED, SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
 import { createDebugShader, DebugShader } from "./shaders/DebugShader";
 import { Player } from "./Player";
@@ -11,13 +11,18 @@ import { AbstractMode, ModeKey } from "./modes/AbstractMode";
 import { InfluencedMode } from "./modes/InfluencedMode";
 import { FollowingMode } from "./modes/FollowingMode";
 import { SimpleMode } from "./modes/SimpleMode";
-import { ScreenMode } from "./modes/ScreenMode";
 import { DebugCheckbox } from "./ui/DebugCheckbox";
 import { NumberOption } from "./ui/NumberOption";
 
 const colors = {
     CAMERA: namedColors.RED,
 };
+
+function applyCamera(camera: Camera, shader: DebugShader | DefaultShader) {
+    shader.use();
+    shader.uMVMatrix.set(false, camera.modelView);
+    shader.uPMatrix.set(false, camera.projection);
+}
 
 export class Game {
     public readonly gl: WebGLRenderingContext;
@@ -26,15 +31,17 @@ export class Game {
     public mode!: AbstractMode<Camera>;
     private readonly player = new Player();
     private readonly crosshair: DebugCrosshair;
+    private readonly heartSprite: Sprite;
+    private readonly heartTexture: TextureInfo;
     private readonly playerSprite: Sprite;
-    private readonly playerTexture: { width: number; height: number; texture: WebGLTexture };
+    private readonly playerTexture: TextureInfo;
     private readonly bgSprite: Sprite;
     public readonly modes: {
-        screen: ScreenMode;
         simple: SimpleMode;
         influenced: InfluencedMode;
         following: FollowingMode;
     };
+    private readonly screenCamera: ScreenCamera;
 
     private ui = {
         cameraCurrent: new DebugCheckbox("＋ Camera Current", colors.CAMERA).show(),
@@ -46,6 +53,7 @@ export class Game {
         canvas: HTMLCanvasElement,
         gl: WebGLRenderingContext,
         playerTexture: TextureInfo,
+        heartTexture: TextureInfo,
         burstTexture: TextureInfo,
         bgTexture: TextureInfo
     ) {
@@ -60,6 +68,9 @@ export class Game {
         this.playerTexture = playerTexture;
         this.playerSprite = new Sprite(gl, this.defaultShader, playerTexture.texture);
 
+        this.heartTexture = heartTexture;
+        this.heartSprite = new Sprite(gl, this.defaultShader, heartTexture.texture);
+
         this.bgSprite = new Sprite(gl, this.defaultShader, bgTexture.texture);
         this.bgSprite.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, WORLD_WIDTH, WORLD_HEIGHT, 0);
 
@@ -68,11 +79,12 @@ export class Game {
         gl.viewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
         this.modes = {
-            screen: new ScreenMode(this, this.player),
             simple: new SimpleMode(this, this.player),
             influenced: new InfluencedMode(this, this.player, burstTexture),
             following: new FollowingMode(this, this.player),
         };
+        this.screenCamera = new ScreenCamera();
+        this.screenCamera.resize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
         // Connect to mode dropdown
         const mode = document.getElementById("mode") as HTMLSelectElement;
@@ -124,13 +136,8 @@ export class Game {
         this.player.update(deltaTime);
         this.mode.update(deltaTime);
 
-        const { camera } = this.mode;
-        const { modelView, projection } = camera;
-
         // Draw sprites
-        this.defaultShader.use();
-        this.defaultShader.uMVMatrix.set(false, modelView);
-        this.defaultShader.uPMatrix.set(false, projection);
+        applyCamera(this.mode.camera, this.defaultShader);
         this.bgSprite.draw();
         this.mode.draw();
         const scale = this.player.getSpawnPct();
@@ -145,15 +152,28 @@ export class Game {
 
         // Draw debug
         if (this.ui.debug.checked) {
-            this.debugShader.use();
-            this.debugShader.uMVMatrix.set(false, modelView);
-            this.debugShader.uPMatrix.set(false, projection);
+            applyCamera(this.mode.camera, this.debugShader);
             this.mode.drawDebug();
 
             if (this.ui.cameraCurrent.checked) {
-                this.crosshair.set(camera.getX(), camera.getY(), 16, 0);
+                this.crosshair.set(this.mode.camera.getX(), this.mode.camera.getY(), 16, 0);
                 this.crosshair.stroke(colors.CAMERA);
             }
+        }
+
+        // Draw HUD
+        applyCamera(this.screenCamera, this.defaultShader);
+        const heartWidth = this.heartTexture.width;
+        const heartHeight = this.heartTexture.height;
+        for (let i = 0; i < 3; i++) {
+            this.heartSprite.set(
+                5 + heartWidth / 2 + (5 + heartWidth) * i,
+                5 + heartHeight / 2,
+                heartWidth,
+                heartHeight,
+                0
+            );
+            this.heartSprite.draw();
         }
     }
 }

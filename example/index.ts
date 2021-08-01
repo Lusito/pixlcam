@@ -33,10 +33,11 @@ async function init() {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const gl = canvas.getContext("webgl") as WebGLRenderingContext;
     const playerTexture = await loadTexture("/shipPink_manned.png", gl);
+    const heartTexture = await loadTexture("/heart.png", gl);
     const burstTexture = await loadTexture("/laserGreen_burst.png", gl);
     const bgTexture = await loadTexture("/background.jpg", gl);
 
-    const game = new Game(canvas, gl, playerTexture, burstTexture, bgTexture);
+    const game = new Game(canvas, gl, playerTexture, heartTexture, burstTexture, bgTexture);
 
     let lastTime = 0;
     function render(time: number) {
