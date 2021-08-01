@@ -12,6 +12,7 @@ export interface CueInfluence extends Vector2 {
 export interface TargetInfluence extends Vector2 {
     aims: AimInfluence[];
     // fixme: zoom (instead of having zoom on the camera itself)
+    // when implementing this, add lerping for zoom, so a transition from one target to the next goes smoothly.
 }
 
 /**
@@ -54,6 +55,12 @@ export class InfluencedCamera extends Camera {
     }
 
     public setTarget(target: TargetInfluence | null) {
+        // Adjust offset, so we can smoothen the transition between the current and next target
+        // fixme: add something to the demo to try this.
+        if (target && this.target) {
+            this.offset.x += this.target.x - target.x;
+            this.offset.y += this.target.y - target.y;
+        }
         this.target = target;
         this.update();
     }
@@ -104,12 +111,15 @@ export class InfluencedCamera extends Camera {
 
         let aimOffsetX = 0;
         let aimOffsetY = 0;
-        for (const aim of this.target.aims) {
-            const aimFocus = aim.get();
-            aimOffsetX += aimFocus.x;
-            aimOffsetY += aimFocus.y;
+        let aimFactor = 0;
+        if (this.target.aims.length !== 0) {
+            for (const aim of this.target.aims) {
+                const aimFocus = aim.get();
+                aimOffsetX += aimFocus.x;
+                aimOffsetY += aimFocus.y;
+            }
+            aimFactor = 1 / this.target.aims.length;
         }
-        const aimFactor = 1 / this.target.aims.length;
         lerp(this.offset, aimOffsetX * aimFactor, aimOffsetY * aimFactor);
         this.updateZoom(zoom);
         this.moveTo(x + this.offset.x * aimInfluence, y + this.offset.y * aimInfluence);
