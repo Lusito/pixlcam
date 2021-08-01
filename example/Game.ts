@@ -76,6 +76,7 @@ export class Game {
 
         // Connect to mode dropdown
         const mode = document.getElementById("mode") as HTMLSelectElement;
+        mode.value = "influenced";
         mode.addEventListener("change", () => {
             this.setMode(mode.value as ModeKey);
         });
