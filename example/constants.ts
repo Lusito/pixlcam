@@ -22,15 +22,24 @@ function createColor(hex: string): Color {
     return [r, g, b, 1];
 }
 
-export const colors = {
-    BOUND: createColor("4444dd"),
-    CAMERA: createColor("bb2222"),
-    CAMERA_DESIRED: createColor("009900"),
-    SLOW_DISTANCE: createColor("44dddd"),
-    TARGET_PROJECTED: createColor("ffffff"),
-    TARGET_AIM: createColor("44dddd"),
-    COMBINED_AIM: createColor("009900"),
+export const namedColors = {
+    BLUE: createColor("4444dd"),
+    RED: createColor("bb2222"),
+    GREEN: createColor("009900"),
+    CYAN: createColor("44dddd"),
+    WHITE: createColor("ffffff"),
+    PINK: createColor("ff66ff"),
+    OLIVE: createColor("bbbb22"),
+};
 
-    CUE_INNER: createColor("ff66ff"),
-    CUE_OUTER: createColor("bbbb22"),
+export const colors = {
+    BOUND: namedColors.BLUE,
+    CAMERA: namedColors.RED,
+    CAMERA_DESIRED: namedColors.GREEN,
+    SLOW_DISTANCE: namedColors.CYAN,
+    TARGET_PROJECTED: namedColors.WHITE,
+    TARGET_AIM: namedColors.CYAN,
+    COMBINED_AIM: namedColors.GREEN,
+    CUE_INNER: namedColors.PINK,
+    CUE_OUTER: namedColors.OLIVE,
 };
