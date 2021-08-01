@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { TargetInfluence, AimInfluence, Vector2, lerp, SlowAimInfluence } from "../src";
+import { TargetInfluence, AimInfluence, Vector2, lerp } from "../src";
 import { ROCKET_SIZE, ROCKET_SPEED, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
 import { DebugRect } from "./draw/DebugRect";
 import { Sprite } from "./draw/Sprite";
@@ -16,7 +16,7 @@ export class Rocket implements TargetInfluence {
     public y: number;
     public lastValidDirection: Vector2 = { x: 0, y: 0 };
     public velocity: Vector2 = { x: 0, y: 0 };
-    public velocityInfluence = new SlowAimInfluence({ maxLength: 300, factor: 0.2, lerp: 0.1 });
+    public velocityInfluence = new AimInfluence({ maxLength: 200, factor: 0.2 });
     public aims: AimInfluence[] = [];
     public spawnTime = SPAWN_TIME;
     private readonly sprite: Sprite;
@@ -29,7 +29,6 @@ export class Rocket implements TargetInfluence {
 
         this.x = start.x + this.lastValidDirection.x * START_DISTANCE;
         this.y = start.y + this.lastValidDirection.y * START_DISTANCE;
-        // console.log(this.velocity.)
 
         this.game = game;
         this.sprite = new Sprite(game.gl, game.defaultShader, game.textures.rocket.texture);
@@ -37,8 +36,6 @@ export class Rocket implements TargetInfluence {
     }
 
     public update(deltaTime: number, moveDirection: Vector2) {
-        this.velocityInfluence.update();
-        // fixme: if has rocket, lerp velocity to 0 and set aim to 0, instead steer rocket
         let dirX = moveDirection.x;
         let dirY = moveDirection.y;
         if (dirX === 0 && dirY === 0) {
@@ -60,10 +57,10 @@ export class Rocket implements TargetInfluence {
     }
 
     public draw() {
-        const scale = this.getSpawnPct();
-        const { width, height } = this.game.textures.rocket;
+        const scale = this.getSpawnPct() * 0.5;
+        let { width, height } = this.game.textures.rocket;
         const angle = vectorToAngle(this.velocity);
-        this.sprite.set(this.x, this.y, width * scale, height * scale, angle); // fixme: move direction angle
+        this.sprite.set(this.x, this.y, width * scale, height * scale, angle);
         this.sprite.draw();
     }
 

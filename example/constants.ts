@@ -11,7 +11,7 @@ export const WORLD_WIDTH = 6500;
 export const WORLD_HEIGHT = 2889;
 
 export const ROCKET_SPEED = 1400;
-export const ROCKET_SIZE = 64;
+export const ROCKET_SIZE = 32;
 export const PLAYER_SPEED = 800;
 export const PLAYER_SIZE = 64;
 export const AIM_SIZE = 32;
