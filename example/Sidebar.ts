@@ -34,6 +34,7 @@ export class Sidebar {
 
     public readonly cameraCurrent: HTMLInputElement;
     public readonly cameraDesired: HTMLInputElement;
+    public readonly combinedAimInfluence: HTMLInputElement;
     public readonly cameraSlowDistance: HTMLInputElement;
     public readonly targetProjected: HTMLInputElement;
     public readonly targetAim: HTMLInputElement;
@@ -52,6 +53,7 @@ export class Sidebar {
 
         this.cameraCurrent = this.addToLegend("＋ Camera Current", colors.CAMERA);
         this.cameraDesired = this.addToLegend("⨉ Camera Desired", colors.CAMERA_DESIRED);
+        this.combinedAimInfluence = this.addToLegend("⨉ Combined Aim Influence", colors.CAMERA_DESIRED);
         this.cameraSlowDistance = this.addToLegend("◯ Camera Slow Distance", colors.SLOW_DISTANCE);
         this.targetProjected = this.addToLegend("☐ Target Projected", colors.TARGET_PROJECTED);
         this.targetAim = this.addToLegend("☐ Target Aim", colors.TARGET_AIM);
@@ -65,6 +67,7 @@ export class Sidebar {
         hideElement(this.slowDistance);
         hideElement(this.lockDistance);
         hideElement(this.cameraDesired);
+        hideElement(this.combinedAimInfluence);
         hideElement(this.cameraSlowDistance);
         hideElement(this.targetProjected);
         hideElement(this.targetAim);

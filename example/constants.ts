@@ -29,6 +29,7 @@ export const colors = {
     SLOW_DISTANCE: createColor("44dddd"),
     TARGET_PROJECTED: createColor("ffffff"),
     TARGET_AIM: createColor("44dddd"),
+    COMBINED_AIM: createColor("009900"),
 
     CUE_INNER: createColor("ff66ff"),
     CUE_OUTER: createColor("bbbb22"),

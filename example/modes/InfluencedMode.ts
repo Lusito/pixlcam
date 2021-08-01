@@ -55,7 +55,7 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
     public onEnable() {
         const { sidebar } = this;
         showElement(sidebar.cameraCurrent);
-        showElement(sidebar.cameraDesired);
+        showElement(sidebar.combinedAimInfluence);
         showElement(sidebar.targetProjected);
         showElement(sidebar.targetAim);
         showElement(sidebar.cueInner);
@@ -82,10 +82,10 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
         this.cue1.drawDebug(this.sidebar.cueInner.checked, this.sidebar.cueOuter.checked);
         this.cue2.drawDebug(this.sidebar.cueInner.checked, this.sidebar.cueOuter.checked);
 
-        if (this.sidebar.cameraDesired.checked) {
+        if (this.sidebar.combinedAimInfluence.checked) {
             const { x, y } = this.camera.getOffset();
-            this.crosshair.set(this.camera.getX() + x, this.camera.getY() + y, 16, 45);
-            this.crosshair.stroke(colors.CAMERA_DESIRED);
+            this.crosshair.set(this.player.x + x, this.player.y + y, 16, 45);
+            this.crosshair.stroke(colors.COMBINED_AIM);
         }
         if (this.sidebar.targetProjected.checked) {
             const { x, y } = this.player.velocityInfluence.get();
