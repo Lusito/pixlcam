@@ -1,7 +1,6 @@
 /* eslint-disable */
 import { Camera } from "../src";
-import { BOUND_SIZE, colors, PLAYER_SPEED, SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
-import { DebugRect } from "./draw/DebugRect";
+import { colors, PLAYER_SPEED, SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
 import { createDebugShader, DebugShader } from "./shaders/DebugShader";
 import { Player } from "./Player";
 import type { TextureInfo } from ".";
@@ -23,7 +22,6 @@ export class Game {
     public mode!: AbstractMode<Camera>;
     private readonly player = new Player();
     private readonly crosshair: DebugCrosshair;
-    private readonly boundRects: DebugRect[] = [];
     private readonly playerSprite: Sprite;
     private readonly playerTexture: { width: number; height: number; texture: WebGLTexture };
     private readonly bgSprite: Sprite;
@@ -54,14 +52,6 @@ export class Game {
         this.debugShader = createDebugShader(gl);
         this.defaultShader = createDefaultShader(gl);
         this.crosshair = new DebugCrosshair(gl, this.debugShader);
-        this.boundRects.push(new DebugRect(gl, this.debugShader).set(0, 0, BOUND_SIZE, WORLD_HEIGHT));
-        this.boundRects.push(new DebugRect(gl, this.debugShader).set(0, 0, WORLD_WIDTH, BOUND_SIZE));
-        this.boundRects.push(
-            new DebugRect(gl, this.debugShader).set(WORLD_WIDTH - BOUND_SIZE, 0, BOUND_SIZE, WORLD_HEIGHT)
-        );
-        this.boundRects.push(
-            new DebugRect(gl, this.debugShader).set(0, WORLD_HEIGHT - BOUND_SIZE, WORLD_WIDTH, BOUND_SIZE)
-        );
 
         this.playerTexture = playerTexture;
         this.playerSprite = new Sprite(gl, this.defaultShader, playerTexture.texture);
@@ -132,6 +122,7 @@ export class Game {
         const { camera } = this.mode;
         const { modelView, projection } = camera;
 
+        // Draw sprites
         this.defaultShader.use();
         this.defaultShader.uMVMatrix.set(false, modelView);
         this.defaultShader.uPMatrix.set(false, projection);
@@ -147,19 +138,16 @@ export class Game {
         );
         this.playerSprite.draw();
 
-        this.debugShader.use();
-        this.debugShader.uMVMatrix.set(false, modelView);
-        this.debugShader.uPMatrix.set(false, projection);
-
+        // Draw debug
         if (this.ui.debug.checked) {
+            this.debugShader.use();
+            this.debugShader.uMVMatrix.set(false, modelView);
+            this.debugShader.uPMatrix.set(false, projection);
             this.mode.drawDebug();
 
             if (this.ui.cameraCurrent.checked) {
                 this.crosshair.set(camera.getX(), camera.getY(), 16, 0);
                 this.crosshair.stroke(colors.CAMERA);
-            }
-            for (const rect of this.boundRects) {
-                rect.fill(colors.BOUND);
             }
         }
     }

@@ -12,8 +12,7 @@ export const WORLD_HEIGHT = 2889;
 export const PLAYER_SPEED = 800;
 export const PLAYER_SIZE = 64;
 export const AIM_SIZE = 32;
-export const BOUND_SIZE = 32;
-export const BOUND_DISTANCE = BOUND_SIZE + PLAYER_SIZE;
+export const BOUND_DISTANCE = PLAYER_SIZE;
 
 function createColor(hex: string): Color {
     const r = parseInt(hex.substr(0, 2), 16) / 255;
@@ -23,7 +22,6 @@ function createColor(hex: string): Color {
 }
 
 export const namedColors = {
-    BLUE: createColor("4444dd"),
     RED: createColor("bb2222"),
     GREEN: createColor("009900"),
     CYAN: createColor("44dddd"),
@@ -33,7 +31,6 @@ export const namedColors = {
 };
 
 export const colors = {
-    BOUND: namedColors.BLUE,
     CAMERA: namedColors.RED,
     CAMERA_DESIRED: namedColors.GREEN,
     SLOW_DISTANCE: namedColors.CYAN,
