@@ -62,6 +62,10 @@ export class InfluencedCamera extends Camera {
         this.update();
     }
 
+    public getTarget() {
+        return this.target;
+    }
+
     private getClosestCue() {
         if (!this.cues.length || !this.target) return null;
 

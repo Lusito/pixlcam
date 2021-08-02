@@ -93,9 +93,10 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
         this.cue1.drawDebug(this.ui.cueInner.checked, this.ui.cueOuter.checked);
         this.cue2.drawDebug(this.ui.cueInner.checked, this.ui.cueOuter.checked);
 
-        if (this.ui.combinedAimInfluence.checked) {
+        const target = this.camera.getTarget();
+        if (target && this.ui.combinedAimInfluence.checked) {
             const { x, y } = this.camera.getOffset();
-            this.crosshair.set(this.player.x + x, this.player.y + y, 16, 45);
+            this.crosshair.set(target.x + x, target.y + y, 16, 45);
             this.crosshair.stroke(colors.COMBINED_AIM);
         }
         if (this.ui.targetProjected.checked) this.player.drawDebugProjected(this.rect);
