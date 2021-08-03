@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Color } from "../draw/types";
 
 const legend = document.getElementById("legend")!;

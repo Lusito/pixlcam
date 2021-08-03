@@ -33,6 +33,16 @@ module.exports = {
         "jsdoc/check-tag-names": ["warn", { definedTags: ["internal"] }],
         "jsdoc/require-description-complete-sentence": ["warn", { tags: ["template"], abbreviations: ["i.e."] }],
     },
+    overrides: [
+        {
+            files: ["example/**/*.ts"],
+            rules: {
+                "jsdoc/require-jsdoc": "off",
+                "import/no-extraneous-dependencies": "off",
+                "@typescript-eslint/no-non-null-assertion": "off",
+            },
+        },
+    ],
     settings: {
         jsdoc: {
             ignorePrivate: true,

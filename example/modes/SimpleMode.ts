@@ -1,6 +1,5 @@
-/* eslint-disable */
 import { Camera } from "../../src";
-import { Player } from "../Player";
+import type { Player } from "../Player";
 import type { Game } from "../Game";
 import { AbstractMode } from "./AbstractMode";
 

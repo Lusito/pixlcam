@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { DebugShader } from "../shaders/DebugShader";
 import { Color } from "./types";
 

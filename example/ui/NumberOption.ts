@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const options = document.getElementById("options")!;
 
 export class NumberOption {
@@ -47,7 +45,7 @@ export class NumberOption {
 
     public addListener(callback: (value: number) => void) {
         this.input.addEventListener("input", () => {
-            const value = this.value;
+            const { value } = this;
             if (value > 0) callback(value);
         });
     }

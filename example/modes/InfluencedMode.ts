@@ -1,7 +1,7 @@
-/* eslint-disable */
+/* eslint-disable no-return-assign */
 import { InfluencedCamera } from "../../src";
-import { AIM_SIZE, namedColors, PLAYER_SIZE, WORLD_HEIGHT, WORLD_WIDTH } from "../constants";
-import { Player } from "../Player";
+import { influencedModecolors, WORLD_HEIGHT, WORLD_WIDTH } from "../constants";
+import type { Player } from "../Player";
 import type { TextureInfo } from "..";
 import { GameCue } from "../GameCue";
 import type { Game } from "../Game";
@@ -9,23 +9,15 @@ import { AbstractMode } from "./AbstractMode";
 import { DebugCheckbox } from "../ui/DebugCheckbox";
 import { NumberOption } from "../ui/NumberOption";
 
-export const colors = {
-    TARGET_PROJECTED: namedColors.WHITE,
-    TARGET_AIM: namedColors.CYAN,
-    COMBINED_AIM: namedColors.GREEN,
-    CUE_INNER: namedColors.PINK,
-    CUE_OUTER: namedColors.OLIVE,
-};
-
 type UiKey = keyof InfluencedMode["ui"];
 
 export class InfluencedMode extends AbstractMode<InfluencedCamera> {
     private ui = {
-        combinedAimInfluence: new DebugCheckbox("⨉ Combined Aim Influence", colors.COMBINED_AIM),
-        targetProjected: new DebugCheckbox("☐ Target Projected", colors.TARGET_PROJECTED),
-        targetAim: new DebugCheckbox("☐ Target Aim", colors.TARGET_AIM),
-        cueInner: new DebugCheckbox("◯ Cue Inner Radius", colors.CUE_INNER),
-        cueOuter: new DebugCheckbox("◯ Cue Outer Radius", colors.CUE_OUTER),
+        combinedAimInfluence: new DebugCheckbox("⨉ Combined Aim Influence", influencedModecolors.COMBINED_AIM),
+        targetProjected: new DebugCheckbox("☐ Target Projected", influencedModecolors.TARGET_PROJECTED),
+        targetAim: new DebugCheckbox("☐ Target Aim", influencedModecolors.TARGET_AIM),
+        cueInner: new DebugCheckbox("◯ Cue Inner Radius", influencedModecolors.CUE_INNER),
+        cueOuter: new DebugCheckbox("◯ Cue Outer Radius", influencedModecolors.CUE_OUTER),
 
         maxVelocityInfluence: new NumberOption("Max Velocity Influence", { min: "0" }),
         velocityInfluenceFactor: new NumberOption("Velocity Influence Factor", { min: "0", step: "0.1" }),
@@ -67,14 +59,14 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
     }
 
     public override onDisable() {
-        for (const key in this.ui) {
+        for (const key of Object.keys(this.ui)) {
             this.ui[key as UiKey].hide();
         }
         this.player.removeRocket();
     }
 
     public override onEnable() {
-        for (const key in this.ui) {
+        for (const key of Object.keys(this.ui)) {
             this.ui[key as UiKey].show();
         }
     }
@@ -97,7 +89,7 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
         if (target && this.ui.combinedAimInfluence.checked) {
             const { x, y } = this.camera.getOffset();
             this.crosshair.set(target.x + x, target.y + y, 16, 45);
-            this.crosshair.stroke(colors.COMBINED_AIM);
+            this.crosshair.stroke(influencedModecolors.COMBINED_AIM);
         }
         if (this.ui.targetProjected.checked) this.player.drawDebugProjected(this.rect);
         if (this.ui.targetAim.checked) this.player.drawDebugAim(this.rect);

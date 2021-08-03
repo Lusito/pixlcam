@@ -1,9 +1,8 @@
-/* eslint-disable */
-
 import { TargetInfluence, AimInfluence, SlowAimInfluence, Vector2, lerpVector, InfluencedCamera } from "../src";
 import {
     AIM_SIZE,
     BOUND_DISTANCE,
+    influencedModecolors,
     PLAYER_SIZE,
     PLAYER_SPEED,
     ROCKET_PREVIEW_OFFSET,
@@ -13,9 +12,9 @@ import {
 } from "./constants";
 import { DebugRect } from "./draw/DebugRect";
 import { Sprite } from "./draw/Sprite";
-import { Game } from "./Game";
+import type { Game } from "./Game";
 import { InputController } from "./InputController";
-import { colors, InfluencedMode } from "./modes/InfluencedMode";
+import { InfluencedMode } from "./modes/InfluencedMode";
 import { Rocket } from "./Rocket";
 import { xyToAngle } from "./utils";
 
@@ -116,21 +115,25 @@ export class Player implements TargetInfluence {
             this.game.mode instanceof InfluencedMode &&
             (this.input.aimDirection.x || this.input.aimDirection.y)
         ) {
-            let { x, y } = this.aimInfluence.get();
-            const invLength = 1 / Math.sqrt(x ** 2 + y ** 2);
-            x *= invLength;
-            y *= invLength;
-            const { width, height } = this.game.textures.rocket;
-            const angle = xyToAngle(x, y);
-            this.rocketSprite.set(
-                this.x + x * ROCKET_PREVIEW_OFFSET,
-                this.y + y * ROCKET_PREVIEW_OFFSET,
-                width * ROCKET_PREVIEW_SCALE,
-                height * ROCKET_PREVIEW_SCALE,
-                angle
-            );
-            this.rocketSprite.draw();
+            this.drawPreviewRocket();
         }
+    }
+
+    private drawPreviewRocket() {
+        let { x, y } = this.aimInfluence.get();
+        const invLength = 1 / Math.sqrt(x ** 2 + y ** 2);
+        x *= invLength;
+        y *= invLength;
+        const { width, height } = this.game.textures.rocket;
+        const angle = xyToAngle(x, y);
+        this.rocketSprite.set(
+            this.x + x * ROCKET_PREVIEW_OFFSET,
+            this.y + y * ROCKET_PREVIEW_OFFSET,
+            width * ROCKET_PREVIEW_SCALE,
+            height * ROCKET_PREVIEW_SCALE,
+            angle
+        );
+        this.rocketSprite.draw();
     }
 
     public drawDebugProjected(rect: DebugRect) {
@@ -139,7 +142,7 @@ export class Player implements TargetInfluence {
         } else {
             const { x, y } = this.velocityInfluence.get();
             rect.set(this.x + x - PLAYER_SIZE, this.y + y - PLAYER_SIZE, PLAYER_SIZE * 2, PLAYER_SIZE * 2);
-            rect.stroke(colors.TARGET_PROJECTED);
+            rect.stroke(influencedModecolors.TARGET_PROJECTED);
         }
     }
 
@@ -147,7 +150,7 @@ export class Player implements TargetInfluence {
         if (!this.rocket) {
             const { x, y } = this.aimInfluence.get();
             rect.set(this.x + x - AIM_SIZE, this.y + y - AIM_SIZE, AIM_SIZE * 2, AIM_SIZE * 2);
-            rect.stroke(colors.TARGET_AIM);
+            rect.stroke(influencedModecolors.TARGET_AIM);
         }
     }
 

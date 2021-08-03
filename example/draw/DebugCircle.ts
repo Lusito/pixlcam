@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable prefer-destructuring */
 import { DebugBase } from "./DebugBase";
 import { DebugShader } from "../shaders/DebugShader";
 import { Color } from "./types";

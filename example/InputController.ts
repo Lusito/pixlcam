@@ -1,7 +1,5 @@
-/* eslint-disable */
-
 import { Vector2 } from "../src";
-import { Player } from "./Player";
+import type { Player } from "./Player";
 
 type Keys = keyof InputController["keys"];
 

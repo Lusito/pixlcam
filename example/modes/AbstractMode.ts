@@ -1,9 +1,9 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { Camera } from "../../src";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants";
 import { DebugCircle } from "../draw/DebugCircle";
 import { DebugRect } from "../draw/DebugRect";
-import { Player } from "../Player";
+import type { Player } from "../Player";
 import { DebugCrosshair } from "../draw/DebugCrosshair";
 import type { Game } from "../Game";
 
@@ -31,7 +31,7 @@ export abstract class AbstractMode<T extends Camera> {
 
     public onEnable() {}
 
-    public update(deltaTime: number) {}
+    public update(_deltaTime: number) {}
 
     public draw() {}
 

@@ -1,6 +1,5 @@
-/* eslint-disable */
 import { Camera, ScreenCamera } from "../src";
-import { namedColors, SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
+import { defaultColors, SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
 import { createDebugShader, DebugShader } from "./shaders/DebugShader";
 import { Player } from "./Player";
 import type { Textures } from ".";
@@ -13,10 +12,6 @@ import { FollowingMode } from "./modes/FollowingMode";
 import { SimpleMode } from "./modes/SimpleMode";
 import { DebugCheckbox } from "./ui/DebugCheckbox";
 import { NumberOption } from "./ui/NumberOption";
-
-const colors = {
-    CAMERA: namedColors.RED,
-};
 
 function applyCamera(camera: Camera, shader: DebugShader | DefaultShader) {
     shader.use();
@@ -39,10 +34,11 @@ export class Game {
         influenced: InfluencedMode;
         following: FollowingMode;
     };
+
     private readonly screenCamera: ScreenCamera;
 
     private ui = {
-        cameraCurrent: new DebugCheckbox("＋ Camera Current", colors.CAMERA).show(),
+        cameraCurrent: new DebugCheckbox("＋ Camera Current", defaultColors.CAMERA).show(),
         zoom: new NumberOption("Zoom", { min: "0.125", max: "8", value: "0.5", step: "0.125" }).show(),
         debug: document.getElementById("debug") as HTMLInputElement,
     };
@@ -86,18 +82,16 @@ export class Game {
         const snapToPixel = document.getElementById("snapToPixel") as HTMLInputElement;
         snapToPixel.checked = this.mode.camera.snapToPixel;
         snapToPixel.addEventListener("input", () => {
-            for (const key in this.modes) {
-                const mode = this.modes[key as ModeKey];
-                mode.camera.snapToPixel = snapToPixel.checked;
+            for (const key of Object.keys(this.modes)) {
+                this.modes[key as ModeKey].camera.snapToPixel = snapToPixel.checked;
             }
         });
 
         // Connect to zoom option
         this.ui.zoom.value = this.mode.camera.getZoom();
         this.ui.zoom.addListener((value) => {
-            for (const key in this.modes) {
-                const mode = this.modes[key as ModeKey];
-                mode.camera.setZoom(value);
+            for (const key of Object.keys(this.modes)) {
+                this.modes[key as ModeKey].camera.setZoom(value);
             }
         });
 
@@ -137,7 +131,7 @@ export class Game {
 
             if (this.ui.cameraCurrent.checked) {
                 this.crosshair.set(this.mode.camera.getX(), this.mode.camera.getY(), 16, 0);
-                this.crosshair.stroke(colors.CAMERA);
+                this.crosshair.stroke(defaultColors.CAMERA);
             }
         }
 

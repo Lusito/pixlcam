@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Color } from "./draw/types";
 
 export const DEG_TO_RAD = Math.PI / 180;
@@ -35,4 +34,21 @@ export const namedColors = {
     WHITE: createColor("ffffff"),
     PINK: createColor("ff66ff"),
     OLIVE: createColor("bbbb22"),
+};
+
+export const defaultColors = {
+    CAMERA: namedColors.RED,
+};
+
+export const followingModeColors = {
+    CAMERA_DESIRED: namedColors.GREEN,
+    SLOW_DISTANCE: namedColors.CYAN,
+};
+
+export const influencedModecolors = {
+    TARGET_PROJECTED: namedColors.WHITE,
+    TARGET_AIM: namedColors.CYAN,
+    COMBINED_AIM: namedColors.GREEN,
+    CUE_INNER: namedColors.PINK,
+    CUE_OUTER: namedColors.OLIVE,
 };

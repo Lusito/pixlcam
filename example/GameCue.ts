@@ -1,10 +1,9 @@
-/* eslint-disable */
-import { TextureInfo } from ".";
+import type { TextureInfo } from ".";
 import { CueInfluence } from "../src";
-import { colors } from "./modes/InfluencedMode";
+import { influencedModecolors } from "./constants";
 import { DebugCircle } from "./draw/DebugCircle";
 import { Sprite } from "./draw/Sprite";
-import { Game } from "./Game";
+import type { Game } from "./Game";
 
 export class GameCue implements CueInfluence {
     public x: number;
@@ -23,7 +22,7 @@ export class GameCue implements CueInfluence {
         y: number,
         innerRadius: number,
         outerRadius: number,
-        zoom: number,
+        zoom: number
     ) {
         const { gl, debugShader, defaultShader } = game;
         this.x = x;
@@ -44,7 +43,7 @@ export class GameCue implements CueInfluence {
     }
 
     public drawDebug(drawInner: boolean, drawOuter: boolean) {
-        if (drawInner) this.innerCircle.stroke(colors.CUE_INNER);
-        if (drawOuter) this.outerCircle.stroke(colors.CUE_OUTER);
+        if (drawInner) this.innerCircle.stroke(influencedModecolors.CUE_INNER);
+        if (drawOuter) this.outerCircle.stroke(influencedModecolors.CUE_OUTER);
     }
 }

@@ -1,7 +1,6 @@
-/* eslint-disable */
-
 import { TargetInfluence, AimInfluence, Vector2, lerpVector } from "../src";
 import {
+    influencedModecolors,
     ROCKET_PREVIEW_OFFSET,
     ROCKET_PREVIEW_SCALE,
     ROCKET_SCALE,
@@ -12,8 +11,7 @@ import {
 } from "./constants";
 import { DebugRect } from "./draw/DebugRect";
 import { Sprite } from "./draw/Sprite";
-import { Game } from "./Game";
-import { colors } from "./modes/InfluencedMode";
+import type { Game } from "./Game";
 import { vectorToAngle } from "./utils";
 
 const SPAWN_TIME = 0.3;
@@ -65,7 +63,7 @@ export class Rocket implements TargetInfluence {
 
     public draw() {
         const scale = this.getScale();
-        let { width, height } = this.game.textures.rocket;
+        const { width, height } = this.game.textures.rocket;
         const angle = vectorToAngle(this.velocity);
         this.sprite.set(this.x, this.y, width * scale, height * scale, angle);
         this.sprite.draw();
@@ -74,7 +72,7 @@ export class Rocket implements TargetInfluence {
     public drawDebugProjected(rect: DebugRect) {
         const { x, y } = this.velocityInfluence.get();
         rect.set(this.x + x - ROCKET_SIZE, this.y + y - ROCKET_SIZE, ROCKET_SIZE * 2, ROCKET_SIZE * 2);
-        rect.stroke(colors.TARGET_PROJECTED);
+        rect.stroke(influencedModecolors.TARGET_PROJECTED);
     }
 
     public getScale() {

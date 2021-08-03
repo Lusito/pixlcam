@@ -1,23 +1,18 @@
-/* eslint-disable */
+/* eslint-disable no-return-assign */
 import { FollowingCamera } from "../../src";
-import { namedColors, WORLD_HEIGHT, WORLD_WIDTH } from "../constants";
-import { Player } from "../Player";
+import { followingModeColors, WORLD_HEIGHT, WORLD_WIDTH } from "../constants";
+import type { Player } from "../Player";
 import type { Game } from "../Game";
 import { AbstractMode } from "./AbstractMode";
 import { DebugCheckbox } from "../ui/DebugCheckbox";
 import { NumberOption } from "../ui/NumberOption";
 
-const colors = {
-    CAMERA_DESIRED: namedColors.GREEN,
-    SLOW_DISTANCE: namedColors.CYAN,
-};
-
 type UiKey = keyof FollowingMode["ui"];
 
 export class FollowingMode extends AbstractMode<FollowingCamera> {
     private ui = {
-        cameraDesired: new DebugCheckbox("⨉ Camera Desired", colors.CAMERA_DESIRED),
-        cameraSlowDistance: new DebugCheckbox("◯ Camera Slow Distance", colors.SLOW_DISTANCE),
+        cameraDesired: new DebugCheckbox("⨉ Camera Desired", followingModeColors.CAMERA_DESIRED),
+        cameraSlowDistance: new DebugCheckbox("◯ Camera Slow Distance", followingModeColors.SLOW_DISTANCE),
         maxSpeed: new NumberOption("Max Speed", { min: "0.01" }),
         acceleration: new NumberOption("Acceleration", { min: "0.01" }),
         slowDistance: new NumberOption("Slow Distance", { min: "0" }),
@@ -49,13 +44,13 @@ export class FollowingMode extends AbstractMode<FollowingCamera> {
     }
 
     public override onDisable() {
-        for (const key in this.ui) {
+        for (const key of Object.keys(this.ui)) {
             this.ui[key as UiKey].hide();
         }
     }
 
     public override onEnable() {
-        for (const key in this.ui) {
+        for (const key of Object.keys(this.ui)) {
             this.ui[key as UiKey].show();
         }
         const { camera } = this;
@@ -69,17 +64,15 @@ export class FollowingMode extends AbstractMode<FollowingCamera> {
         this.ui.speed.value = this.camera.getSpeed();
     }
 
-    public override draw() {}
-
     public override drawDebug() {
         const { x, y } = this.camera.getDesired();
         if (this.ui.cameraDesired.checked) {
             this.crosshair.set(x, y, 16, 45);
-            this.crosshair.stroke(colors.CAMERA_DESIRED);
+            this.crosshair.stroke(followingModeColors.CAMERA_DESIRED);
         }
         if (this.ui.cameraSlowDistance.checked) {
             this.circle.set(x, y, this.camera.slowDistance);
-            this.circle.stroke(colors.SLOW_DISTANCE);
+            this.circle.stroke(followingModeColors.SLOW_DISTANCE);
         }
     }
 }
