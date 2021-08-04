@@ -73,7 +73,7 @@ export class InfluencedCamera extends Camera {
         let closestCueDistance = Number.POSITIVE_INFINITY;
         for (const cue of this.cues) {
             const { x, y } = cue;
-            const dst = Math.sqrt((x - this.target.x) ** 2 + (y - this.target.y) ** 2);
+            const dst = Math.sqrt((x - this.target.x) ** 2 + (y - this.target.y) ** 2) - cue.outerRadius;
             if (dst < closestCueDistance) {
                 closestCue = cue;
                 closestCueDistance = dst;
