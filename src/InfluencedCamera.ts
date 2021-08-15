@@ -3,14 +3,27 @@ import { AimInfluence } from "./AimInfluence";
 import { CameraBounds, Vector2 } from "./types";
 import { ease, lerpVector, lerpScalar, restrictToBounds } from "./utils";
 
+/**
+ * A cue influence draws the InfluencedCamera towards a point if the camera is within the outerRadius.
+ * If the camera is within the innerRadius, it will be fixed on the cue point.
+ */
 export interface CueInfluence extends Vector2 {
+    /** The inner radius of this influence point. */
     innerRadius: number;
+    /** The outer radius of this influence point. */
     outerRadius: number;
+    /** The zoom value to multiply the camera zoom with when the camera is within outerRadius. */
     zoom: number;
 }
 
-export interface TargetInfluence extends Vector2 {
+/**
+ * A target for the InfluencedCamera.
+ * The target can influence the camera by specifying aim influences and a zoom value.
+ */
+export interface InfluencedCameraTarget extends Vector2 {
+    /** The aim influences to apply on the camera. */
     aims: AimInfluence[];
+    /** The zoom value to multiply the camera zoom with. */
     zoom: number;
 }
 
@@ -25,10 +38,13 @@ export class InfluencedCamera extends Camera {
 
     protected readonly cues: CueInfluence[] = [];
 
-    protected target: TargetInfluence | null = null;
+    protected target: InfluencedCameraTarget | null = null;
 
     protected offset: Vector2 = { x: 0, y: 0 };
 
+    /**
+     * Create a new influenced camera.
+     */
     public constructor() {
         super();
         this.savedZoom = this.zoom;
@@ -52,7 +68,7 @@ export class InfluencedCamera extends Camera {
         if (index >= 0) this.cues.splice(index, 1);
     }
 
-    public setTarget(target: TargetInfluence | null) {
+    public setTarget(target: InfluencedCameraTarget | null) {
         // Adjust offset, so we can smoothen the transition between the current and next target
         if (target && this.target) {
             this.offset.x += this.target.x - target.x;
@@ -66,7 +82,7 @@ export class InfluencedCamera extends Camera {
         return this.target;
     }
 
-    private getClosestCue() {
+    protected getClosestCue() {
         if (!this.cues.length || !this.target) return null;
 
         let closestCue: CueInfluence | null = null;
@@ -126,8 +142,8 @@ export class InfluencedCamera extends Camera {
         this.moveTo(x + this.offset.x * aimInfluence, y + this.offset.y * aimInfluence);
     }
 
-    private updateZoom(zoom: number) {
-        zoom = lerpScalar(this.zoom, zoom);
+    protected updateZoom(zoom: number) {
+        zoom = lerpScalar(this.zoom, zoom); // fixme: allow configuring lerpFactor and lock?
         if (this.zoom !== zoom) super.setZoom(zoom);
     }
 

@@ -12,7 +12,7 @@ export class FollowingCamera extends Camera {
     // This is where the camera wants to be, but might not have been moved to yet.
     protected desired: Vector2 = { x: 0, y: 0 };
 
-    private speed = 0;
+    protected speed = 0;
 
     public maxSpeed = 900;
 

@@ -1,4 +1,4 @@
-import { TargetInfluence, AimInfluence, SlowAimInfluence, Vector2, lerpVector, InfluencedCamera } from "../src";
+import { InfluencedCameraTarget, AimInfluence, Vector2, lerpVector, InfluencedCamera } from "../src";
 import {
     AIM_SIZE,
     BOUND_DISTANCE,
@@ -20,12 +20,12 @@ import { xyToAngle } from "./utils";
 
 const SPAWN_TIME = 0.3;
 
-export class Player implements TargetInfluence {
+export class Player implements InfluencedCameraTarget {
     public x = WORLD_WIDTH / 2;
     public y = WORLD_HEIGHT / 2;
     public velocity: Vector2 = { x: 0, y: 0 };
     public velocityInfluence = new AimInfluence({ maxLength: 300, factor: 0.2 });
-    public aimInfluence = new SlowAimInfluence({ maxLength: 300, factor: 0.3, lerp: 0.1 });
+    public aimInfluence = new AimInfluence({ maxLength: 300, factor: 0.3, lerpFactor: 0.1 });
     public aims: AimInfluence[] = [];
     public zoom = 1;
     public spawnTime = SPAWN_TIME;

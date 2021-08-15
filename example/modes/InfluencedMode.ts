@@ -33,7 +33,7 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
     public constructor(game: Game, player: Player, burstTexture: TextureInfo) {
         super(game, player, new InfluencedCamera());
 
-        this.cue1 = new GameCue(game, burstTexture, WORLD_WIDTH / 2 + 500, WORLD_HEIGHT / 2 - 500, 200, 800, 0.8);
+        this.cue1 = new GameCue(game, burstTexture, WORLD_WIDTH / 2 + 500, WORLD_HEIGHT / 2 - 500, 200, 1000, 0.8);
         this.cue2 = new GameCue(game, burstTexture, WORLD_WIDTH / 3, WORLD_HEIGHT - 450, 200, 600, 1.4);
         this.camera.addCue(this.cue1);
         this.camera.addCue(this.cue2);
@@ -50,12 +50,12 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
         this.ui.velocityInfluenceFactor.value = player.velocityInfluence.factor;
         this.ui.maxAimInfluence.value = player.aimInfluence.maxLength;
         this.ui.aimInfluenceFactor.value = player.aimInfluence.factor;
-        this.ui.aimInfluenceLerp.value = player.aimInfluence.lerp;
+        this.ui.aimInfluenceLerp.value = player.aimInfluence.lerpFactor;
         this.ui.maxVelocityInfluence.addListener((value) => (player.velocityInfluence.maxLength = value));
         this.ui.velocityInfluenceFactor.addListener((value) => (player.velocityInfluence.factor = value));
         this.ui.maxAimInfluence.addListener((value) => (player.aimInfluence.maxLength = value));
         this.ui.aimInfluenceFactor.addListener((value) => (player.aimInfluence.factor = value));
-        this.ui.aimInfluenceLerp.addListener((value) => (player.aimInfluence.lerp = value));
+        this.ui.aimInfluenceLerp.addListener((value) => (player.aimInfluence.lerpFactor = value));
     }
 
     public override onDisable() {

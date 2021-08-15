@@ -1,4 +1,4 @@
-import { TargetInfluence, AimInfluence, Vector2, lerpVector } from "../src";
+import { InfluencedCameraTarget, AimInfluence, Vector2, lerpVector } from "../src";
 import {
     influencedModecolors,
     ROCKET_PREVIEW_OFFSET,
@@ -16,7 +16,7 @@ import { vectorToAngle } from "./utils";
 
 const SPAWN_TIME = 0.3;
 
-export class Rocket implements TargetInfluence {
+export class Rocket implements InfluencedCameraTarget {
     public x: number;
     public y: number;
     public lastValidDirection: Vector2 = { x: 0, y: 0 };
