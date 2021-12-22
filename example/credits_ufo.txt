@@ -1,0 +1,26 @@
+Ufo / Effect taken from: https://opengameart.org/content/alien-ufo-pack
+Background: by upklyak: https://www.freepik.com/free-vector/mars-landscape-alien-planet-martian-background_7743415.htm#page=1&query=alien%20game&position=4
+Heart: https://opengameart.org/content/heart-pixel-art
+Rocket: https://opengameart.org/content/space-rocket-2d
+
+###############################################################################
+
+
+	Alien UFO pack
+	by Kenney Vleugels for Kenney (www.kenney.nl)
+
+			------------------------------
+
+	License (Creative Commons Zero, CC0)
+	http://creativecommons.org/publicdomain/zero/1.0/
+
+	You may use these graphics in personal and commercial projects.
+	Credit (Kenney or www.kenney.nl) would be nice but is not mandatory.
+
+			------------------------------
+
+	Donate:   http://donate.kenney.nl/
+	Request:  http://request.kenney.nl/
+
+
+###############################################################################
