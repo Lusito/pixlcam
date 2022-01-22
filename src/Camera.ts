@@ -51,6 +51,16 @@ export class Camera {
         return this.zoom;
     }
 
+    /** @returns The current viewport width. */
+    public getViewportWidth() {
+        return this.viewportWidth;
+    }
+
+    /** @returns The current viewport height. */
+    public getViewportHeight() {
+        return this.viewportHeight;
+    }
+
     /**
      * Set the zoom value and update the projection matrix accordingly.
      *
