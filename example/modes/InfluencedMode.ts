@@ -27,16 +27,14 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
         currentZoom: new NumberOption("Current Zoom", { disabled: true, type: "text" }, 3),
     };
 
-    private readonly cue1: GameCue;
-    private readonly cue2: GameCue;
+    private readonly cues: GameCue[] = [];
 
     public constructor(game: Game, player: Player, burstTexture: TextureInfo) {
         super(game, player, new InfluencedCamera());
 
-        this.cue1 = new GameCue(game, burstTexture, WORLD_WIDTH / 2 + 500, WORLD_HEIGHT / 2 - 500, 200, 1000, 0.8);
-        this.cue2 = new GameCue(game, burstTexture, WORLD_WIDTH / 3, WORLD_HEIGHT - 450, 200, 600, 1.4);
-        this.camera.addCue(this.cue1);
-        this.camera.addCue(this.cue2);
+        this.addCue(new GameCue(game, burstTexture, WORLD_WIDTH / 2 + 500, WORLD_HEIGHT / 2 - 500, 200, 1000, 0.8));
+        // this.addCue(new GameCue(game, burstTexture, WORLD_WIDTH / 2 - 100, WORLD_HEIGHT / 2 - 500, 200, 1000, 1.4));
+        this.addCue(new GameCue(game, burstTexture, WORLD_WIDTH / 3, WORLD_HEIGHT - 450, 200, 600, 1.4));
 
         this.camera.setBounds({
             xMin: 0,
@@ -58,6 +56,11 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
         this.ui.aimInfluenceLerp.addListener((value) => (player.aimInfluence.lerpFactor = value));
     }
 
+    private addCue(cue: GameCue) {
+        this.cues.push(cue);
+        this.camera.addCue(cue);
+    }
+
     public override onDisable() {
         for (const key of Object.keys(this.ui)) {
             this.ui[key as UiKey].hide();
@@ -71,19 +74,17 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
         }
     }
 
-    public override update() {
-        this.camera.update();
+    public override update(deltaTime: number) {
+        this.camera.update(deltaTime);
         this.ui.currentZoom.value = this.camera.getZoom();
     }
 
     public override draw() {
-        this.cue1.draw();
-        this.cue2.draw();
+        for (const cue of this.cues) cue.draw();
     }
 
     public override drawDebug() {
-        this.cue1.drawDebug(this.ui.cueInner.checked, this.ui.cueOuter.checked);
-        this.cue2.drawDebug(this.ui.cueInner.checked, this.ui.cueOuter.checked);
+        for (const cue of this.cues) cue.drawDebug(this.ui.cueInner.checked, this.ui.cueOuter.checked);
 
         const target = this.camera.getTarget();
         if (target && this.ui.combinedAimInfluence.checked) {
