@@ -16,6 +16,13 @@ export interface CueInfluence extends Vector2 {
     zoom: number;
 }
 
+interface CueInfluenceConfig {
+    cue: CueInfluence;
+    influence: number;
+    totalFadeTime: number;
+    fadeTime: number;
+}
+
 /**
  * A target for the InfluencedCamera.
  * The target can influence the camera by specifying aim influences and a zoom value.
@@ -36,7 +43,7 @@ export class InfluencedCamera extends Camera {
 
     protected savedZoom: number;
 
-    protected readonly cues: CueInfluence[] = [];
+    protected readonly cueConfigs: CueInfluenceConfig[] = [];
 
     protected target: InfluencedCameraTarget | null = null;
 
@@ -59,13 +66,43 @@ export class InfluencedCamera extends Camera {
     }
 
     public addCue(cue: CueInfluence) {
-        this.cues.push(cue);
-        this.update();
+        this.cueConfigs.push({
+            cue,
+            fadeTime: 0,
+            totalFadeTime: 0,
+            influence: 1,
+        });
+        this.update(0);
     }
 
-    public removeCue(cue: CueInfluence) {
-        const index = this.cues.indexOf(cue);
-        if (index >= 0) this.cues.splice(index, 1);
+    public removeCue(cue: CueInfluence, fadeTime = 0) {
+        if (fadeTime > 0) {
+            const config = this.cueConfigs.find((v) => v.cue === cue);
+            if (config && !config.totalFadeTime) {
+                // Copy cue, so we can perform a fadeout
+                config.cue = { ...cue };
+                config.fadeTime = fadeTime;
+                config.totalFadeTime = fadeTime;
+            }
+        } else {
+            const index = this.cueConfigs.findIndex((v) => v.cue === cue);
+            if (index >= 0) this.cueConfigs.splice(index, 1);
+        }
+    }
+
+    public removeAllCues(fadeTime = 0) {
+        if (fadeTime > 0) {
+            for (const config of this.cueConfigs) {
+                if (!config.totalFadeTime) {
+                    // Copy cue, so we can perform a fadeout
+                    config.cue = { ...config.cue };
+                    config.fadeTime = fadeTime;
+                    config.totalFadeTime = fadeTime;
+                }
+            }
+        } else {
+            this.cueConfigs.length = 0;
+        }
     }
 
     public setTarget(target: InfluencedCameraTarget | null) {
@@ -75,40 +112,48 @@ export class InfluencedCamera extends Camera {
             this.offset.y += this.target.y - target.y;
         }
         this.target = target;
-        this.update();
+        this.update(0);
     }
 
     public getTarget() {
         return this.target;
     }
 
-    protected getClosestCue() {
-        if (!this.cues.length || !this.target) return null;
+    // fixme: should take all relevant cues into account with a weight!
+    protected getClosestCueConfig() {
+        if (!this.cueConfigs.length || !this.target) return null;
 
-        let closestCue: CueInfluence | null = null;
+        let closestCueConfig: CueInfluenceConfig | null = null;
         let closestCueDistance = Number.POSITIVE_INFINITY;
-        for (const cue of this.cues) {
-            const { x, y } = cue;
-            const dst = Math.sqrt((x - this.target.x) ** 2 + (y - this.target.y) ** 2) - cue.outerRadius;
+        for (const config of this.cueConfigs) {
+            const { x, y } = config.cue;
+            const dst = Math.sqrt((x - this.target.x) ** 2 + (y - this.target.y) ** 2) - config.cue.outerRadius;
             if (dst < closestCueDistance) {
-                closestCue = cue;
+                closestCueConfig = config;
                 closestCueDistance = dst;
             }
         }
-        return closestCue;
+        return closestCueConfig;
     }
 
-    public update() {
-        if (!this.target) return;
+    public update(deltaTime: number) {
+        this.updateFadingCues(deltaTime);
 
-        const cue = this.getClosestCue();
+        if (!this.target) {
+            this.updateZoom(this.zoom);
+            return;
+        }
+
+        const cueConfig = this.getClosestCueConfig();
         let { x, y } = this.target;
         let zoom = this.savedZoom * this.target.zoom;
         let aimInfluence = 1;
-        if (cue) {
-            const maxZoom = zoom * cue.zoom;
+        if (cueConfig) {
+            const { cue, influence } = cueConfig;
+            const cueZoom = 1 + (cue.zoom - 1) * influence;
+            const maxZoom = zoom * cueZoom;
             const dst = Math.sqrt((cue.x - x) ** 2 + (cue.y - y) ** 2);
-            if (dst <= cue.innerRadius) {
+            if (dst <= cue.innerRadius && cueConfig.influence === 1) {
                 // In the inner radius, the camera is fixed on the cue
                 this.updateZoom(maxZoom);
                 this.moveTo(cue.x, cue.y);
@@ -118,8 +163,8 @@ export class InfluencedCamera extends Camera {
                 // In the outer radius, the camera is drawn towards the cue
                 const length = cue.outerRadius - cue.innerRadius;
                 const pos = dst - cue.innerRadius;
-                aimInfluence = ease(pos / length);
-                const cueInfluence = 1 - aimInfluence;
+                const cueInfluence = 1 - ease(pos / length) * influence;
+                aimInfluence = cueInfluence - 1;
                 x += (cue.x - x) * cueInfluence;
                 y += (cue.y - y) * cueInfluence;
                 zoom += (maxZoom - zoom) * ease(cueInfluence);
@@ -140,6 +185,20 @@ export class InfluencedCamera extends Camera {
         lerpVector(this.offset, aimOffsetX * aimFactor, aimOffsetY * aimFactor);
         this.updateZoom(zoom);
         this.moveTo(x + this.offset.x * aimInfluence, y + this.offset.y * aimInfluence);
+    }
+
+    protected updateFadingCues(deltaTime: number) {
+        for (let i = this.cueConfigs.length - 1; i >= 0; i--) {
+            const config = this.cueConfigs[i];
+            if (config.totalFadeTime) {
+                config.fadeTime -= deltaTime;
+                if (config.fadeTime <= 0) {
+                    this.cueConfigs.splice(i, 1);
+                } else {
+                    config.influence = config.fadeTime / config.totalFadeTime;
+                }
+            }
+        }
     }
 
     protected updateZoom(zoom: number) {
