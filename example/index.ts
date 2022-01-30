@@ -41,6 +41,9 @@ async function loadTextures(gl: WebGLRenderingContext) {
 
 export type Textures = ReturnType<typeof loadTextures> extends Promise<infer T> ? T : never;
 
+// fixed rate tick
+const TICK = 1 / 60;
+
 async function init() {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const gl = canvas.getContext("webgl") as WebGLRenderingContext;
@@ -48,12 +51,17 @@ async function init() {
 
     const game = new Game(canvas, gl, textures);
 
-    let lastTime = 0;
-    function render(time: number) {
-        const deltaTime = (time - lastTime) / 1000;
+    let acc = 0;
+    let lastTime = performance.now();
+    function render() {
+        const time = performance.now();
+        acc += (time - lastTime) / 1000;
         lastTime = time;
 
-        game.update(deltaTime);
+        while(acc >= TICK) {
+            game.update(TICK);
+            acc -= TICK;
+        }
 
         window.requestAnimationFrame(render);
     }
