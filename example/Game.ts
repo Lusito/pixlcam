@@ -88,7 +88,7 @@ export class Game {
         });
 
         // Connect to zoom option
-        this.ui.zoom.value = this.mode.camera.getZoom();
+        this.mode.camera.setZoom(this.ui.zoom.value);
         this.ui.zoom.addListener((value) => {
             for (const key of Object.keys(this.modes)) {
                 this.modes[key as ModeKey].camera.setZoom(value);

@@ -34,13 +34,6 @@ export interface InfluencedCameraTarget extends Vector2 {
     zoom: number;
 }
 
-interface Influence {
-    factor: number;
-    dx: number;
-    dy: number;
-    zoom: number;
-}
-
 /**
  * A camera being influenced by aiming directions (like velocity) and cues (points of interest).
  * Optionally it can be contained within specified bounds.
@@ -54,11 +47,13 @@ export class InfluencedCamera extends Camera {
 
     protected target: InfluencedCameraTarget | null = null;
 
+    protected aimOffset: Vector2 = { x: 0, y: 0 };
+
     protected offset: Vector2 = { x: 0, y: 0 };
 
-    protected desired: Vector2 = { x: 0, y: 0 };
+    protected finalOffset: Vector2 = { x: 0, y: 0 };
 
-    private influences: Influence[] = [];
+    protected finalZoom = 1;
 
     /**
      * Create a new influenced camera.
@@ -68,8 +63,9 @@ export class InfluencedCamera extends Camera {
         this.savedZoom = this.zoom;
     }
 
+    // fixme: rename? in UI it's combined aim influence, this is no longer the case..
     public getOffset(): Readonly<Vector2> {
-        return this.offset;
+        return this.aimOffset;
     }
 
     public override setZoom(zoom: number) {
@@ -119,11 +115,12 @@ export class InfluencedCamera extends Camera {
     public setTarget(target: InfluencedCameraTarget | null) {
         // Adjust offset, so we can smoothen the transition between the current and next target
         if (target && this.target) {
+            // fixme: do not mix with aim offset
             this.offset.x += this.target.x - target.x;
             this.offset.y += this.target.y - target.y;
         }
         this.target = target;
-        this.update(0);
+        this.update(0); // fixme: needed?
     }
 
     public getTarget() {
@@ -134,33 +131,78 @@ export class InfluencedCamera extends Camera {
     protected updateInfluences() {
         if (!this.cueConfigs.length || !this.target) return 0;
 
-        let numInfluences = 0;
+        const currentZoom = this.savedZoom * this.target.zoom;
+        let zoom = currentZoom;
+        let maxFactor = 0;
+        let factorSum = 0;
+        let cueX = 0;
+        let cueY = 0;
+        let minDst = Infinity;
+
         for (const config of this.cueConfigs) {
             const { x, y } = config.cue;
             const dx = x - this.target.x;
             const dy = y - this.target.y;
             const dst = Math.sqrt(dx ** 2 + dy ** 2);
             if (dst < config.cue.outerRadius) {
-                const { outerRadius, innerRadius, zoom } = config.cue;
+                if (dst < minDst) {
+                    minDst = dst;
+                }
+                const { outerRadius, innerRadius } = config.cue;
                 // In the outer radius, the camera is drawn towards the cue
                 const length = outerRadius - innerRadius;
                 const pos = dst - innerRadius;
                 const factor = (pos <= 0 ? 1 : 1 - ease(pos / length)) * config.influence;
 
-                if (this.influences.length > numInfluences) {
-                    const influence = this.influences[numInfluences];
-                    influence.dx = dx;
-                    influence.dy = dy;
-                    influence.factor = factor;
-                    influence.zoom = zoom;
-                } else {
-                    this.influences.push({ dx, dy, factor, zoom });
-                }
-                numInfluences++;
+                factorSum += factor;
+                if (factor > maxFactor) maxFactor = factor;
+
+                cueX += dx * factor;
+                cueY += dy * factor;
+
+                // fixme: does not work with multiple cues:
+                zoom -= (currentZoom - config.cue.zoom) * ease(factor);
             }
         }
+        let { x, y } = this.offset;
 
-        return numInfluences;
+        // Apply cue influence
+        const cueInfluence = maxFactor / factorSum;
+        let aimInfluence = 1;
+        if (cueInfluence) {
+            cueX *= cueInfluence;
+            cueY *= cueInfluence;
+            if (Number.isFinite(minDst)) {
+                const cueLength = Math.sqrt(cueX ** 2 + cueY ** 2);
+                // fixme: this is not optimal
+                aimInfluence = 1 - Math.min(1, Math.max(cueLength / minDst, 0));
+            }
+            x += cueX;
+            y += cueY;
+        }
+
+        // Apply aim influence
+        const { aims } = this.target;
+        if (aims.length !== 0 && aimInfluence) {
+            let aimOffsetX = 0;
+            let aimOffsetY = 0;
+            // fixme: this is not optimal
+            for (const aim of aims) {
+                const aimFocus = aim.get();
+                aimOffsetX += aimFocus.x;
+                aimOffsetY += aimFocus.y;
+            }
+
+            const aimFactor = 1 / aims.length;
+            x += aimOffsetX * aimFactor * aimInfluence;
+            y += aimOffsetY * aimFactor * aimInfluence;
+        }
+
+        lerpVector(this.offset, 0, 0);
+
+        this.finalOffset.x = x;
+        this.finalOffset.y = y;
+        this.finalZoom = zoom;
     }
 
     public update(deltaTime: number) {
@@ -171,58 +213,10 @@ export class InfluencedCamera extends Camera {
             return;
         }
 
-        this.updateOffset(this.target.aims);
-        const numInfluences = this.updateInfluences();
+        this.updateInfluences();
 
-        const { x, y } = this.target;
-        let zoom = this.savedZoom * this.target.zoom;
-
-        if (numInfluences === 0) {
-            this.updateZoom(zoom);
-            // lerping to avoid the kamera jerking a bit when switching influence count
-            lerpVector(this.desired, x, y);
-            this.moveTo(this.desired.x + this.offset.x, this.desired.y + this.offset.y);
-            return;
-        }
-        let factorSum = 0;
-        for (let i = 0; i < numInfluences; i++) {
-            const inf = this.influences[i];
-            factorSum += inf.factor;
-        }
-        const aimInfluence = 1 - factorSum / numInfluences;
-
-        let dx = x;
-        let dy = y;
-        for (let i = 0; i < numInfluences; i++) {
-            const inf = this.influences[i];
-            const f = inf.factor / factorSum;
-            const factor = inf.factor * f;
-            const maxZoom = zoom * inf.zoom;
-            zoom += (maxZoom - zoom) * ease(factor);
-            dx += inf.dx * factor;
-            dy += inf.dy * factor;
-        }
-
-        // lerping to avoid the kamera jerking a bit when switching influence count
-        lerpVector(this.desired, dx, dy);
-
-        this.updateZoom(zoom);
-        this.moveTo(this.desired.x + this.offset.x * aimInfluence, this.desired.y + this.offset.y * aimInfluence);
-    }
-
-    protected updateOffset(aims: AimInfluence[]) {
-        let aimOffsetX = 0;
-        let aimOffsetY = 0;
-        let aimFactor = 0;
-        if (aims.length !== 0) {
-            for (const aim of aims) {
-                const aimFocus = aim.get();
-                aimOffsetX += aimFocus.x;
-                aimOffsetY += aimFocus.y;
-            }
-            aimFactor = 1 / aims.length;
-        }
-        lerpVector(this.offset, aimOffsetX * aimFactor, aimOffsetY * aimFactor);
+        this.updateZoom(this.finalZoom);
+        this.moveTo(this.target.x + this.finalOffset.x, this.target.y + this.finalOffset.y);
     }
 
     protected updateFadingCues(deltaTime: number) {

@@ -38,7 +38,8 @@
     "lint:style:base": "prettier \"{src,example}/**/*.{ts,tsx,js,json}\" \"./*.{ts,tsx,js,json}\"",
     "lint:style:fix": "npm run lint:style:base -- --write",
     "lint:md": "node lint-markdown.js",
-    "start": "parcel  -d docs/.vuepress/public/example example/index.html"
+    "start": "parcel -d docs/.vuepress/public/example example/index.html",
+    "exp": "parcel -d experiment/dist experiment/index.html"
   },
   "browserslist": [
     "since 2017-06"
