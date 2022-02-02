@@ -18,7 +18,7 @@ If you need to move it instantly, call [moveInstantly](../api/classes/FollowingC
 
 ### Setting Boundaries
 
-In some scenarios, you might want to constrain the camera to stay within the specified bounds. For example to now show anything outside the level geometry. You can use [setBounds](../api/classes/FollowingCamera.md#moveomstantly) to do that. Use `setBounds(null)` to remove the boundary.
+In some scenarios, you might want to constrain the camera to stay within the specified bounds. For example to not show anything outside the level geometry. You can use [setBounds](../api/classes/FollowingCamera.md#moveomstantly) to do that. Use `setBounds(null)` to remove the boundary.
 
 ### Other Options
 
