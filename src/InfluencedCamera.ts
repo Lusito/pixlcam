@@ -47,8 +47,6 @@ export class InfluencedCamera extends Camera {
 
     protected target: InfluencedCameraTarget | null = null;
 
-    protected aimOffset: Vector2 = { x: 0, y: 0 };
-
     protected offset: Vector2 = { x: 0, y: 0 };
 
     protected finalOffset: Vector2 = { x: 0, y: 0 };
@@ -63,9 +61,11 @@ export class InfluencedCamera extends Camera {
         this.savedZoom = this.zoom;
     }
 
-    // fixme: rename? in UI it's combined aim influence, this is no longer the case..
+    /**
+     * @returns The offset that has been added in the case of a target switch.
+     */
     public getOffset(): Readonly<Vector2> {
-        return this.aimOffset;
+        return this.offset;
     }
 
     public override setZoom(zoom: number) {
@@ -127,17 +127,14 @@ export class InfluencedCamera extends Camera {
         return this.target;
     }
 
-    // returns number of active influences
     protected updateInfluences() {
-        if (!this.cueConfigs.length || !this.target) return 0;
+        if (!this.cueConfigs.length || !this.target) return;
 
-        const currentZoom = this.savedZoom * this.target.zoom;
-        let zoom = currentZoom;
+        let zoom = 0;
         let maxFactor = 0;
         let factorSum = 0;
         let cueX = 0;
         let cueY = 0;
-        let minDst = Infinity;
 
         for (const config of this.cueConfigs) {
             const { x, y } = config.cue;
@@ -145,9 +142,6 @@ export class InfluencedCamera extends Camera {
             const dy = y - this.target.y;
             const dst = Math.sqrt(dx ** 2 + dy ** 2);
             if (dst < config.cue.outerRadius) {
-                if (dst < minDst) {
-                    minDst = dst;
-                }
                 const { outerRadius, innerRadius } = config.cue;
                 // In the outer radius, the camera is drawn towards the cue
                 const length = outerRadius - innerRadius;
@@ -160,33 +154,25 @@ export class InfluencedCamera extends Camera {
                 cueX += dx * factor;
                 cueY += dy * factor;
 
-                // fixme: does not work with multiple cues:
-                zoom -= (currentZoom - config.cue.zoom) * ease(factor);
+                zoom += (1 - config.cue.zoom) * factor;
             }
         }
         let { x, y } = this.offset;
 
         // Apply cue influence
         const cueInfluence = maxFactor / factorSum;
-        let aimInfluence = 1;
         if (cueInfluence) {
-            cueX *= cueInfluence;
-            cueY *= cueInfluence;
-            if (Number.isFinite(minDst)) {
-                const cueLength = Math.sqrt(cueX ** 2 + cueY ** 2);
-                // fixme: this is not optimal
-                aimInfluence = 1 - Math.min(1, Math.max(cueLength / minDst, 0));
-            }
-            x += cueX;
-            y += cueY;
+            x += cueX * cueInfluence;
+            y += cueY * cueInfluence;
         }
 
         // Apply aim influence
         const { aims } = this.target;
+        const aimInfluence = 1 - maxFactor;
         if (aims.length !== 0 && aimInfluence) {
             let aimOffsetX = 0;
             let aimOffsetY = 0;
-            // fixme: this is not optimal
+            // fixme: improve this:
             for (const aim of aims) {
                 const aimFocus = aim.get();
                 aimOffsetX += aimFocus.x;
@@ -202,7 +188,7 @@ export class InfluencedCamera extends Camera {
 
         this.finalOffset.x = x;
         this.finalOffset.y = y;
-        this.finalZoom = zoom;
+        this.finalZoom = this.savedZoom * this.target.zoom * (cueInfluence ? 1 - zoom * cueInfluence : 1);
     }
 
     public update(deltaTime: number) {

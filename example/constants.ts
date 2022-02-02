@@ -48,7 +48,7 @@ export const followingModeColors = {
 export const influencedModecolors = {
     TARGET_PROJECTED: namedColors.WHITE,
     TARGET_AIM: namedColors.CYAN,
-    COMBINED_AIM: namedColors.GREEN,
+    OFFSET: namedColors.GREEN,
     CUE_INNER: namedColors.PINK,
     CUE_OUTER: namedColors.OLIVE,
 };

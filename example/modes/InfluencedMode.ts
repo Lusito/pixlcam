@@ -13,7 +13,7 @@ type UiKey = keyof InfluencedMode["ui"];
 
 export class InfluencedMode extends AbstractMode<InfluencedCamera> {
     private ui = {
-        combinedAimInfluence: new DebugCheckbox("⨉ Combined Aim Influence", influencedModecolors.COMBINED_AIM),
+        offset: new DebugCheckbox("⨉ Offset (due to target change)", influencedModecolors.OFFSET),
         targetProjected: new DebugCheckbox("☐ Target Projected", influencedModecolors.TARGET_PROJECTED),
         targetAim: new DebugCheckbox("☐ Target Aim", influencedModecolors.TARGET_AIM),
         cueInner: new DebugCheckbox("◯ Cue Inner Radius", influencedModecolors.CUE_INNER),
@@ -32,9 +32,9 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
     public constructor(game: Game, player: Player, burstTexture: TextureInfo) {
         super(game, player, new InfluencedCamera());
 
-        this.addCue(new GameCue(game, burstTexture, WORLD_WIDTH / 2 + 500, WORLD_HEIGHT / 2 - 500, 200, 1000, 0.3));
-        // this.addCue(new GameCue(game, burstTexture, WORLD_WIDTH / 2 - 100, WORLD_HEIGHT / 2 - 500, 200, 1000, 0.4));
-        this.addCue(new GameCue(game, burstTexture, WORLD_WIDTH / 3, WORLD_HEIGHT - 450, 200, 600, 0.8));
+        this.addCue(new GameCue(game, burstTexture, WORLD_WIDTH / 2 + 500, WORLD_HEIGHT / 2 - 500, 200, 1000, 0.6));
+        // this.addCue(new GameCue(game, burstTexture, WORLD_WIDTH / 2 - 100, WORLD_HEIGHT / 2 - 500, 200, 1000, 0.6));
+        this.addCue(new GameCue(game, burstTexture, WORLD_WIDTH / 3, WORLD_HEIGHT - 450, 200, 600, 1.4));
 
         this.camera.setBounds({
             xMin: 0,
@@ -87,10 +87,10 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
         for (const cue of this.cues) cue.drawDebug(this.ui.cueInner.checked, this.ui.cueOuter.checked);
 
         const target = this.camera.getTarget();
-        if (target && this.ui.combinedAimInfluence.checked) {
+        if (target && this.ui.offset.checked) {
             const { x, y } = this.camera.getOffset();
             this.crosshair.set(target.x + x, target.y + y, 16, 45);
-            this.crosshair.stroke(influencedModecolors.COMBINED_AIM);
+            this.crosshair.stroke(influencedModecolors.OFFSET);
         }
         if (this.ui.targetProjected.checked) this.player.drawDebugProjected(this.rect);
         if (this.ui.targetAim.checked) this.player.drawDebugAim(this.rect);
