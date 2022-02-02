@@ -1,5 +1,13 @@
 import { Camera, ScreenCamera } from "../src";
-import { defaultColors, SCREEN_HEIGHT, SCREEN_WIDTH, WORLD_HEIGHT, WORLD_WIDTH } from "./constants";
+import {
+    defaultColors,
+    SCREEN_HEIGHT,
+    SCREEN_WIDTH,
+    WORLD_CENTER_X,
+    WORLD_CENTER_Y,
+    WORLD_HEIGHT,
+    WORLD_WIDTH,
+} from "./constants";
 import { createDebugShader, DebugShader } from "./shaders/DebugShader";
 import { Player } from "./Player";
 import type { Textures } from ".";
@@ -120,6 +128,11 @@ export class Game {
 
         // Draw sprites
         applyCamera(this.mode.camera, this.defaultShader);
+        const cx = this.mode.camera.getX();
+        const cy = this.mode.camera.getY();
+        const bgX = WORLD_CENTER_X - (WORLD_CENTER_X - cx) * 0.75;
+        const bgY = WORLD_CENTER_Y - (WORLD_CENTER_Y - cy) * 0.75;
+        this.bgSprite.set(bgX, bgY, WORLD_WIDTH/1.3, WORLD_HEIGHT/1.3, 0);
         this.bgSprite.draw();
         this.mode.draw();
         this.player.draw();
@@ -130,7 +143,7 @@ export class Game {
             this.mode.drawDebug();
 
             if (this.ui.cameraCurrent.checked) {
-                this.crosshair.set(this.mode.camera.getX(), this.mode.camera.getY(), 16, 0);
+                this.crosshair.set(cx, cy, 16, 0);
                 this.crosshair.stroke(defaultColors.CAMERA);
             }
         }

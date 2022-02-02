@@ -9,6 +9,9 @@ export const SCREEN_HEIGHT = 480;
 export const WORLD_WIDTH = 6500;
 export const WORLD_HEIGHT = 2889;
 
+export const WORLD_CENTER_X = WORLD_WIDTH / 2;
+export const WORLD_CENTER_Y = WORLD_HEIGHT / 2;
+
 export const ROCKET_SPEED = 1400;
 export const ROCKET_SIZE = 32;
 export const ROCKET_PREVIEW_OFFSET = 100;
