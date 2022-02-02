@@ -9,7 +9,6 @@ import { NumberOption } from "../ui/NumberOption";
 
 type UiKey = keyof FollowingMode["ui"];
 
-// fixme: try to recreate FollowingCamera with InfluencedCamera and decide if FollowingCamera should stay.
 export class FollowingMode extends AbstractMode<FollowingCamera> {
     private ui = {
         cameraDesired: new DebugCheckbox("⨉ Camera Desired", followingModeColors.CAMERA_DESIRED),
