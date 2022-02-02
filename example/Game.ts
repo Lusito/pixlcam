@@ -1,5 +1,7 @@
 import { Camera, ScreenCamera } from "../src";
 import {
+    BG_HEIGHT,
+    BG_WIDTH,
     defaultColors,
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
@@ -132,7 +134,7 @@ export class Game {
         const cy = this.mode.camera.getY();
         const bgX = WORLD_CENTER_X - (WORLD_CENTER_X - cx) * 0.75;
         const bgY = WORLD_CENTER_Y - (WORLD_CENTER_Y - cy) * 0.75;
-        this.bgSprite.set(bgX, bgY, WORLD_WIDTH/1.3, WORLD_HEIGHT/1.3, 0);
+        this.bgSprite.set(bgX, bgY, BG_WIDTH, BG_HEIGHT, 0);
         this.bgSprite.draw();
         this.mode.draw();
         this.player.draw();

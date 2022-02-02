@@ -58,7 +58,7 @@ async function init() {
         acc += (time - lastTime) / 1000;
         lastTime = time;
 
-        while(acc >= TICK) {
+        while (acc >= TICK) {
             game.update(TICK);
             acc -= TICK;
         }
