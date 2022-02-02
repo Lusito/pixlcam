@@ -229,6 +229,7 @@ export class InfluencedCamera extends Camera {
         this.moveTo(this.x, this.y);
     }
 
+    // fixme: moveTo should be protected on all cameras to avoid confusion
     public override moveTo(x: number, y: number) {
         if (this.bounds) {
             const { xMin, xMax, yMin, yMax } = this.bounds;

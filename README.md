@@ -6,24 +6,13 @@
 [![Stars](https://badgen.net/github/stars/lusito/camera2d)](https://github.com/lusito/camera2d)
 [![Watchers](https://badgen.net/github/watchers/lusito/camera2d)](https://github.com/lusito/camera2d)
 
-A tiny helper library for working with the web audio API written in TypeScript.
-It has been written to simplify playing sounds in games.
-It is not meant as a fully-fledged audio library.
+A set of 2D cameras for games written in TypeScript:
 
-**Features:**
-- Playing sounds with and without position and orientation (positional-audio / spatialization)
-- A SoundSource (position + orientation) can play multiple sounds
-- You can play sounds on channels (if the specified channel already plays a sound, it will be stopped)
-- Sounds can of course be played freely (not on a channel)
-- It does not abstract away the web audio API. It only simplifies its usage. So you can still use the full power of the web audio API.
+- A [simple camera](https://lusito.github.io/camera2d/api/classes/ScreenCamera.md) for drawing in screen-space
+- A [camera that follows](https://lusito.github.io/camera2d/api/classes/FollowingCamera.md) your player smoothly
+- An [influenced camera](https://lusito.github.io/camera2d/api/classes/InfluencedCamera.md) inspired by the [camera from Insanely Twisted Shadow Planet](http://michelgagne.blogspot.com/2012/07/itsp-camera-explained.html).
 
-**What it doesn't do:**
-- Preloading sounds (that's up to you or a different asset manager)
-- Manipulating sounds
-- Fallback if web audio API is not supported
-
-If you are looking for a more complete solution, you might want to take a look at [howler](https://www.npmjs.com/package/howler).
-
+You'll get a projection and a model-view matrix ready to use, but there are also getters if your setup can't specify a camera matrix.
 
 #### Fair Warning
 The compile target of this library is es2015, so if you want to support older browsers, you'll have to ensure that this module is being transpiled to an older es version during your build-process.

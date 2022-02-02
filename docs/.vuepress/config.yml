@@ -21,9 +21,9 @@ themeConfig:
       children:
       - ''
       - getting-started
-      - positional-sound
-      - gain
-      - channels
+      - screen-camera
+      - following-camera
+      - influenced-camera
   displayAllHeaders: true
 plugins:
 - fulltext-search
