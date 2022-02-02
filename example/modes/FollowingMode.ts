@@ -1,6 +1,6 @@
 /* eslint-disable no-return-assign */
 import { FollowingCamera } from "../../src";
-import { followingModeColors, WORLD_HEIGHT, WORLD_WIDTH } from "../constants";
+import { followingModeColors } from "../constants";
 import type { Player } from "../Player";
 import type { Game } from "../Game";
 import { AbstractMode } from "./AbstractMode";
@@ -9,6 +9,7 @@ import { NumberOption } from "../ui/NumberOption";
 
 type UiKey = keyof FollowingMode["ui"];
 
+// fixme: try to recreate FollowingCamera with InfluencedCamera and decide if FollowingCamera should stay.
 export class FollowingMode extends AbstractMode<FollowingCamera> {
     private ui = {
         cameraDesired: new DebugCheckbox("⨉ Camera Desired", followingModeColors.CAMERA_DESIRED),
@@ -25,12 +26,6 @@ export class FollowingMode extends AbstractMode<FollowingCamera> {
 
         this.camera.acceleration = 40;
         this.camera.slowDistance = 200;
-        this.camera.setBounds({
-            xMin: 0,
-            yMin: 0,
-            xMax: WORLD_WIDTH,
-            yMax: WORLD_HEIGHT,
-        });
 
         const { camera } = this;
         this.ui.maxSpeed.value = camera.maxSpeed;
@@ -65,6 +60,7 @@ export class FollowingMode extends AbstractMode<FollowingCamera> {
     }
 
     public override drawDebug() {
+        super.drawDebug();
         const { x, y } = this.camera.getDesired();
         if (this.ui.cameraDesired.checked) {
             this.crosshair.set(x, y, 16, 45);

@@ -1,10 +1,11 @@
-import { Camera, ScreenCamera } from "../src";
+import { Camera, CameraBounds, ScreenCamera } from "../src";
 import {
     BG_HEIGHT,
     BG_WIDTH,
     defaultColors,
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
+    WORLD_BOUNDS,
     WORLD_CENTER_X,
     WORLD_CENTER_Y,
     WORLD_HEIGHT,
@@ -47,8 +48,9 @@ export class Game {
 
     private readonly screenCamera: ScreenCamera;
 
-    private ui = {
+    public readonly ui = {
         cameraCurrent: new DebugCheckbox("＋ Camera Current", defaultColors.CAMERA).show(),
+        boundaries: new DebugCheckbox("☐ World Boundaries", defaultColors.CAMERA).show(),
         zoom: new NumberOption("Zoom", { min: "0.125", max: "8", value: "0.5", step: "0.125" }).show(),
         debug: document.getElementById("debug") as HTMLInputElement,
     };
@@ -94,6 +96,16 @@ export class Game {
         snapToPixel.addEventListener("input", () => {
             for (const key of Object.keys(this.modes)) {
                 this.modes[key as ModeKey].camera.snapToPixel = snapToPixel.checked;
+            }
+        });
+
+        // Connect to useBounds option
+        const useBounds = document.getElementById("useBounds") as HTMLInputElement;
+        useBounds.checked = !!this.mode.camera.getBounds();
+        useBounds.addEventListener("input", () => {
+            const bounds: CameraBounds | null = useBounds.checked ? WORLD_BOUNDS : null;
+            for (const key of Object.keys(this.modes)) {
+                this.modes[key as ModeKey].camera.setBounds(bounds);
             }
         });
 

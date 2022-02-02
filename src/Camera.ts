@@ -1,6 +1,7 @@
 /* eslint-disable prefer-destructuring */
 
-import { createMatrix4, snapToPixel } from "./utils";
+import { CameraBounds } from "./types";
+import { createMatrix4, restrictToBounds, snapToPixel } from "./utils";
 
 /**
  * A simple 2D camera, which optionally snaps position values to pixels.
@@ -9,6 +10,8 @@ export class Camera {
     protected x = 0;
 
     protected y = 0;
+
+    protected bounds: CameraBounds | null = null;
 
     /** If set to true, the position will be snapped to pixels. */
     public snapToPixel = true;
@@ -71,13 +74,13 @@ export class Camera {
         this.updateProjection();
     }
 
-    /**
-     * Move the camera to the specified coordinates and apply pixel snapping if configured.
-     *
-     * @param x The new x position of the camera.
-     * @param y The new y position of the camera.
-     */
-    public moveTo(x: number, y: number) {
+    protected setPosition(x: number, y: number) {
+        if (this.bounds) {
+            const { xMin, xMax, yMin, yMax } = this.bounds;
+            x = restrictToBounds(x, xMin, xMax, this.viewportWidth / this.zoom);
+            y = restrictToBounds(y, yMin, yMax, this.viewportHeight / this.zoom);
+        }
+
         this.x = x;
         this.y = y;
 
@@ -88,6 +91,16 @@ export class Camera {
             this.modelView[12] = -x;
             this.modelView[13] = y;
         }
+    }
+
+    /**
+     * Move the camera to the specified coordinates and apply pixel snapping if configured.
+     *
+     * @param x The new x position of the camera.
+     * @param y The new y position of the camera.
+     */
+    public moveTo(x: number, y: number) {
+        this.setPosition(x, y);
     }
 
     /**
@@ -106,5 +119,14 @@ export class Camera {
     protected updateProjection() {
         this.projection[0] = (2 * this.zoom) / this.viewportWidth;
         this.projection[5] = (2 * this.zoom) / this.viewportHeight;
+    }
+
+    public setBounds(bounds: CameraBounds | null) {
+        this.bounds = bounds;
+        this.setPosition(this.x, this.y);
+    }
+
+    public getBounds() {
+        return this.bounds;
     }
 }

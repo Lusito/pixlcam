@@ -16,10 +16,6 @@ You can use the [moveTo](../api/classes/FollowingCamera.md#moveto) method to set
 
 If you need to move it instantly, call [moveInstantly](../api/classes/FollowingCamera.md#moveinstantly) after calling `moveTo`.
 
-### Setting Boundaries
-
-In some scenarios, you might want to constrain the camera to stay within the specified bounds. For example to not show anything outside the level geometry. You can use [setBounds](../api/classes/FollowingCamera.md#moveomstantly) to do that. Use `setBounds(null)` to remove the boundary.
-
 ### Other Options
 
 The following properties on the camera object allow changing the behavior of the camera. As said in the beginning, this camera is experimental, so this doesn't behave exactly as you might expect from the names, so play around with them a bit.

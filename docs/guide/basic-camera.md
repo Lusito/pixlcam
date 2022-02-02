@@ -1,8 +1,8 @@
-# Getting Started
+# Basic Camera
 
-The following shows you the basics that apply to every camera in this package.
+All cameras in this library extend the [Camera](../api/classes/Camera.md) class.
 
-All cameras extend the [Camera](../api/classes/Camera.md) class.
+Most of the following applies to all camera classes, but some might differ a bit.
 
 ## Camera Matrices
 
@@ -26,5 +26,8 @@ You can set the zoom level of all cameras except the ScreenCamera. Do this by ca
 
 ### Positioning the Camera
 
-Positioning the camera is different for each camera.
-There is a `moveTo` method on the base Camera class, but I'm not sure if this is supposed to stay here, since it doesn't make sense for any camera aside of FollowingCamera.
+You can use the [moveTo](../api/classes/Camera.md#moveto) method to set the desired position of the camera.
+
+### Setting Boundaries
+
+In some scenarios, you might want to constrain the camera to stay within the specified bounds. For example to not show anything outside the level geometry. You can use [setBounds](../api/classes/Camera.md#setbounds) to do that. Use `setBounds(null)` to remove the boundary.

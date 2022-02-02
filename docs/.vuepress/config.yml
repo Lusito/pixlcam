@@ -20,7 +20,7 @@ themeConfig:
     - title: Guide
       children:
       - ''
-      - getting-started
+      - basic-camera
       - screen-camera
       - following-camera
       - influenced-camera

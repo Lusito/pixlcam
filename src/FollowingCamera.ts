@@ -1,14 +1,11 @@
 import { Camera } from "./Camera";
-import { Vector2, CameraBounds } from "./types";
-import { restrictToBounds } from "./utils";
+import { Vector2 } from "./types";
 
 /**
  * A camera that smoothly follows a point.
  * Optionally it can be contained within specified bounds.
  */
 export class FollowingCamera extends Camera {
-    protected bounds: CameraBounds | null = null;
-
     // This is where the camera wants to be, but might not have been moved to yet.
     protected desired: Vector2 = { x: 0, y: 0 };
 
@@ -47,43 +44,29 @@ export class FollowingCamera extends Camera {
             const moveDistance = Math.sqrt(dx ** 2 + dy ** 2);
             if (distance - moveDistance <= this.lockDistance) {
                 this.speed = 0;
-                super.moveTo(this.desired.x, this.desired.y);
+                this.setPosition(this.desired.x, this.desired.y);
             } else {
-                super.moveTo(this.x + dx, this.y + dy);
+                this.setPosition(this.x + dx, this.y + dy);
             }
         } else {
             if (this.speed < this.maxSpeed)
                 this.speed = Math.min(this.maxSpeed, this.speed + this.maxSpeed * this.acceleration * deltaTime);
             const lerp = (deltaTime * this.speed) / distance;
-            super.moveTo(this.x + moveX * lerp, this.y + moveY * lerp);
+            this.setPosition(this.x + moveX * lerp, this.y + moveY * lerp);
         }
     }
 
     public moveInstantly() {
-        super.moveTo(this.desired.x, this.desired.y);
+        this.setPosition(this.desired.x, this.desired.y);
     }
 
     public override moveTo(x: number, y: number) {
         this.desired.x = x;
         this.desired.y = y;
-        this.applyBounds();
     }
 
     public override resize(width: number, height: number) {
         super.resize(width, height);
-        this.applyBounds();
-    }
-
-    protected applyBounds() {
-        if (this.bounds) {
-            const { xMin, xMax, yMin, yMax } = this.bounds;
-            this.desired.x = restrictToBounds(this.desired.x, xMin, xMax, this.viewportWidth / this.zoom);
-            this.desired.y = restrictToBounds(this.desired.y, yMin, yMax, this.viewportHeight / this.zoom);
-        }
-    }
-
-    public setBounds(bounds: CameraBounds | null) {
-        this.bounds = bounds;
-        this.applyBounds();
+        this.setPosition(this.desired.x, this.desired.y);
     }
 }

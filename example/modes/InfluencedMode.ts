@@ -36,12 +36,6 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
         // this.addCue(new GameCue(game, burstTexture, WORLD_WIDTH / 2 - 100, WORLD_HEIGHT / 2 - 500, 200, 1000, 0.6));
         this.addCue(new GameCue(game, burstTexture, WORLD_WIDTH / 3, WORLD_HEIGHT - 450, 200, 600, 1.4));
 
-        this.camera.setBounds({
-            xMin: 0,
-            yMin: 0,
-            xMax: WORLD_WIDTH,
-            yMax: WORLD_HEIGHT,
-        });
         this.camera.setTarget(player);
 
         this.ui.maxVelocityInfluence.value = player.velocityInfluence.maxLength;
@@ -84,6 +78,7 @@ export class InfluencedMode extends AbstractMode<InfluencedCamera> {
     }
 
     public override drawDebug() {
+        super.drawDebug();
         for (const cue of this.cues) cue.drawDebug(this.ui.cueInner.checked, this.ui.cueOuter.checked);
 
         const target = this.camera.getTarget();

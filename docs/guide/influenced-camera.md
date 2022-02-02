@@ -35,7 +35,3 @@ To add a cue, call [addCue](../api/classes/InfluencedCamera.md#addcue) and to re
 When removing a cue, you can specify a `fadeTime`. During the fade-time, the cue will gradually lose its influence on the camera, so the camera doesn't jump.
 
 Take a look at [Influenced Camera Cue](./influenced-camera-cue.md) for details on how to configure a cue.
-
-### Setting Boundaries
-
-In some scenarios, you might want to constrain the camera to stay within the specified bounds. For example to not show anything outside the level geometry. You can use [setBounds](../api/classes/InfluencedCamera.md#moveomstantly) to do that. Use `setBounds(null)` to remove the boundary.

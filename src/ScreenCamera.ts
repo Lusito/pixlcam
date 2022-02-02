@@ -7,10 +7,6 @@ import { Camera } from "./Camera";
 export class ScreenCamera extends Camera {
     public override resize(width: number, height: number) {
         super.resize(width, height);
-        this.moveTo(width / 2, height / 2);
-    }
-
-    public override setZoom() {
-        throw new Error("Zoom is not meant to be used on the screen camera (yet?).");
+        this.setPosition(width / 2, height / 2);
     }
 }

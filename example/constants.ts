@@ -1,3 +1,4 @@
+import { CameraBounds } from "../src";
 import { Color } from "./draw/types";
 
 export const DEG_TO_RAD = Math.PI / 180;
@@ -8,6 +9,13 @@ export const SCREEN_HEIGHT = 480;
 
 export const WORLD_WIDTH = 6500;
 export const WORLD_HEIGHT = 2889;
+
+export const WORLD_BOUNDS: CameraBounds = {
+    xMin: 0,
+    yMin: 0,
+    xMax: WORLD_WIDTH,
+    yMax: WORLD_HEIGHT,
+};
 
 export const WORLD_CENTER_X = WORLD_WIDTH / 2;
 export const WORLD_CENTER_Y = WORLD_HEIGHT / 2;

@@ -1,7 +1,7 @@
 import { Camera } from "./Camera";
 import { AimInfluence } from "./AimInfluence";
-import { CameraBounds, Vector2 } from "./types";
-import { ease, lerpVector, lerpScalar, restrictToBounds } from "./utils";
+import { Vector2 } from "./types";
+import { ease, lerpVector, lerpScalar } from "./utils";
 
 /**
  * A cue draws the InfluencedCamera towards a point if the camera is within the outerRadius.
@@ -39,8 +39,6 @@ export interface InfluencedCameraTarget extends Vector2 {
  * Optionally it can be contained within specified bounds.
  */
 export class InfluencedCamera extends Camera {
-    protected bounds: CameraBounds | null = null;
-
     protected savedZoom: number;
 
     protected readonly cueConfigs: CueConfig[] = [];
@@ -119,7 +117,6 @@ export class InfluencedCamera extends Camera {
             this.offset.y += this.target.y - target.y;
         }
         this.target = target;
-        this.update(0); // fixme: needed?
     }
 
     public getTarget() {
@@ -204,7 +201,7 @@ export class InfluencedCamera extends Camera {
         this.updateInfluences();
 
         this.updateZoom(this.finalZoom);
-        this.moveTo(this.target.x + this.finalOffset.x, this.target.y + this.finalOffset.y);
+        this.setPosition(this.target.x + this.finalOffset.x, this.target.y + this.finalOffset.y);
     }
 
     protected updateFadingCues(deltaTime: number) {
@@ -228,21 +225,10 @@ export class InfluencedCamera extends Camera {
 
     public override resize(width: number, height: number) {
         super.resize(width, height);
-        this.moveTo(this.x, this.y);
+        this.setPosition(this.x, this.y);
     }
 
-    // fixme: moveTo should be protected on all cameras to avoid confusion
-    public override moveTo(x: number, y: number) {
-        if (this.bounds) {
-            const { xMin, xMax, yMin, yMax } = this.bounds;
-            x = restrictToBounds(x, xMin, xMax, this.viewportWidth / this.zoom);
-            y = restrictToBounds(y, yMin, yMax, this.viewportHeight / this.zoom);
-        }
-        super.moveTo(x, y);
-    }
-
-    public setBounds(bounds: CameraBounds | null) {
-        this.bounds = bounds;
-        this.moveTo(this.x, this.y);
+    public override moveTo() {
+        throw new Error("moveTo is not supported on InfluencedCamera at this time.");
     }
 }
