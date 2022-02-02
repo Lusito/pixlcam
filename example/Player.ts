@@ -93,7 +93,6 @@ export class Player implements InfluencedCameraTarget {
         lerpVector(this.velocity, this.input.moveDirection.x * speed, this.input.moveDirection.y * speed);
         this.aimInfluence.set(this.input.aimDirection.x * speed, this.input.aimDirection.y * speed);
         this.velocityInfluence.set(this.velocity.x, this.velocity.y);
-        this.aimInfluence.update();
 
         this.x = Math.max(BOUND_DISTANCE, Math.min(WORLD_WIDTH - BOUND_DISTANCE, this.x + this.velocity.x * deltaTime));
         this.y = Math.max(

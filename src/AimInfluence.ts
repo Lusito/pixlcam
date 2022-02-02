@@ -79,8 +79,8 @@ export class AimInfluence {
         }
     }
 
-    /** Move the offset towards the desired offset by lerpFactor. Only required to call if a lerpFactor != 1 has been specified. */
-    public update() {
+    /** Move the offset towards the desired offset by lerpFactor. Called by InfluencedCamera. */
+    protected update() {
         if (this.lerpFactor < 1) lerpVector(this.offset, this.desiredOffset.x, this.desiredOffset.y, this.lerpFactor);
     }
 }

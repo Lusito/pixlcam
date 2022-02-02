@@ -1,11 +1,11 @@
 import type { TextureInfo } from ".";
-import { CueInfluence } from "../src";
+import { InfluencedCameraCue } from "../src";
 import { influencedModecolors } from "./constants";
 import { DebugCircle } from "./draw/DebugCircle";
 import { Sprite } from "./draw/Sprite";
 import type { Game } from "./Game";
 
-export class GameCue implements CueInfluence {
+export class GameCue implements InfluencedCameraCue {
     public x: number;
     public y: number;
     public innerRadius: number;

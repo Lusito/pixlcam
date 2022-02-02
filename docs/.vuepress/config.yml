@@ -24,6 +24,8 @@ themeConfig:
       - screen-camera
       - following-camera
       - influenced-camera
+      - influenced-camera-target
+      - influenced-camera-cue
   displayAllHeaders: true
 plugins:
 - fulltext-search

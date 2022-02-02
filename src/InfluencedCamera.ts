@@ -4,10 +4,10 @@ import { CameraBounds, Vector2 } from "./types";
 import { ease, lerpVector, lerpScalar, restrictToBounds } from "./utils";
 
 /**
- * A cue influence draws the InfluencedCamera towards a point if the camera is within the outerRadius.
+ * A cue draws the InfluencedCamera towards a point if the camera is within the outerRadius.
  * If the camera is within the innerRadius, it will be fixed on the cue point.
  */
-export interface CueInfluence extends Vector2 {
+export interface InfluencedCameraCue extends Vector2 {
     /** The inner radius of this influence point. */
     innerRadius: number;
     /** The outer radius of this influence point. */
@@ -16,8 +16,8 @@ export interface CueInfluence extends Vector2 {
     zoom: number;
 }
 
-interface CueInfluenceConfig {
-    cue: CueInfluence;
+interface CueConfig {
+    cue: InfluencedCameraCue;
     influence: number;
     totalFadeTime: number;
     fadeTime: number;
@@ -43,7 +43,7 @@ export class InfluencedCamera extends Camera {
 
     protected savedZoom: number;
 
-    protected readonly cueConfigs: CueInfluenceConfig[] = [];
+    protected readonly cueConfigs: CueConfig[] = [];
 
     protected target: InfluencedCameraTarget | null = null;
 
@@ -72,7 +72,7 @@ export class InfluencedCamera extends Camera {
         this.savedZoom = zoom;
     }
 
-    public addCue(cue: CueInfluence) {
+    public addCue(cue: InfluencedCameraCue) {
         this.cueConfigs.push({
             cue,
             fadeTime: 0,
@@ -82,7 +82,7 @@ export class InfluencedCamera extends Camera {
         this.update(0);
     }
 
-    public removeCue(cue: CueInfluence, fadeTime = 0) {
+    public removeCue(cue: InfluencedCameraCue, fadeTime = 0) {
         if (fadeTime > 0) {
             const config = this.cueConfigs.find((v) => v.cue === cue);
             if (config && !config.totalFadeTime) {
@@ -115,7 +115,6 @@ export class InfluencedCamera extends Camera {
     public setTarget(target: InfluencedCameraTarget | null) {
         // Adjust offset, so we can smoothen the transition between the current and next target
         if (target && this.target) {
-            // fixme: do not mix with aim offset
             this.offset.x += this.target.x - target.x;
             this.offset.y += this.target.y - target.y;
         }
@@ -157,6 +156,9 @@ export class InfluencedCamera extends Camera {
                 zoom += (1 - config.cue.zoom) * factor;
             }
         }
+
+        // Update offset
+        lerpVector(this.offset, 0, 0);
         let { x, y } = this.offset;
 
         // Apply cue influence
@@ -174,6 +176,8 @@ export class InfluencedCamera extends Camera {
             let aimOffsetY = 0;
             // fixme: improve this:
             for (const aim of aims) {
+                // eslint-disable-next-line dot-notation
+                aim["update"]();
                 const aimFocus = aim.get();
                 aimOffsetX += aimFocus.x;
                 aimOffsetY += aimFocus.y;
@@ -183,8 +187,6 @@ export class InfluencedCamera extends Camera {
             x += aimOffsetX * aimFactor * aimInfluence;
             y += aimOffsetY * aimFactor * aimInfluence;
         }
-
-        lerpVector(this.offset, 0, 0);
 
         this.finalOffset.x = x;
         this.finalOffset.y = y;

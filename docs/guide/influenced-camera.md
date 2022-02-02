@@ -20,22 +20,11 @@ Since this camera needs to do work each frame, you'll need to call its [update](
 
 A target is the main focus of the camera until something attracts the cameras attention. The target is usually the player, but it can be something else as well. Without a target, the camera won't do anything.
 
-To set the target, call [setTarget](../api/classes/InfluencedCamera.md#settarget).
-
-FIXME: move this to new file and add more explanation on aims and zoom.
-
-An [InfluencedCameraTarget](../api/interfaces/InfluencedCameraTarget.md] needs to implement the following properties:
-
-```typescript
-    x: number;
-    y: number;
-    aims: AimInfluence[];
-    zoom: number;
-```
-
-You only need to call `setTarget` if the target changes. Property changes will be automatically detected.
+To set the target, call [setTarget](../api/classes/InfluencedCamera.md#settarget). You only need to call `setTarget` if the target changes. Property changes will be automatically detected.
 
 When you switch from one target to another, a transition will be performed, so that the camera does not instantly jump to the new target.
+
+Take a look at [Influenced Camera Target](./influenced-camera-target.md) for details on how to configure a target.
 
 ### Adding and Removing Cues
 
@@ -45,7 +34,7 @@ To add a cue, call [addCue](../api/classes/InfluencedCamera.md#addcue) and to re
 
 When removing a cue, you can specify a `fadeTime`. During the fade-time, the cue will gradually lose its influence on the camera, so the camera doesn't jump.
 
-FIXME: Add page for CueInfluence
+Take a look at [Influenced Camera Cue](./influenced-camera-cue.md) for details on how to configure a cue.
 
 ### Setting Boundaries
 
