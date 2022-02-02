@@ -124,7 +124,7 @@ export class InfluencedCamera extends Camera {
     }
 
     protected updateInfluences() {
-        if (!this.cueConfigs.length || !this.target) return;
+        if (!this.target) return;
 
         let zoom = 0;
         let maxFactor = 0;
@@ -183,6 +183,11 @@ export class InfluencedCamera extends Camera {
             const aimFactor = 1 / aims.length;
             x += aimOffsetX * aimFactor * aimInfluence;
             y += aimOffsetY * aimFactor * aimInfluence;
+        } else {
+            for (const aim of aims) {
+                // eslint-disable-next-line dot-notation
+                aim["update"]();
+            }
         }
 
         this.finalOffset.x = x;
