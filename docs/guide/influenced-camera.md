@@ -14,24 +14,62 @@ This camera allows you to:
 
 Since this camera needs to do work each frame, you'll need to call its [update](../api/classes/InfluencedCamera.md#update) method with the time that passed since the last frame.
 
-## Configuration Options
-
-### Setting a Camera Target
+## Setting a Camera Target
 
 A target is the main focus of the camera until something attracts the cameras attention. The target is usually the player, but it can be something else as well. Without a target, the camera won't do anything.
 
-To set the target, call [setTarget](../api/classes/InfluencedCamera.md#settarget). You only need to call `setTarget` if the target changes. Property changes will be automatically detected.
+To set the target, call [setTarget](../api/classes/InfluencedCamera.md#settarget). You only need to call it again if the target changes. Property changes will be automatically detected. When you switch from one target to another, a transition will be performed, so that the camera does not instantly jump to the new target.
 
-When you switch from one target to another, a transition will be performed, so that the camera does not instantly jump to the new target.
+An [InfluencedCameraTarget](../api/interfaces/InfluencedCameraTarget.md) needs to implement the following properties:
 
-Take a look at [Influenced Camera Target](./influenced-camera-target.md) for details on how to configure a target.
+### Position and Zoom
 
-### Adding and Removing Cues
+The `x` and `y` properties represent the target position in your world. Keep them up to date.
 
-Cues attract the camera away from the target and might both change position and zoom level. The closer you get to a cue, the more it takes control of the camera.
+The `zoom` value will be combined with the camera zoom and the cue zoom values to form the final zoom value.
 
-To add a cue, call [addCue](../api/classes/InfluencedCamera.md#addcue) and to remove it, call [removeCue](../api/classes/InfluencedCamera.md#removecue). You can also call [removeAllCues](../api/classes/InfluencedCamera.md#removeallcues) to remove all cues in one go.
+### Aim Influences
 
-When removing a cue, you can specify a `fadeTime`. During the fade-time, the cue will gradually lose its influence on the camera, so the camera doesn't jump.
+The `aims` property is a list of [AimInfluence](../api/classes/AimInfluence.md) instances.
 
-Take a look at [Influenced Camera Cue](./influenced-camera-cue.md) for details on how to configure a cue.
+Think of an aim influence as an offset vector relative to the target, attracting the camera.
+
+Example use-cases:
+- Looking ahead of the player (use the players velocity vector).
+- Looking where the player aims (use the direction vector).
+
+You can change the offset using the [set](../api/classes/AimInfluence.md#set) method.
+
+You can configure the following settings on an AimInfluence via constructor parameter and also later via the respective public property.
+
+```typescript
+    /** The maximum length this influence offset can have. */
+    public maxLength: number;
+    /** The factor to multiply the influence offset by (before applying maxLength). Defaults to 1. */
+    public factor: number;
+    /** The percentage amount to move with each update. A value between 0 and 1. */
+    public lerpFactor: number;
+```
+
+## Adding and Removing Cues
+
+In addition to aim influences, which are relative to the target, we also have cues, which are positioned absolutely in the world.
+Cues attract the camera away from the target and affect both position and zoom level of the camera. The closer you get to a cue, the more it takes control of the camera.
+
+To add a cue, call [addCue](../api/classes/InfluencedCamera.md#addcue) and to remove it, call [removeCue](../api/classes/InfluencedCamera.md#removecue) or [removeAllCues](../api/classes/InfluencedCamera.md#removeallcues) to remove all cues in one go.
+
+When removing a cue, you can specify a `fadeTime`. If you do that, the cue will be cloned internally and gradually lose its influence on the camera, so the camera doesn't jump when it's finally removed.
+
+An [InfluencedCameraCue](../api/interfaces/InfluencedCameraCue.md) needs to implement the following properties:
+
+### Position and Zoom
+
+The `x` and `y` properties represent the cue position in your world. Keep them up to date.
+
+The `zoom` value will be combined with the camera zoom and the target zoom value to form the final zoom value.
+
+### Inner and Outer Radius
+
+When the camera target moves into the `outerRadius` of a cue, the cue starts attracting the camera. The closer it gets to the `innerRadius`, the more stronger the influence. Within the `innerRadius`, the cue has full control and the camera is fixed on the position of the cue.
+
+If two (or more) cues overlap, they will all attract the camera.

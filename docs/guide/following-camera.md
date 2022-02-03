@@ -8,15 +8,13 @@ This camera is still a bit experimental, as the configuration options I created 
 
 Since this camera needs to do work each frame, you'll need to call its [update](../api/classes/FollowingCamera.md#update) method with the time that passed since the last frame.
 
-## Configuration Options
-
-### Positioning the Camera
+## Positioning the Camera
 
 You can use the [moveTo](../api/classes/FollowingCamera.md#moveto) method to set the desired position of the camera. This will not move the camera instantly, so it takes time until it arrives at the destination.
 
 If you need to move it instantly, call [moveInstantly](../api/classes/FollowingCamera.md#moveinstantly) after calling `moveTo`.
 
-### Other Options
+## Other Options
 
 The following properties on the camera object allow changing the behavior of the camera. As said in the beginning, this camera is experimental, so this doesn't behave exactly as you might expect from the names, so play around with them a bit.
 

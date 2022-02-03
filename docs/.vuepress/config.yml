@@ -1,4 +1,4 @@
-title: camera2d
+title: Camera2D
 description: A tiny helper library for working with the web audio API written in TypeScript.
 base: "/camera2d/"
 themeConfig:
@@ -24,8 +24,6 @@ themeConfig:
       - screen-camera
       - following-camera
       - influenced-camera
-      - influenced-camera-target
-      - influenced-camera-cue
   displayAllHeaders: true
 plugins:
 - fulltext-search
