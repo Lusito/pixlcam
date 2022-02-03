@@ -1,21 +1,20 @@
 /* eslint-disable */
 
+import { Vector2 } from "../src";
+
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
 canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
 ctx.translate(canvas.clientWidth / 2, canvas.clientHeight / 2);
 
-type XY = { x: number; y: number };
-type Dot = XY & { color: string };
+type Dot = Vector2 & { color: string };
 type Cue = Dot & { factor: number };
-type Line = { a: XY; b: XY; color: string };
 
 const dot = (x: number, y: number, color: string): Dot => ({ x, y, color });
 const cue = (x: number, y: number, color: string, factor: number): Cue => ({ x, y, color, factor });
-const line = (a: XY, b: XY, color: string): Line => ({ a, b, color });
 
-function drawCircle(center: XY, radius: number, color: string, fill?: boolean): void {
+function drawCircle(center: Vector2, radius: number, color: string, fill?: boolean): void {
     ctx.beginPath();
     ctx.arc(center.x, center.y, radius, 0, Math.PI * 2, true);
     if (fill) {
@@ -28,11 +27,7 @@ function drawCircle(center: XY, radius: number, color: string, fill?: boolean): 
 
 const drawDot = (center: Dot) => drawCircle(center, 2, center.color, true);
 
-function vecLength({ x, y }: XY) {
-    return Math.sqrt(x * x + y * y);
-}
-
-function dist(p1: XY, p2: XY) {
+function dist(p1: Vector2, p2: Vector2) {
     const dx = p2.x - p1.x;
     const dy = p2.y - p1.y;
     return Math.sqrt(dx * dx + dy * dy);
@@ -72,7 +67,7 @@ function update() {
 update();
 
 const mousePoint = dot(0, 0, "white");
-function updateMousePoint(e: MouseEvent, dest: XY) {
+function updateMousePoint(e: MouseEvent, dest: Vector2) {
     dest.x = e.clientX - canvas.clientWidth / 2;
     dest.y = e.clientY - canvas.clientHeight / 2;
 }
