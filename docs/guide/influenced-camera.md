@@ -49,6 +49,8 @@ You can configure the following settings on an AimInfluence via constructor para
     public factor: number;
     /** The percentage amount to move with each update. A value between 0 and 1. */
     public lerpFactor: number;
+    /** The number of frames to remember to smoothen the camera movement. Defaults to 30. */
+    averageMaxFrames?: number;
 ```
 
 ## Adding and Removing Cues

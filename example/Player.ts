@@ -26,6 +26,7 @@ export class Player implements InfluencedCameraTarget {
     public velocity: Vector2 = { x: 0, y: 0 };
     public velocityInfluence = new AimInfluence({ maxLength: 300, factor: 0.2 });
     public aimInfluence = new AimInfluence({ maxLength: 300, factor: 0.3, lerpFactor: 0.1 });
+    public smoothAimDirection: Vector2 = { x: 0, y: 0 };
     public aims: AimInfluence[] = [];
     public zoom = 1;
     public spawnTime = SPAWN_TIME;
@@ -88,6 +89,9 @@ export class Player implements InfluencedCameraTarget {
             lerpVector(this.velocity, 0, 0);
             this.aimInfluence.set(0, 0);
             this.rocket.update(deltaTime, this.input.aimDirection);
+            lerpVector(this.smoothAimDirection, 0, 0);
+        } else {
+            lerpVector(this.smoothAimDirection, this.input.aimDirection.x, this.input.aimDirection.y);
         }
 
         lerpVector(this.velocity, this.input.moveDirection.x * speed, this.input.moveDirection.y * speed);
@@ -119,7 +123,7 @@ export class Player implements InfluencedCameraTarget {
     }
 
     private drawPreviewRocket() {
-        let { x, y } = this.aimInfluence.get();
+        let { x, y } = this.smoothAimDirection;
         const invLength = 1 / Math.sqrt(x ** 2 + y ** 2);
         x *= invLength;
         y *= invLength;
