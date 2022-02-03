@@ -85,6 +85,7 @@ export class InfluencedCamera extends Camera {
      *
      * @param cue The cue to add.
      */
+    // fixme: Possibility to fade in a cue
     public addCue(cue: InfluencedCameraCue) {
         this.cueConfigs.push({
             cue,
