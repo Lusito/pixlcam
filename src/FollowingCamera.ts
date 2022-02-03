@@ -19,14 +19,21 @@ export class FollowingCamera extends Camera {
 
     public lockDistance = 1;
 
+    /** @returns The position where the camera wants to be. */
     public getDesired(): Readonly<Vector2> {
         return this.desired;
     }
 
+    /** @returns The current (calculated) camera speed. */
     public getSpeed() {
         return this.speed;
     }
 
+    /**
+     * Perform camera movement.
+     *
+     * @param deltaTime The time that elapsed since the last frame.
+     */
     public update(deltaTime: number) {
         const moveX = this.desired.x - this.x;
         const moveY = this.desired.y - this.y;
@@ -56,6 +63,7 @@ export class FollowingCamera extends Camera {
         }
     }
 
+    /** Make the camera move instantly to the desired position instead of gradually moving it. */
     public moveInstantly() {
         this.setPosition(this.desired.x, this.desired.y);
     }

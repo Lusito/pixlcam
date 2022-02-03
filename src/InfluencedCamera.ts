@@ -70,6 +70,21 @@ export class InfluencedCamera extends Camera {
         this.savedZoom = zoom;
     }
 
+    /**
+     * Lerp the zoom level towards a new value.
+     *
+     * @param zoom The target zoom level.
+     */
+    protected updateZoom(zoom: number) {
+        zoom = lerpScalar(this.zoom, zoom); // fixme: allow configuring lerpFactor and lock?
+        if (this.zoom !== zoom) super.setZoom(zoom);
+    }
+
+    /**
+     * Register a cue for this camera.
+     *
+     * @param cue The cue to add.
+     */
     public addCue(cue: InfluencedCameraCue) {
         this.cueConfigs.push({
             cue,
@@ -80,6 +95,12 @@ export class InfluencedCamera extends Camera {
         this.update(0);
     }
 
+    /**
+     * Unregister a cue for this camera.
+     *
+     * @param cue The cue to remove.
+     * @param fadeTime > 0 to fade out this cue instead of instantly removing it.
+     */
     public removeCue(cue: InfluencedCameraCue, fadeTime = 0) {
         if (fadeTime > 0) {
             const config = this.cueConfigs.find((v) => v.cue === cue);
@@ -95,6 +116,11 @@ export class InfluencedCamera extends Camera {
         }
     }
 
+    /**
+     * Unregister all cues for this camera.
+     *
+     * @param fadeTime > 0 to fade out the cues instead of instantly removing them.
+     */
     public removeAllCues(fadeTime = 0) {
         if (fadeTime > 0) {
             for (const config of this.cueConfigs) {
@@ -110,6 +136,11 @@ export class InfluencedCamera extends Camera {
         }
     }
 
+    /**
+     * Set or change the camera target.
+     *
+     * @param target The new camera target or null.
+     */
     public setTarget(target: InfluencedCameraTarget | null) {
         // Adjust offset, so we can smoothen the transition between the current and next target
         if (target && this.target) {
@@ -119,10 +150,12 @@ export class InfluencedCamera extends Camera {
         this.target = target;
     }
 
+    /** @returns The current camera target. */
     public getTarget() {
         return this.target;
     }
 
+    /** Update all influences and calculate the final offset and zoom. */
     protected updateInfluences() {
         if (!this.target) return;
 
@@ -195,6 +228,11 @@ export class InfluencedCamera extends Camera {
         this.finalZoom = this.savedZoom * this.target.zoom * (cueInfluence ? 1 - zoom * cueInfluence : 1);
     }
 
+    /**
+     * Perform camera movement.
+     *
+     * @param deltaTime The time that elapsed since the last frame.
+     */
     public update(deltaTime: number) {
         this.updateFadingCues(deltaTime);
 
@@ -209,6 +247,11 @@ export class InfluencedCamera extends Camera {
         this.setPosition(this.target.x + this.finalOffset.x, this.target.y + this.finalOffset.y);
     }
 
+    /**
+     * Update all fading cues.
+     *
+     * @param deltaTime The time that elapsed since the last frame.
+     */
     protected updateFadingCues(deltaTime: number) {
         for (let i = this.cueConfigs.length - 1; i >= 0; i--) {
             const config = this.cueConfigs[i];
@@ -221,11 +264,6 @@ export class InfluencedCamera extends Camera {
                 }
             }
         }
-    }
-
-    protected updateZoom(zoom: number) {
-        zoom = lerpScalar(this.zoom, zoom); // fixme: allow configuring lerpFactor and lock?
-        if (this.zoom !== zoom) super.setZoom(zoom);
     }
 
     public override resize(width: number, height: number) {

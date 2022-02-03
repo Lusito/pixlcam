@@ -74,6 +74,12 @@ export class Camera {
         this.updateProjection();
     }
 
+    /**
+     * Set the camera to the specified coordinates and apply pixel snapping if configured.
+     *
+     * @param x The new x position of the camera.
+     * @param y The new y position of the camera.
+     */
     protected setPosition(x: number, y: number) {
         if (this.bounds) {
             const { xMin, xMax, yMin, yMax } = this.bounds;
@@ -121,11 +127,17 @@ export class Camera {
         this.projection[5] = (2 * this.zoom) / this.viewportHeight;
     }
 
+    /**
+     * Set camera bounds.
+     *
+     * @param bounds The new bounds or null to remove the current bounds.
+     */
     public setBounds(bounds: CameraBounds | null) {
         this.bounds = bounds;
         this.setPosition(this.x, this.y);
     }
 
+    /** @returns The current camera bounds or null. */
     public getBounds() {
         return this.bounds;
     }
