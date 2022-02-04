@@ -2,9 +2,9 @@ import { Vector2 } from "./types";
 import { lerpVector } from "./utils";
 
 /**
- * Options to use for the aim influence.
+ * Options to use for the target influence.
  */
-export interface AimInfluenceOptions {
+export interface TargetInfluenceOptions {
     /** The maximum length this influence offset can have. */
     maxLength: number;
     /** The factor to multiply the influence offset by (before applying maxLength). Defaults to 1. */
@@ -17,7 +17,7 @@ export interface AimInfluenceOptions {
 
 const epsilon = 0.001;
 
-interface AimInfluenceAverage {
+interface TargetInfluenceAverage {
     index: number;
     frames: Vector2[];
     maxFrames: number;
@@ -25,12 +25,13 @@ interface AimInfluenceAverage {
 }
 
 /**
- * An aim influence draws the InfluencedCamera towards an offset.
+ * A target influence draws the InfluencedCamera away from its target towards an offset.
  */
-export class AimInfluence {
-    protected readonly offset: Vector2 = { x: 0, y: 0 };
+export class TargetInfluence implements Vector2 {
     protected readonly desiredOffset: Vector2 = { x: 0, y: 0 };
-    protected average: AimInfluenceAverage;
+    protected average: TargetInfluenceAverage;
+    public x = 0;
+    public y = 0;
     /** The maximum length this influence offset can have. */
     public maxLength: number;
     /** The factor to multiply the influence offset by (before applying maxLength). Defaults to 1. */
@@ -39,11 +40,11 @@ export class AimInfluence {
     public lerpFactor: number;
 
     /**
-     * Create a new aim influence.
+     * Create a new target influence.
      *
      * @param options The options to use.
      */
-    public constructor(options: AimInfluenceOptions) {
+    public constructor(options: TargetInfluenceOptions) {
         this.maxLength = options.maxLength;
         this.factor = options.factor ?? 1;
         this.lerpFactor = options.lerpFactor ?? 1;
@@ -53,11 +54,6 @@ export class AimInfluence {
             frames: [{ x: 0, y: 0 }],
             sum: { x: 0, y: 0 },
         };
-    }
-
-    /** @returns The current influence offset. */
-    public get(): Readonly<Vector2> {
-        return this.offset;
     }
 
     /**
@@ -89,8 +85,8 @@ export class AimInfluence {
         this.desiredOffset.y = y;
     }
 
-    /** Calculate the optimal offset. Called by InfluencedCamera. */
-    protected update() {
+    /** Call this once per frame. */
+    public update() {
         const { frames, maxFrames, sum } = this.average;
         let { x, y } = this.desiredOffset;
         sum.x += x;
@@ -109,10 +105,10 @@ export class AimInfluence {
         y = sum.y / frames.length;
 
         if (this.lerpFactor === 1) {
-            this.offset.x = x;
-            this.offset.y = y;
+            this.x = x;
+            this.y = y;
         } else {
-            lerpVector(this.offset, x, y, this.lerpFactor);
+            lerpVector(this, x, y, this.lerpFactor);
         }
     }
 }

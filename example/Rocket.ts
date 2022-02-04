@@ -1,4 +1,4 @@
-import { InfluencedCameraTarget, AimInfluence, Vector2, lerpVector } from "../src";
+import { InfluencedCameraTarget, TargetInfluence, Vector2, lerpVector } from "../src";
 import {
     influencedModecolors,
     ROCKET_PREVIEW_OFFSET,
@@ -21,8 +21,8 @@ export class Rocket implements InfluencedCameraTarget {
     public y: number;
     public lastValidDirection: Vector2 = { x: 0, y: 0 };
     public velocity: Vector2 = { x: 0, y: 0 };
-    public velocityInfluence = new AimInfluence({ maxLength: 200, factor: 0.2 });
-    public aims: AimInfluence[] = [];
+    public velocityInfluence = new TargetInfluence({ maxLength: 200, factor: 0.2 });
+    public influences: TargetInfluence[] = [];
     public zoom = 1.5;
     public spawnTime = SPAWN_TIME;
     private readonly sprite: Sprite;
@@ -37,7 +37,7 @@ export class Rocket implements InfluencedCameraTarget {
 
         this.game = game;
         this.sprite = new Sprite(game.gl, game.defaultShader, game.textures.rocket.texture);
-        this.aims.push(this.velocityInfluence);
+        this.influences.push(this.velocityInfluence);
     }
 
     public update(deltaTime: number, moveDirection: Vector2) {
@@ -52,6 +52,7 @@ export class Rocket implements InfluencedCameraTarget {
         }
         lerpVector(this.velocity, dirX * ROCKET_SPEED, dirY * ROCKET_SPEED, 0.03);
         this.velocityInfluence.set(this.velocity.x, this.velocity.y);
+        for (const influence of this.influences) influence.update();
 
         this.x += this.velocity.x * deltaTime;
         this.y += this.velocity.y * deltaTime;
@@ -70,7 +71,7 @@ export class Rocket implements InfluencedCameraTarget {
     }
 
     public drawDebugProjected(rect: DebugRect) {
-        const { x, y } = this.velocityInfluence.get();
+        const { x, y } = this.velocityInfluence;
         rect.set(this.x + x - ROCKET_SIZE, this.y + y - ROCKET_SIZE, ROCKET_SIZE * 2, ROCKET_SIZE * 2);
         rect.stroke(influencedModecolors.TARGET_PROJECTED);
     }

@@ -1,5 +1,4 @@
 import { Camera } from "./Camera";
-import { AimInfluence } from "./AimInfluence";
 import { Vector2 } from "./types";
 import { ease, lerpVector, lerpScalar } from "./utils";
 
@@ -25,17 +24,17 @@ interface CueConfig {
 
 /**
  * A target for the InfluencedCamera.
- * The target can influence the camera by specifying aim influences and a zoom value.
+ * The target can influence the camera by specifying influences vectors and a zoom value.
  */
 export interface InfluencedCameraTarget extends Vector2 {
-    /** The aim influences to apply on the camera. */
-    aims: AimInfluence[];
+    /** The influences to apply on the camera. */
+    influences: Vector2[];
     /** The zoom value to multiply the camera zoom with. */
     zoom: number;
 }
 
 /**
- * A camera being influenced by aiming directions (like velocity) and cues (points of interest).
+ * A camera being influenced by target influences (like velocity) and cues (points of interest).
  * Optionally it can be contained within specified bounds.
  */
 export class InfluencedCamera extends Camera {
@@ -199,29 +198,21 @@ export class InfluencedCamera extends Camera {
             y += cueY * cueInfluence;
         }
 
-        // Apply aim influence
-        const { aims } = this.target;
-        const aimInfluence = 1 - maxFactor;
-        if (aims.length !== 0 && aimInfluence) {
-            let aimOffsetX = 0;
-            let aimOffsetY = 0;
+        // Apply target influences
+        const { influences } = this.target;
+        const targetInfluence = 1 - maxFactor;
+        if (influences.length !== 0 && targetInfluence) {
+            let dx = 0;
+            let dy = 0;
             // fixme: improve this:
-            for (const aim of aims) {
-                // eslint-disable-next-line dot-notation
-                aim["update"]();
-                const aimFocus = aim.get();
-                aimOffsetX += aimFocus.x;
-                aimOffsetY += aimFocus.y;
+            for (const influence of influences) {
+                dx += influence.x;
+                dy += influence.y;
             }
 
-            const aimFactor = 1 / aims.length;
-            x += aimOffsetX * aimFactor * aimInfluence;
-            y += aimOffsetY * aimFactor * aimInfluence;
-        } else {
-            for (const aim of aims) {
-                // eslint-disable-next-line dot-notation
-                aim["update"]();
-            }
+            const factor = targetInfluence / influences.length;
+            x += dx * factor;
+            y += dy * factor;
         }
 
         this.finalOffset.x = x;

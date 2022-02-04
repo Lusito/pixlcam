@@ -4,8 +4,8 @@ The [InfluencedCamera](../api/classes/InfluencedCamera.md) is the most advanced 
 
 This camera allows you to:
 - Configure a target
-  - A target has a a position, zoom and optionally aim influences.
-  - An aim influence can be used to move the camera in the direction the player is moving and/or aiming.
+  - A target has a a position, zoom and optionally influence vectors.
+  - A target influence can, for example, be used to move the camera in the direction the player is moving and/or aiming.
   - You can switch targets to focus on something different, for example a cinematic event or a missile to be controlled for a short time.
 - Set up visual cues in the world, which attract the camera (both in position and zoom)
 - Configure world boundaries.
@@ -28,19 +28,19 @@ The `x` and `y` properties represent the target position in your world. Keep the
 
 The `zoom` value will be combined with the camera zoom and the cue zoom values to form the final zoom value.
 
-### Aim Influences
+### Target Influences
 
-The `aims` property is a list of [AimInfluence](../api/classes/AimInfluence.md) instances.
+The `influences` property is a list of [Vector2](../api/interfaces/Vector2.md). For convenience, there's a [TargetInfluence](../api/classes/TargetInfluence.md) class, which handles smoothing for you.
 
-Think of an aim influence as an offset vector relative to the target, attracting the camera.
+Think of a target influence as an offset vector relative to the target, attracting the camera.
 
 Example use-cases:
 - Looking ahead of the player (use the players velocity vector).
 - Looking where the player aims (use the direction vector).
 
-You can change the offset using the [set](../api/classes/AimInfluence.md#set) method.
+If you use the [TargetInfluence](../api/classes/TargetInfluence.md), use its [set](../api/classes/TargetInfluence.md#set) method to set the newest value and call [update](../api/classes/TargetInfluence.md#update) every frame to let it do its magic.
 
-You can configure the following settings on an AimInfluence via constructor parameter and also later via the respective public property.
+You can configure the following settings on a TargetInfluence via constructor parameter and also later via the respective public property.
 
 ```typescript
     /** The maximum length this influence offset can have. */
@@ -55,7 +55,7 @@ You can configure the following settings on an AimInfluence via constructor para
 
 ## Adding and Removing Cues
 
-In addition to aim influences, which are relative to the target, we also have cues, which are positioned absolutely in the world.
+In addition to target influences, which are relative to the target, we also have cues, which are positioned absolutely in the world.
 Cues attract the camera away from the target and affect both position and zoom level of the camera. The closer you get to a cue, the more it takes control of the camera.
 
 To add a cue, call [addCue](../api/classes/InfluencedCamera.md#addcue) and to remove it, call [removeCue](../api/classes/InfluencedCamera.md#removecue) or [removeAllCues](../api/classes/InfluencedCamera.md#removeallcues) to remove all cues in one go.
