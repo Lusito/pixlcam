@@ -14,6 +14,8 @@ jobs:
       run: npm run build:example
     - name: Build Docs
       run: npm run docs:build
+    - name: Debug dist
+      run: ls ./docs/.vuepress/dist
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
