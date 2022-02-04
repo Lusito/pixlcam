@@ -1,6 +1,6 @@
-title: Camera2D
+title: PixlCam
 description: A tiny helper library for working with the web audio API written in TypeScript.
-base: "/camera2d/"
+base: "/pixlcam/"
 themeConfig:
   sidebarDepth: 0
   nav:
@@ -8,12 +8,12 @@ themeConfig:
     text: Guide
   - link: "/api/"
     text: API
-  - link: "/camera2d/example/"
+  - link: "/pixlcam/example/"
     text: Demo
     target: _blank
-  - link: https://github.com/lusito/camera2d
+  - link: https://github.com/lusito/pixlcam
     text: Github
-  - link: https://www.npmjs.com/package/camera2d
+  - link: https://www.npmjs.com/package/pixlcam
     text: NPM
   sidebar:
     "/guide/":

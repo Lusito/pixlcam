@@ -1,5 +1,5 @@
 {
-  "name": "camera2d",
+  "name": "pixlcam",
   "version": "0.8.0",
   "description": "A tiny helper library for working with the web audio API written in TypeScript.",
   "keywords": [
@@ -8,13 +8,13 @@
     "2D Camera",
     "Game"
   ],
-  "homepage": "https://lusito.github.io/camera2d/",
+  "homepage": "https://lusito.github.io/pixlcam/",
   "bugs": {
-    "url": "https://github.com/Lusito/camera2d/issues"
+    "url": "https://github.com/Lusito/pixlcam/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Lusito/camera2d.git"
+    "url": "https://github.com/Lusito/pixlcam.git"
   },
   "license": "Zlib",
   "author": "Santo Pfingsten",
@@ -25,7 +25,7 @@
   ],
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig-build.json",
-    "build:example": "rimraf docs/.vuepress/public/example && tsc && parcel build example/index.html --public-url /camera2d/example/ -d docs/.vuepress/public/example --no-source-maps",
+    "build:example": "rimraf docs/.vuepress/public/example && tsc && parcel build example/index.html --public-url /pixlcam/example/ -d docs/.vuepress/public/example --no-source-maps",
     "docs:build": "vuepress build docs",
     "docs:dev": "vuepress dev docs",
     "lint": "npm run lint:style && npm run lint:es && npm run lint:package && npm run lint:md",

@@ -1,6 +1,6 @@
 ---
 home: true
-heroText: Camera2D
+heroText: PixlCam
 tagline: 2D cameras for games written in TypeScript.
 actionText: Get Started →
 actionLink: /guide/
@@ -10,11 +10,11 @@ features:
 - title: Add Focus to Your Game
   details: With the InfluencedCamera, you can add cues to your game, attracting the camera and thus the attention of the player.
 - title: Typesafe
-  details: Camera2D makes use of TypeScript to ensure a pleasant and safe development experience!
+  details: PixlCam makes use of TypeScript to ensure a pleasant and safe development experience!
 footer: zlib/libpng License
 ---
 
-## What is Camera2D?
+## What is PixlCam?
 
 A set of 2D cameras for games written in TypeScript:
 
@@ -26,4 +26,4 @@ You'll get a projection and a model-view matrix ready to use, but there are also
 
 ## Liberal License
 
-Thanks to its [zlib/libpng](https://github.com/Lusito/camera2d/blob/master/LICENSE) license, users have the freedom to use it, modify it and redistribute as they please. Commercial purposes are perfectly allowed.
+Thanks to its [zlib/libpng](https://github.com/Lusito/pixlcam/blob/master/LICENSE) license, users have the freedom to use it, modify it and redistribute as they please. Commercial purposes are perfectly allowed.
