@@ -18,9 +18,10 @@ footer: zlib/libpng License
 
 A set of 2D cameras for games written in TypeScript:
 
-- A [simple camera](./api/classes/ScreenCamera.md) for drawing in screen-space
-- A [camera that follows](./api/classes/FollowingCamera.md) your player smoothly
-- An [influenced camera](./api/classes/InfluencedCamera.md) inspired by the [camera from Insanely Twisted Shadow Planet](http://michelgagne.blogspot.com/2012/07/itsp-camera-explained.html).
+- A [basic camera](./guide/basic-camera.md) you can use for simple stuff
+- A [screen camera](./guide/screen-camera.md) for drawing in screen-space coordinates
+- A [camera that follows](./guide/following-camera.md) your player smoothly
+- An [influenced camera](./guide/influenced-camera.md) inspired by the [camera from Insanely Twisted Shadow Planet](http://michelgagne.blogspot.com/2012/07/itsp-camera-explained.html).
 
 You'll get a projection and a model-view matrix ready to use, but there are also getters if your setup can't specify a camera matrix.
 
