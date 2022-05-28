@@ -38,6 +38,7 @@ export class InputController {
         window.addEventListener("keyup", (e) => this.onKeyUp(e));
         window.addEventListener("keydown", (e) => this.onKeyDown(e));
         window.addEventListener("keypress", (e) => {
+            e.preventDefault();
             if (e.code === "KeyT") {
                 player.teleport();
             } else if (e.code === "Space") {
@@ -47,10 +48,12 @@ export class InputController {
     }
 
     public onKeyDown(e: KeyboardEvent) {
+        e.preventDefault();
         if (e.code in this.keys) this.keys[e.code as Keys] = true;
     }
 
     public onKeyUp(e: KeyboardEvent) {
+        e.preventDefault();
         if (e.code in this.keys) this.keys[e.code as Keys] = false;
     }
 
