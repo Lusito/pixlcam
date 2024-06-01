@@ -1,7 +1,7 @@
 {
   "name": "pixlcam",
   "version": "0.8.2",
-  "description": "A tiny helper library for working with the web audio API written in TypeScript.",
+  "description": "A set of 2D cameras for games written in TypeScript",
   "keywords": [
     "TypeScript",
     "camera",
