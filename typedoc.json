@@ -1,7 +1,13 @@
 {
+  "readme": "none",
   "entryPoints": ["src/index.ts"],
-  "out": "docs",
+  "out": "dist-internal/api",
   "excludePrivate": true,
   "excludeInternal": true,
-  "gitRevision": "master"
+  "gitRevision": "master",
+  "titleLink": "https://lusito.github.io/pixlcam",
+  "navigationLinks": {
+    "API": "https://lusito.github.io/pixlcam/api",
+    "Demo": "https://lusito.github.io/pixlcam/example"
+  }
 }

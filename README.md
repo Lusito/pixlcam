@@ -8,10 +8,10 @@
 
 A set of 2D cameras for games written in TypeScript:
 
-- A [basic camera](https://lusito.github.io/pixlcam/guide/basic-camera.html) you can use for simple stuff
-- A [screen camera](https://lusito.github.io/pixlcam/guide/screen-camera.html) for drawing in screen-space coordinates
-- A [camera that follows](https://lusito.github.io/pixlcam/guide/following-camera.html) your player smoothly
-- An [influenced camera](https://lusito.github.io/pixlcam/guide/influenced-camera.html) inspired by the [camera from Insanely Twisted Shadow Planet](http://michelgagne.blogspot.com/2012/07/itsp-camera-explained.html).
+- A [basic camera](https://lusito.github.io/pixlcam/basic-camera.html) you can use for simple stuff
+- A [screen camera](https://lusito.github.io/pixlcam/screen-camera.html) for drawing in screen-space coordinates
+- A [camera that follows](https://lusito.github.io/pixlcam/following-camera.html) your player smoothly
+- An [influenced camera](https://lusito.github.io/pixlcam/influenced-camera.html) inspired by the [camera from Insanely Twisted Shadow Planet](http://michelgagne.blogspot.com/2012/07/itsp-camera-explained.html).
 
 You'll get a projection and a model-view matrix ready to use, but there are also getters if your setup can't specify a camera matrix.
 

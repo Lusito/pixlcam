@@ -25,46 +25,41 @@
   ],
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig-build.json",
-    "build:example": "rimraf docs/.vuepress/public/example && tsc && parcel build example/index.html --public-url /pixlcam/example/ -d docs/.vuepress/public/example --no-source-maps",
-    "docs:build": "vuepress build docs",
-    "docs:dev": "vuepress dev docs",
-    "exp": "parcel -d experiment/dist experiment/index.html",
-    "lint": "npm run lint:style && npm run lint:es && npm run lint:package && npm run lint:md",
-    "lint:es": "eslint \"{src,example}/**/*.{ts,tsx}\" --ext \".ts,.tsx\" --ignore-path .prettierignore",
-    "lint:es:fix": "npm run lint:es -- --fix",
-    "lint:fix": "npm run lint:style:fix && npm run lint:es:fix && npm run lint:package:fix && npm run lint:md",
-    "lint:md": "node lint-markdown.js",
-    "lint:package": "sort-package-json --check",
-    "lint:package:fix": "sort-package-json",
-    "lint:style": "npm run lint:style:base -- --check",
-    "lint:style:base": "prettier \"{src,example}/**/*.{ts,tsx,js,json}\" \"./*.{ts,tsx,js,json}\"",
-    "lint:style:fix": "npm run lint:style:base -- --write",
-    "start": "parcel -d docs/.vuepress/public/example example/index.html"
+    "build:api": "rimraf dist-internal/api && typedoc src",
+    "build:docs": "rimraf dist-internal && npm run build:api && npm run build:example:prod && mono-docs . build",
+    "build:example:base": "tsc && vite build example --outDir ../dist-internal/example --emptyOutDir",
+    "build:example:dev": "npm run build:example:base -- --base /example/",
+    "build:example:prod": "npm run build:example:base -- --base /pixlcam/example/",
+    "lint": "mono-lint",
+    "lint:fix": "mono-lint --fix",
+    "release": "mono-release",
+    "serve:docs": "rimraf dist-internal && npm run build:api && npm run build:example:dev && mono-docs . serve",
+    "start": "vite example",
+    "start:docs": "nodemon --ignore node_modules --ignore dist --ignore \"dist-internal\" -e ts,tsx,md,scss,png,webp --exec \"npm run serve:docs\""
   },
   "browserslist": [
     "since 2017-06"
   ],
   "devDependencies": {
-    "@lusito/eslint-config": "^2.0.0",
-    "@lusito/prettier-config": "^2.0.0",
-    "eslint-plugin-jest": "^26.3.0",
-    "eslint-plugin-jsdoc": "^39.3.2",
-    "markdown-link-check": "^3.10.2",
-    "parcel-bundler": "^1.12.5",
-    "parcel-plugin-static-files-copy": "^2.6.0",
-    "rimraf": "^3.0.2",
-    "sort-package-json": "^1.57.0",
-    "typed-glsl": "0.11.1",
-    "typedoc": "^0.22.15",
-    "typedoc-plugin-markdown": "^3.12.1",
-    "typescript": "4.6.4",
-    "vuepress": "^1.9.7",
-    "vuepress-plugin-fulltext-search": "^2.2.1",
-    "vuepress-plugin-typedoc": "^0.10.3"
+    "@lusito/eslint-config": "^3.1.0",
+    "@lusito/mono": "^0.15.1",
+    "@lusito/mono-docs": "^0.16.0",
+    "@lusito/prettier-config": "^3.1.0",
+    "eslint-plugin-jest": "^28.5.0",
+    "eslint-plugin-jsdoc": "^48.2.7",
+    "markdown-link-check": "^3.12.2",
+    "rimraf": "^5.0.7",
+    "sort-package-json": "^2.10.0",
+    "typed-glsl": "0.11.2",
+    "typedoc": "^0.25.13",
+    "typescript": "5.4.5",
+    "vite": "^5.2.12"
   },
-  "staticFiles": {
-    "staticPath": [
-      "example/assets"
-    ]
+  "monoLint": {
+    "lintMarkdownLinks": {
+      "warnOnlyPatterns": [
+        "^https:\\/\\/lusito\\.github\\.io\\/pixlcam\\/"
+      ]
+    }
   }
 }

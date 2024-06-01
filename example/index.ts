@@ -2,12 +2,18 @@
 
 import { Game } from "./Game";
 
+import background from "./assets/background.jpg";
+import heart from "./assets/heart.png";
+import laserGreenBurst from "./assets/laserGreen_burst.png";
+import rocket from "./assets/rocket.png";
+import shipPinkManned from "./assets/shipPink_manned.png";
+
 async function loadTexture(path: string, gl: WebGLRenderingContext) {
     const image = await new Promise<HTMLImageElement>((resolve, reject) => {
         const image = new Image();
         image.onload = () => resolve(image);
         image.onerror = (e) => reject(e);
-        image.src = `${document.location.pathname}${path}`;
+        image.src = path;
     });
 
     const texture = gl.createTexture() as WebGLTexture;
@@ -31,11 +37,11 @@ export type TextureInfo = ReturnType<typeof loadTexture> extends Promise<infer T
 
 async function loadTextures(gl: WebGLRenderingContext) {
     return {
-        bg: await loadTexture("background.jpg", gl),
-        player: await loadTexture("shipPink_manned.png", gl),
-        heart: await loadTexture("heart.png", gl),
-        burst: await loadTexture("laserGreen_burst.png", gl),
-        rocket: await loadTexture("rocket.png", gl),
+        bg: await loadTexture(background, gl),
+        player: await loadTexture(shipPinkManned, gl),
+        heart: await loadTexture(heart, gl),
+        burst: await loadTexture(laserGreenBurst, gl),
+        rocket: await loadTexture(rocket, gl),
     };
 }
 

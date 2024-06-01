@@ -1,0 +1,32 @@
+siteName: "pixlcam"
+title: ""
+description: A set of 2D cameras for games written in TypeScript
+footer:
+  - Zlib/Libpng License | https://github.com/Lusito/pixlcam/blob/master/LICENSE
+  - Copyright © 2024 Santo Pfingsten
+keywords:
+  - TypeScript
+  - camera
+  - 2d camera
+  - html5
+  - Game
+sidebar:
+  - setup
+  - basic-camera
+  - screen-camera
+  - following-camera
+  - influenced-camera
+links:
+  - Github | https://github.com/lusito/pixlcam
+  - NPM | https://www.npmjs.com/package/pixlcam
+  - API | https://lusito.github.io/pixlcam/api/
+  - Demo | https://lusito.github.io/pixlcam/example/
+adjustPaths:
+  - ^(\/docs)?/([^/]+\.html)$|/$2
+  - ^(\/docs)?/([^/]+/)?$|/$2
+buildOptions:
+  out: dist-internal/docs
+  siteUrl: https://lusito.github.io/pixlcam
+  static:
+    example: dist-internal/example
+    api: dist-internal/api

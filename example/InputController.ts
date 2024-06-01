@@ -32,29 +32,39 @@ export class InputController {
         KeyA: false,
         KeyS: false,
         KeyD: false,
+        KeyT: false,
+        Space: false,
     };
 
+    private player: Player;
+
     public constructor(player: Player) {
+        this.player = player;
         window.addEventListener("keyup", (e) => this.onKeyUp(e));
         window.addEventListener("keydown", (e) => this.onKeyDown(e));
-        window.addEventListener("keypress", (e) => {
-            e.preventDefault();
-            if (e.code === "KeyT") {
-                player.teleport();
-            } else if (e.code === "Space") {
-                player.shootRocket();
-            }
-        });
     }
 
     public onKeyDown(e: KeyboardEvent) {
-        e.preventDefault();
-        if (e.code in this.keys) this.keys[e.code as Keys] = true;
+        if (e.code in this.keys) {
+            e.preventDefault();
+
+            if (this.keys[e.code as Keys]) return;
+
+            this.keys[e.code as Keys] = true;
+
+            if (e.code === "KeyT") {
+                this.player.teleport();
+            } else if (e.code === "Space") {
+                this.player.shootRocket();
+            }
+        }
     }
 
     public onKeyUp(e: KeyboardEvent) {
-        e.preventDefault();
-        if (e.code in this.keys) this.keys[e.code as Keys] = false;
+        if (e.code in this.keys) {
+            e.preventDefault();
+            this.keys[e.code as Keys] = false;
+        }
     }
 
     public update() {
@@ -63,7 +73,7 @@ export class InputController {
             this.keys.ArrowUp,
             this.keys.ArrowRight,
             this.keys.ArrowDown,
-            this.keys.ArrowLeft
+            this.keys.ArrowLeft,
         );
 
         getDirection(this.aimDirection, this.keys.KeyW, this.keys.KeyD, this.keys.KeyS, this.keys.KeyA);
