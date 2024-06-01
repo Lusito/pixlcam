@@ -10,8 +10,6 @@ jobs:
       - uses: actions/checkout@master
       - name: Install
         run: npm ci
-      - name: Build Example
-        run: npm run build:example
       - name: Build Docs
         run: npm run docs:build
       - name: Deploy
