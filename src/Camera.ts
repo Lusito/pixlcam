@@ -66,7 +66,6 @@ export class Camera {
 
     /**
      * Set the zoom value and update the projection matrix accordingly.
-     *
      * @param zoom The new zoom value.
      */
     public setZoom(zoom: number) {
@@ -76,7 +75,6 @@ export class Camera {
 
     /**
      * Set the camera to the specified coordinates and apply pixel snapping if configured.
-     *
      * @param x The new x position of the camera.
      * @param y The new y position of the camera.
      */
@@ -101,7 +99,6 @@ export class Camera {
 
     /**
      * Move the camera to the specified coordinates and apply pixel snapping if configured.
-     *
      * @param x The new x position of the camera.
      * @param y The new y position of the camera.
      */
@@ -111,7 +108,6 @@ export class Camera {
 
     /**
      * Set the new viewport size of the camera.
-     *
      * @param width The new width of the viewport.
      * @param height The new height of the viewport.
      */
@@ -129,7 +125,6 @@ export class Camera {
 
     /**
      * Set camera bounds.
-     *
      * @param bounds The new bounds or null to remove the current bounds.
      */
     public setBounds(bounds: CameraBounds | null) {

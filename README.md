@@ -16,13 +16,14 @@ A set of 2D cameras for games written in TypeScript:
 You'll get a projection and a model-view matrix ready to use, but there are also getters if your setup can't specify a camera matrix.
 
 #### Fair Warning
+
 The compile target of this library is es2015, so if you want to support older browsers, you'll have to ensure that this module is being transpiled to an older es version during your build-process.
 
 ### Get started
 
-* [Read the documentation](https://lusito.github.io/pixlcam/)
-* Look at the example (`example/*.ts`).
-* Ask questions if the above doesn't clarify something good enough.
+- [Read the documentation](https://lusito.github.io/pixlcam/)
+- Look at the example (`example/*.ts`).
+- Ask questions if the above doesn't clarify something good enough.
 
 ### Report issues
 

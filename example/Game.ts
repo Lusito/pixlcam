@@ -156,7 +156,7 @@ export class Game {
                 5 + heartHeight / 2,
                 heartWidth,
                 heartHeight,
-                0
+                0,
             );
             this.heartSprite.draw();
         }

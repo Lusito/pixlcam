@@ -31,7 +31,6 @@ export class FollowingCamera extends Camera {
 
     /**
      * Perform camera movement.
-     *
      * @param deltaTime The time that elapsed since the last frame.
      */
     public update(deltaTime: number) {

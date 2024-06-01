@@ -22,7 +22,7 @@ export class GameCue implements InfluencedCameraCue {
         y: number,
         innerRadius: number,
         outerRadius: number,
-        zoom: number
+        zoom: number,
     ) {
         const { gl, debugShader, defaultShader } = game;
         this.x = x;

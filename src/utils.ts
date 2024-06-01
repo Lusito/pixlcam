@@ -5,7 +5,6 @@ export const createMatrix4 = (): Matrix4 => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
 /**
  * An easing function used to smoothen camera movement.
- *
  * @param t A value between 0 and 1.
  * @returns A value between 0 and 1.
  */
@@ -13,7 +12,6 @@ export const ease = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2;
 
 /**
  * Linear interpolation between 2 values.
- *
  * @param start The value to start from.
  * @param end The value to move towards.
  * @param lerpFactor The percentage amount to move. A value between 0 and 1.
@@ -29,7 +27,6 @@ export function lerpScalar(start: number, end: number, lerpFactor = 0.1, lock = 
 /**
  * Linear interpolation between 2 points.
  * Moves the input point with lerpFactor towards the end point value.
- *
  * @param point The point to move.
  * @param endX The x value to move towards.
  * @param endY The y value to move towards.
@@ -52,7 +49,6 @@ export function lerpVector(point: Vector2, endX: number, endY: number, lerpFacto
 /**
  * Restrict a camera position to be contained within the specified bounds according to its viewport size.
  * If the width of the bounds is smaller than the viewportSize, the center will be returned.
- *
  * @param input The value to restrict.
  * @param min The minimum value of the bound.
  * @param max The maximum value of the bound.
@@ -76,7 +72,6 @@ export function restrictToBounds(input: number, min: number, max: number, viewpo
  * Snap a value to a pixel depending on viewport size and zoom level.
  * If viewport size is divisible by 2, the zoomed value will be snapped to integers.
  * Otherwise the zoomed value will be snapped to .5 values instead.
- *
  * @param value The value to snap.
  * @param viewportSize The viewport size.
  * @param zoom The zoom level of the camera.

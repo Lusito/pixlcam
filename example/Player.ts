@@ -102,7 +102,7 @@ export class Player implements InfluencedCameraTarget {
         this.x = Math.max(BOUND_DISTANCE, Math.min(WORLD_WIDTH - BOUND_DISTANCE, this.x + this.velocity.x * deltaTime));
         this.y = Math.max(
             BOUND_DISTANCE,
-            Math.min(WORLD_HEIGHT - BOUND_DISTANCE, this.y + this.velocity.y * deltaTime)
+            Math.min(WORLD_HEIGHT - BOUND_DISTANCE, this.y + this.velocity.y * deltaTime),
         );
 
         if (this.spawnTime > 0) this.spawnTime = Math.max(0, this.spawnTime - deltaTime);
@@ -135,7 +135,7 @@ export class Player implements InfluencedCameraTarget {
             this.y + y * ROCKET_PREVIEW_OFFSET,
             width * ROCKET_PREVIEW_SCALE,
             height * ROCKET_PREVIEW_SCALE,
-            angle
+            angle,
         );
         this.rocketSprite.draw();
     }

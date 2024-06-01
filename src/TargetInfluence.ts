@@ -17,7 +17,7 @@ export interface TargetInfluenceOptions {
 
 const epsilon = 0.001;
 
-interface TargetInfluenceAverage {
+export interface TargetInfluenceAverage {
     index: number;
     frames: Vector2[];
     maxFrames: number;
@@ -41,7 +41,6 @@ export class TargetInfluence implements Vector2 {
 
     /**
      * Create a new target influence.
-     *
      * @param options The options to use.
      */
     public constructor(options: TargetInfluenceOptions) {
@@ -59,7 +58,6 @@ export class TargetInfluence implements Vector2 {
     /**
      * Set the new influence offset.
      * Factor and maxLength will be applied.
-     *
      * @param x The new x offset.
      * @param y The new y offset.
      */

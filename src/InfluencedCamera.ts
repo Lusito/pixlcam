@@ -15,7 +15,7 @@ export interface InfluencedCameraCue extends Vector2 {
     zoom: number;
 }
 
-interface CueConfig {
+export interface CueConfig {
     cue: InfluencedCameraCue;
     influence: number;
     totalFadeTime: number;
@@ -71,7 +71,6 @@ export class InfluencedCamera extends Camera {
 
     /**
      * Lerp the zoom level towards a new value.
-     *
      * @param zoom The target zoom level.
      */
     protected updateZoom(zoom: number) {
@@ -81,7 +80,6 @@ export class InfluencedCamera extends Camera {
 
     /**
      * Register a cue for this camera.
-     *
      * @param cue The cue to add.
      */
     // fixme: Possibility to fade in a cue
@@ -97,7 +95,6 @@ export class InfluencedCamera extends Camera {
 
     /**
      * Unregister a cue for this camera.
-     *
      * @param cue The cue to remove.
      * @param fadeTime > 0 to fade out this cue instead of instantly removing it.
      */
@@ -118,7 +115,6 @@ export class InfluencedCamera extends Camera {
 
     /**
      * Unregister all cues for this camera.
-     *
      * @param fadeTime > 0 to fade out the cues instead of instantly removing them.
      */
     public removeAllCues(fadeTime = 0) {
@@ -138,7 +134,6 @@ export class InfluencedCamera extends Camera {
 
     /**
      * Set or change the camera target.
-     *
      * @param target The new camera target or null.
      */
     public setTarget(target: InfluencedCameraTarget | null) {
@@ -222,7 +217,6 @@ export class InfluencedCamera extends Camera {
 
     /**
      * Perform camera movement.
-     *
      * @param deltaTime The time that elapsed since the last frame.
      */
     public update(deltaTime: number) {
@@ -241,7 +235,6 @@ export class InfluencedCamera extends Camera {
 
     /**
      * Update all fading cues.
-     *
      * @param deltaTime The time that elapsed since the last frame.
      */
     protected updateFadingCues(deltaTime: number) {
