@@ -1,6 +1,6 @@
 {
   "name": "pixlcam",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "A set of 2D cameras for games written in TypeScript",
   "keywords": [
     "TypeScript",
