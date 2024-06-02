@@ -45,6 +45,7 @@
     "@lusito/mono": "^0.15.1",
     "@lusito/mono-docs": "^0.16.0",
     "@lusito/prettier-config": "^3.1.0",
+    "@lusito/tsconfig": "^1.0.2",
     "eslint-plugin-jest": "^28.5.0",
     "eslint-plugin-jsdoc": "^48.2.7",
     "markdown-link-check": "^3.12.2",
